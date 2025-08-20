@@ -21,7 +21,7 @@ const ProductListing: React.FC = () => {
     const totalPages = Math.ceil(products.length / productsPerPage);
 
     return (
-        <div className="w-full p-6 bg-white rounded-lg shadow-sm min-h-screen py-10 px-4 md:px-10 lg:px-20">
+        <div className="w-full p-6 bg-white rounded-lg shadow-sm min-h-screen py-10 px-4 md:px-10 lg:px-25">
             {/* Breadcrumb at top */}
             <div className="mb-6">
                 <Breadcrumb
