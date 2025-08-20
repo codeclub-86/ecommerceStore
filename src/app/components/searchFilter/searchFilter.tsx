@@ -37,7 +37,7 @@ const SearchFilter: React.FC = () => {
     return (
         <>
             {/* Search Product */}
-            <div className="w-full p-6 bg-white rounded-lg shadow-sm mb-8">
+            <div className="w-full p-6 bg-white  shadow-sm mb-8">
                 <h3 className="text-lg font-semibold mb-4">Search Product</h3>
                 <div className="relative">
                     <input
@@ -62,7 +62,7 @@ const SearchFilter: React.FC = () => {
             </div>
 
             {/* All Categories */}
-            <div className="w-full p-6 bg-white rounded-lg shadow-sm mb-8">
+            <div className="w-full p-6 bg-white  shadow-sm mb-8">
                 <h3 className="text-lg font-semibold mb-4">All Categories</h3>
                 <ul>
                     {categories.map((cat, index) => (
@@ -78,7 +78,7 @@ const SearchFilter: React.FC = () => {
             </div>
 
             {/* Price Range (slider) */}
-            <div className="w-full p-6 bg-white rounded-lg shadow-sm mb-8">
+            <div className="w-full p-6 bg-white shadow-sm mb-8">
                 <h3 className="text-lg font-semibold mb-4">Price Range</h3>
                 <div className="relative pt-1">
                     <input
@@ -95,7 +95,7 @@ const SearchFilter: React.FC = () => {
             </div>
 
             {/* Filter by Price (checkboxes) */}
-            <div className="w-full p-6 bg-white rounded-lg shadow-sm mb-8">
+            <div className="w-full p-6 bg-white shadow-sm mb-8">
                 <h3 className="text-lg font-semibold mb-4">Filter by Price</h3>
                 <div className="space-y-3">
                     {priceRanges.map((range, index) => (
@@ -118,7 +118,7 @@ const SearchFilter: React.FC = () => {
             </div>
 
             {/* Filter by Brand */}
-            <div className="w-full p-6 bg-white rounded-lg shadow-sm">
+            <div className="w-full p-6 bg-white shadow-sm">
                 <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
                 <div className="space-y-3">
                     {brands.map((brand, index) => (

@@ -106,7 +106,7 @@ const HeaderLinks = () => {
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-blue-600">
+              <a href="/contact" className="hover:text-blue-600">
                 Contact Us
               </a>
             </li>
