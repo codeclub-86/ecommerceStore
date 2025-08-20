@@ -16,7 +16,7 @@ const TrendingSingle = () => {
           />
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
             <a
-              href="product-details.html"
+              href="/product-detail"
               className="inline-flex items-center gap-2 relative top-10 bg-blue-600 text-white px-2 py-2 hover:bg-black opacity-0 group-hover:opacity-100 group-hover:top-0 transition-all duration-200"
             >
               <ShoppingCart size={16} /> Add to Cart
@@ -29,7 +29,7 @@ const TrendingSingle = () => {
           <span className="block text-sm text-gray-500">Watches</span>
           <h4 className="font-semibold text-lg mt-1">
             <a
-              href="product-grids.html"
+              href="/product-detail"
               className="hover:text-blue-600 transition"
             >
               Xiaomi Mi Band 5
