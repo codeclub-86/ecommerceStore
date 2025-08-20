@@ -36,11 +36,10 @@ export default function ProductDetails() {
                       width={80}
                       height={80}
                       onClick={() => setCurrentImage(img)}
-                      className={`cursor-pointer border rounded-md p-1 hover:border-blue-500 transition ${
-                        currentImage === img
+                      className={`cursor-pointer border rounded-md p-1 hover:border-blue-500 transition ${currentImage === img
                           ? "border-blue-500"
                           : "border-gray-300"
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>
@@ -196,14 +195,4 @@ export default function ProductDetails() {
     </section>
   );
 }
-import React from "react";
 
-const page = () => {
-  return (
-    <div>
-      <div></div>
-    </div>
-  );
-};
-
-export default page;
