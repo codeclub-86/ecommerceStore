@@ -94,7 +94,7 @@ const HeaderLinks = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="block px-4 py-2 hover:bg-gray-100">
+                  <a href="/productListing" className="block px-4 py-2 hover:bg-gray-100">
                     Shop List
                   </a>
                 </li>
