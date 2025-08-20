@@ -10,7 +10,7 @@ import BrandsMain from "./components/brands/BrandsMain";
 export default function Home() {
   return (
     <div className="">
-      <Header></Header>
+      {/* <Header></Header> */}
       <HeroMain></HeroMain>
       <FeaturedMain></FeaturedMain>
       <TrendingMain></TrendingMain>

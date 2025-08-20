@@ -1,6 +1,7 @@
 import React from "react";
 import SearchFilter from "../components/searchFilter/searchFilter";
-// import ProductSort from "../components/ProductSort";
+import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
+import ProductSort from "../components/ProductSort/ProductSort";
 // import ProductCard from "../components/ProductCard";
 
 const products = [
@@ -24,7 +25,17 @@ const products = [
 
 const ProductListing: React.FC = () => {
     return (
-        <div className="bg-gray-100 min-h-screen py-10 px-4 md:px-10 lg:px-20">
+        <div className="w-full p-6 bg-white rounded-lg shadow-sm  min-h-screen py-10 px-4 md:px-10 lg:px-20">
+            {/* Breadcrumb at top */}
+            <div className="mb-6">
+                <Breadcrumb
+                    items={[
+                        { label: "Home", href: "/" },
+                        { label: "Products", href: "/products" },
+                    ]}
+                />
+            </div>
+
             <div className="container mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Left Sidebar - Filters */}
                 <div className="lg:col-span-1">
@@ -34,14 +45,14 @@ const ProductListing: React.FC = () => {
                 {/* Right Section - Products */}
                 <div className="lg:col-span-3">
                     {/* Sorting and View Options */}
-                    {/* <ProductSort /> */}
+                    <ProductSort />
 
                     {/* Product List */}
-                    {/* <div className="space-y-6">
-                        {products.map((product, index) => (
-                            <ProductCard key={index} product={product} />
-                        ))}
-                    </div> */}
+                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map((product, index) => (
+              <ProductCard key={index} product={product} />
+            ))}
+          </div> */}
                 </div>
             </div>
         </div>
