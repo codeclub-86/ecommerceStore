@@ -14,7 +14,7 @@ const CartSummary: React.FC = () => {
             </div>
             <div className="flex justify-between text-green-600">
                 <span>You Save</span>
-                <span>$29.00</span>
+                <span>$30.00</span>
             </div>
             <div className="flex justify-between font-semibold">
                 <span>You Pay</span>
