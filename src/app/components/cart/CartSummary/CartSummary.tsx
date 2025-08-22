@@ -6,7 +6,7 @@ const CartSummary: React.FC = () => {
         <div className="border rounded-lg p-6 space-y-3 w-full md:w-1/3">
             <div className="flex justify-between">
                 <span>Cart Subtotal</span>
-                <span>$2560.00</span>
+                <span>$2560.0</span>
             </div>
             <div className="flex justify-between">
                 <span>Shipping</span>
