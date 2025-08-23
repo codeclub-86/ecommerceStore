@@ -18,7 +18,7 @@ const CartSummary: React.FC = () => {
             </div>
             <div className="flex justify-between font-semibold">
                 <span>You Pay</span>
-                <span>$2531.00</span>
+                <span>$2534.00</span>
             </div>
 
             <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
