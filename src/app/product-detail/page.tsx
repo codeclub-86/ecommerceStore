@@ -1,19 +1,40 @@
 "use client";
-
 import Image from "next/image";
 import { useState } from "react";
 import { FaHeart, FaRedoAlt } from "react-icons/fa";
+import ReviewModal from "../components/review/ReviewModal";
+import { FaStar } from "react-icons/fa";
 
 export default function ProductDetails() {
   const [currentImage, setCurrentImage] = useState("/product-detail1.jpg");
 
   const images = ["/product-detail1.jpg", "/product-detail2.jpg"];
 
+  const reviews = [
+    { stars: 5, count: 38, total: 52 },
+    { stars: 4, count: 10, total: 52 },
+    { stars: 3, count: 3, total: 52 },
+    { stars: 2, count: 1, total: 52 },
+    { stars: 1, count: 0, total: 52 },
+  ];
+  const renderStars = (count: number) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        <FaStar
+          key={i}
+          className={i < count ? "text-yellow-400" : "text-gray-300"}
+        />
+      );
+    }
+    return stars;
+  };
+
   return (
-    <section className=" bg-white lg:px-25 lg:py-10 sm:px-10 sm:py-5">
+    <section className=" bg-gray-100 lg:px-25 lg:py-10 sm:px-10 sm:py-5">
       <div className="container mx-auto px-4">
         {/* Top Area */}
-        <div className="bg-gray-50 p-10">
+        <div className="bg-white p-10">
           <div className="flex flex-col lg:flex-row gap-10">
             {/* Product Images */}
             <div className="lg:w-1/2 w-full">
@@ -36,10 +57,11 @@ export default function ProductDetails() {
                       width={80}
                       height={80}
                       onClick={() => setCurrentImage(img)}
-                      className={`cursor-pointer border rounded-md p-1 hover:border-blue-500 transition ${currentImage === img
+                      className={`cursor-pointer border rounded-md p-1 hover:border-blue-500 transition ${
+                        currentImage === img
                           ? "border-blue-500"
                           : "border-gray-300"
-                        }`}
+                      }`}
                     />
                   ))}
                 </div>
@@ -121,7 +143,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Product Details */}
-        <div className="bg-gray-50 p-10 mt-12 ">
+        <div className="bg-white p-10 mt-12 ">
           <div className="pt-5">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               {/* Details & Features */}
@@ -191,8 +213,101 @@ export default function ProductDetails() {
             </div>
           </div>
         </div>
+
+        <div className="">
+          <div className="flex flex-col md:flex-row p-6 bg-white shadow-md w-full mt-12">
+            <div className="md:w-1/3 p-4">
+              <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                4.5 (Overall)
+              </h2>
+              <div className="space-y-4 w-full max-w-md">
+                {reviews.map(({ stars, count, total }) => {
+                  const percent = (count / total) * 100;
+                  return (
+                    <div key={stars} className="flex items-center gap-3">
+                      {/* Stars */}
+                      <div className="flex text-yellow-400 min-w-[100px]">
+                        {renderStars(stars)}
+                      </div>
+
+                      {/* Progress bar */}
+                      <div className="flex-1 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-yellow-400 h-2 rounded-full"
+                          style={{ width: `${percent}%` }}
+                        />
+                      </div>
+
+                      {/* Count */}
+                      <span className="text-gray-600 text-sm min-w-[40px] text-right">
+                        {count}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <ReviewModal></ReviewModal>
+            </div>
+            <div className="md:w-2/3 p-4">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                Latest Reviews
+              </h2>
+
+              <div className="space-y-5">
+                {[
+                  {
+                    name: "Jacob Hammond",
+                    title: "Awesome quality for the price",
+                    stars: 5,
+                    date: "2 days ago",
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...",
+                    avatar: "https://via.placeholder.com/40",
+                  },
+                  {
+                    name: "Alex Jaza",
+                    title: "My husband loves his new...",
+                    stars: 5,
+                    date: "1 week ago",
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...",
+                    avatar: "https://via.placeholder.com/40",
+                  },
+                ].map((review, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start p-5 bg-white rounded-xl shadow-sm border hover:shadow-md transition"
+                  >
+                    {/* Avatar */}
+                    <img
+                      src={review.avatar}
+                      alt={review.name}
+                      className="w-12 h-12 rounded-full mr-4"
+                    />
+
+                    {/* Review Content */}
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <p className="text-gray-900 font-medium">
+                          {review.title}
+                        </p>
+                        <span className="text-xs text-gray-400">
+                          {review.date}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 text-sm">{review.name}</p>
+                      <div className="flex text-yellow-400 mt-1">
+                        {renderStars(review.stars)}
+                      </div>
+                      <p className="text-gray-500 text-sm mt-2">
+                        {review.text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
-

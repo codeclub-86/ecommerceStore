@@ -1,223 +1,43 @@
 const products = [
   {
-    image: "https://via.placeholder.com/300x300.png?text=Xiaomi+Mi+Band+5",
+    id: "1", // 👈 string instead of number
+    image: "/product-1.jpg",
     category: "Watches",
     name: "Xiaomi Mi Band 5",
     rating: 4,
-    price: "199.00",
+    price: 199.0,
   },
   {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
+    id: "2",
+    image: "/product-1.jpg",
     category: "Speaker",
     name: "Big Power Sound Speaker",
     rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
+    price: 275.0,
+    oldPrice: 399.0, // 👈 keep as number for formatting
     discount: "-25%",
   },
   {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
+    id: "3",
+    image: "/product-1.jpg",
     category: "Speaker",
     name: "Big Power Sound Speaker",
     rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
+    price: 275.0,
+    oldPrice: 399.0,
     discount: "-25%",
   },
   {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
+    id: "4",
+    image: "/product-1.jpg",
     category: "Speaker",
     name: "Big Power Sound Speaker",
     rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
+    price: 275.0,
+    oldPrice: 399.0,
     discount: "-25%",
   },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-  {
-    image:
-      "https://via.placeholder.com/300x300.png?text=Big+Power+Sound+Speaker",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
-    rating: 5,
-    price: "275.00",
-    oldPrice: "399.00",
-    discount: "-25%",
-  },
-
-  // Add more dummy products here (at least 20–30 for testing pagination)
+  // ➝ Add more dummy products here (id must be string)
 ];
 
 export default products;

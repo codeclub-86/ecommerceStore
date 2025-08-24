@@ -1,30 +1,15 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 
 const products = {
   "Best Sellers": [
-    {
-      name: "GoPro Hero4 Silver",
-      price: "$287.99",
-      img: "/product-1.jpg",
-    },
-    {
-      name: "GoPro Hero4 Silver",
-      price: "$287.99",
-      img: "/product-1.jpg",
-    },
-    {
-      name: "GoPro Hero4 Silver",
-      price: "$287.99",
-      img: "/product-1.jpg",
-    },
+    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
+    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
+    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
   ],
   "New Arrivals": [
-    {
-      name: "GoPro Hero4 Silver",
-      price: "$287.99",
-      img: "/product-1.jpg",
-    },
+    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
   ],
   "Top Rated": [
     {
@@ -37,32 +22,41 @@ const products = {
 
 const ProductList = () => {
   return (
-    <div className="w-full bg-white px-25 py-20">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section className="w-full bg-white px-6 lg:px-20 py-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         {Object.entries(products).map(([section, items]) => (
-          <div key={section}>
+          <div key={section} className="space-y-6">
             {/* Section Title */}
-            <h2 className="text-md pb-2">
-              {section}
-              <div className="relative w-full h-[0.5px] top-2 bg-gray-200">
-                <span className="absolute bottom-0 left-0 w-16 h-[0.5px] bg-blue-600"></span>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">{section}</h2>
+              <div className="relative w-full h-[1px] bg-gray-200 mt-2">
+                <span className="absolute bottom-0 left-0 w-16 h-[2px] bg-blue-600 rounded"></span>
               </div>
-            </h2>
+            </div>
 
             {/* Products */}
-            <ul className="mt-6 space-y-5">
+            <ul className="space-y-6">
               {items.map((item, index) => (
-                <li key={index} className="flex items-center gap-4">
-                  <img
-                    src={item.img}
-                    alt={item.name}
-                    className="w-16 h-16 object-contain rounded-md border"
-                  />
+                <li
+                  key={index}
+                  className="flex items-center gap-4 hover:bg-gray-50 p-2 rounded-lg transition"
+                >
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={item.img}
+                      alt={item.name}
+                      width={64}
+                      height={64}
+                      className="object-contain rounded-md border shadow-sm"
+                    />
+                  </div>
                   <div>
-                    <p className="text-sm text-gray-800 hover:text-blue-600 cursor-pointer">
+                    <p className="text-sm font-medium text-gray-800 hover:text-blue-600 hover:underline transition-colors cursor-pointer">
                       {item.name}
                     </p>
-                    <p className="text-gray-500 text-sm">{item.price}</p>
+                    <p className="text-gray-500 text-sm font-semibold">
+                      {item.price}
+                    </p>
                   </div>
                 </li>
               ))}
@@ -70,7 +64,7 @@ const ProductList = () => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
