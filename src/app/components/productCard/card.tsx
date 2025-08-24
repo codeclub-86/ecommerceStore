@@ -23,7 +23,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 }) => {
   return (
     <Link
-      href={`/product-detail/${id}`}
+      href={`/product-detail`}
       className="border rounded-lg shadow-sm hover:shadow-lg transition bg-white group relative"
     >
       {/* Wishlist Button */}
