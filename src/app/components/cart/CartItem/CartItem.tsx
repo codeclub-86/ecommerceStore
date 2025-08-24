@@ -1,4 +1,5 @@
 import React from "react";
+import { Trash2 } from "lucide-react";
 
 interface CartItemProps {
   image: string;
@@ -16,12 +17,16 @@ const CartItem: React.FC<CartItemProps> = ({
   discount,
 }) => {
   return (
-    <div className="flex items-center justify-between border-b py-4">
+    <div className="grid grid-cols-6 items-center px-6 py-4">
       {/* Product Info */}
-      <div className="flex items-center gap-4 w-1/3">
-        <img src={image} alt={title} className="w-20 h-20 object-contain" />
+      <div className="col-span-2 flex items-center gap-4 text-left">
+        <img
+          src={image}
+          alt={title}
+          className="w-20 h-20 object-contain rounded-md border border-gray-100 bg-gray-50"
+        />
         <div>
-          <h3 className="font-semibold">{title}</h3>
+          <h3 className="font-semibold text-gray-800">{title}</h3>
           {details.map((d, i) => (
             <p key={i} className="text-sm text-gray-500">
               {d}
@@ -31,8 +36,8 @@ const CartItem: React.FC<CartItemProps> = ({
       </div>
 
       {/* Quantity */}
-      <div className="w-1/6">
-        <select className="border px-2 py-1 rounded">
+      <div className="text-center">
+        <select className="border px-2 py-1 rounded w-16 focus:outline-none focus:ring-2 focus:ring-blue-400">
           <option>1</option>
           <option>2</option>
           <option>3</option>
@@ -40,14 +45,18 @@ const CartItem: React.FC<CartItemProps> = ({
       </div>
 
       {/* Subtotal */}
-      <div className="w-1/6 text-gray-700">{price}</div>
+      <div className="text-gray-700 font-medium text-center">{price}</div>
 
       {/* Discount */}
-      <div className="w-1/6 text-gray-500">{discount ? discount : "-"}</div>
+      <div className="text-gray-500 text-center">
+        {discount ? discount : "—"}
+      </div>
 
-      {/* Remove */}
-      <div className="w-1/6 text-center">
-        <button className="text-red-500 text-lg font-bold">✕</button>
+      {/* Remove Button */}
+      <div className="text-center">
+        <button className="text-red-500 hover:text-red-700 transition">
+          <Trash2 size={18} />
+        </button>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 
 const CartPage: React.FC = () => {
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6  mt-15 lg:px-25">
+    <div className="max-w-6xl mx-auto p-6 space-y-6 mt-15 lg:px-25">
       {/* Breadcrumb */}
       <div className="mb-8">
         <Breadcrumb
@@ -20,34 +20,40 @@ const CartPage: React.FC = () => {
         />
       </div>
 
-      {/* Cart Table Header */}
-      <div className="grid grid-cols-5 font-semibold border-b pb-2">
-        <span className="col-span-2">Product Name</span>
-        <span>Quantity</span>
-        <span>Subtotal</span>
-        <span>Discount</span>
-      </div>
+      {/* Cart Table */}
+      <div className="border rounded-lg overflow-hidden">
+        {/* Header */}
+        <div className="grid grid-cols-6 font-semibold border-b bg-gray-100 py-3 px-6 text-center">
+          <span className="col-span-2 text-left">Product</span>
+          <span>Quantity</span>
+          <span>Subtotal</span>
+          <span>Discount</span>
+          <span>Action</span>
+        </div>
 
-      {/* Cart Items */}
-      <CartItem
-        image="/camera.png"
-        title="Canon EOS M50 Mirrorless Camera"
-        details={["Type: Mirrorless", "Color: Black"]}
-        price="$910.00"
-        discount="$29.00"
-      />
-      <CartItem
-        image="/iphone.png"
-        title="Apple iPhone X 256 GB Space Gray"
-        details={["Memory: 256 GB", "Color: Space Gray"]}
-        price="$1100.00"
-      />
-      <CartItem
-        image="/printer.png"
-        title="HP LaserJet Pro Laser Printer"
-        details={["Type: Laser", "Color: White"]}
-        price="$550.00"
-      />
+        {/* Items */}
+        <div className="divide-y">
+          <CartItem
+            image="/camera.png"
+            title="Canon EOS M50 Mirrorless Camera"
+            details={["Type: Mirrorless", "Color: Black"]}
+            price="$910.00"
+            discount="$29.00"
+          />
+          <CartItem
+            image="/iphone.png"
+            title="Apple iPhone X 256 GB Space Gray"
+            details={["Memory: 256 GB", "Color: Space Gray"]}
+            price="$1100.00"
+          />
+          <CartItem
+            image="/printer.png"
+            title="HP LaserJet Pro Laser Printer"
+            details={["Type: Laser", "Color: White"]}
+            price="$550.00"
+          />
+        </div>
+      </div>
 
       {/* Coupon + Summary */}
       <div className="flex flex-col md:flex-row justify-between gap-6">
