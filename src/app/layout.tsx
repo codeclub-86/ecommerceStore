@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "../app/components/footer";
 import Header from "../app/components/header";
 import ReduxProvider from "./redux/provider";
+import TopNavbar from "./components/topBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ReduxProvider>
+          <TopNavbar></TopNavbar>
           <Header></Header>
           {children}
           <Footer></Footer>
