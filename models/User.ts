@@ -4,7 +4,7 @@ export interface IUser extends Document {
   userName: string;
   email: string;
   password: string;
-  type: "customer" | "admin"; // limit values
+  type: "customer" | "admin" | "vendor"; // limit values
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,7 +34,7 @@ const UserSchema = new Schema<IUser>(
     },
     type: {
       type: String,
-      enum: ["customer", "admin"],
+      enum: ["customer", "admin", "vendor"],
       default: "customer",
     },
   },
