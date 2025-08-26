@@ -85,8 +85,7 @@ export default function ShopGridsHeader() {
 
               {/* Wishlist */}
               <div className="relative group">
-                <Link
-                  href="/wishlist"
+                <span
                   className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border group hover:bg-black transition-all"
                   aria-label="Wishlist"
                 >
@@ -97,7 +96,7 @@ export default function ShopGridsHeader() {
                   <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full px-1">
                     {wishlist.length}
                   </span>
-                </Link>
+                </span>
 
                 {/* Dropdown */}
                 <div
