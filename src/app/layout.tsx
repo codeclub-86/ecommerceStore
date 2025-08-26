@@ -29,12 +29,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ReduxProvider>
-          <TopNavbar></TopNavbar>
-          <Header></Header>
-          {children}
-          <Footer></Footer>
-        </ReduxProvider>
+        <TopNavbar></TopNavbar>
+        <Header></Header>
+        {children}
+        <Footer></Footer>
       </body>
     </html>
   );
