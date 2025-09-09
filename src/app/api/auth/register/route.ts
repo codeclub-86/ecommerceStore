@@ -1,11 +1,11 @@
+// app/api/auth/register/route.ts
 import { NextResponse } from "next/server";
-import connectDB from "../../../../../libs/mongodb";
-import User from "../../../../../models/User";
+import { getConnection } from "../../../../../libs/mysql";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export async function POST(request: Request) {
   try {
-    // 1. Parse request body
     const { userName, email, password } = await request.json();
 
     if (!userName || !email || !password) {
@@ -15,30 +15,42 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Connect to DB
-    await connectDB();
+    const db = await getConnection();
 
-    // 3. Check if email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    // check existing user
+    const [existing]: any = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+    if (existing.length > 0) {
       return NextResponse.json(
         { message: "Email already registered" },
         { status: 409 }
       );
     }
 
-    // 4. Hash password
+    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 5. Create user
-    await User.create({
-      userName,
-      email,
-      password: hashedPassword,
+    // insert user
+    const [result]: any = await db.query(
+      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      [userName, email, hashedPassword]
+    );
+
+    const newUserId = result.insertId;
+
+    // create JWT
+    const token = jwt.sign({ id: newUserId, email }, process.env.JWT_SECRET!, {
+      expiresIn: "1d",
     });
 
     return NextResponse.json(
-      { message: "User Created Successfully" },
+      {
+        message: "User Created Successfully",
+        user: { id: newUserId, userName, email },
+        token,
+      },
       { status: 201 }
     );
   } catch (error: any) {

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../../../libs/mongodb";
-import User from "../../../../../models/User";
+import { getConnection } from "../../../../../libs/mysql";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -15,16 +14,24 @@ export async function POST(request: Request) {
       );
     }
 
-    await connectDB();
+    const db = await getConnection();
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
+    // 1. Find user by email
+    const [rows]: any = await db.query(
+      "SELECT * FROM web_users WHERE email = ?",
+      [email]
+    );
+
+    if (rows.length === 0) {
       return NextResponse.json(
         { message: "Invalid email or password" },
         { status: 401 }
       );
     }
 
+    const user = rows[0];
+
+    // 2. Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
@@ -33,8 +40,9 @@ export async function POST(request: Request) {
       );
     }
 
+    // 3. Create JWT
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user.id, email: user.email },
       process.env.JWT_SECRET!,
       { expiresIn: "1d" }
     );
@@ -43,8 +51,8 @@ export async function POST(request: Request) {
       {
         message: "Login successful",
         user: {
-          id: user._id,
-          userName: user.userName,
+          id: user.id,
+          userName: user.name, // in MySQL table we used `name`
           email: user.email,
         },
         token,

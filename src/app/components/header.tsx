@@ -6,6 +6,7 @@ import Link from "next/link";
 import HeaderLinks from "./headerLinks";
 import CartComp from "./cartComp";
 import { useState } from "react";
+import { useWishlistStore } from "@/app/store/wishListStore";
 
 // 🔍 Reusable Search Bar
 function SearchBar({ mobile = false }: { mobile?: boolean }) {
@@ -43,11 +44,10 @@ function SearchBar({ mobile = false }: { mobile?: boolean }) {
 }
 
 export default function ShopGridsHeader() {
-  const [wishlist] = useState([
-    { id: 1, name: "Apple AirPods Pro", price: "$199.00", img: "/item1.jpg" },
-    { id: 2, name: "Sony WH-1000XM5", price: "$349.00", img: "/item2.jpg" },
-    { id: 3, name: "iPad Mini 2024", price: "$499.00", img: "/item3.jpg" },
-  ]);
+  const wishlist = useWishlistStore((state) => state.items);
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist
+  );
 
   return (
     <header className="w-full bg-white shadow-sm">
@@ -93,51 +93,60 @@ export default function ShopGridsHeader() {
                     size={22}
                     className="text-gray-700 group-hover:text-white"
                   />
-                  <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full px-1">
-                    {wishlist.length}
-                  </span>
+                  {wishlist.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full px-1">
+                      {wishlist.length}
+                    </span>
+                  )}
                 </span>
 
                 {/* Dropdown */}
-                <div
-                  className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg 
-                  opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-                  transform group-hover:translate-y-1 transition-all duration-200 z-50"
-                >
-                  <div className="p-4 border-b text-sm flex justify-between">
-                    <span>{wishlist.length} Items</span>
-                  </div>
+                {wishlist.length > 0 && (
+                  <div
+                    className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg 
+                    opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                    transform group-hover:translate-y-1 transition-all duration-200 z-50"
+                  >
+                    <div className="p-4 border-b text-sm flex justify-between">
+                      <span>{wishlist.length} Items</span>
+                    </div>
 
-                  <ul className="max-h-64 overflow-auto">
-                    {wishlist.map((item) => (
-                      <li
-                        key={item.id}
-                        className="flex items-center gap-3 p-4 border-b"
-                      >
-                        <button
-                          className="text-gray-400 hover:text-red-500"
-                          aria-label={`Remove ${item.name}`}
+                    <ul className="max-h-64 overflow-auto">
+                      {wishlist.map((item) => (
+                        <li
+                          key={item.id}
+                          className="flex items-center gap-3 p-4 border-b"
                         >
-                          <X size={16} />
-                        </button>
-                        <Image
-                          src={item.img}
-                          alt={item.name}
-                          width={50}
-                          height={50}
-                          className="rounded"
-                          loading="lazy"
-                        />
-                        <div>
-                          <h4 className="text-sm font-semibold">
-                            <Link href="/product-details">{item.name}</Link>
-                          </h4>
-                          <p className="text-xs text-gray-500">{item.price}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                          <button
+                            className="text-gray-400 hover:text-red-500"
+                            aria-label={`Remove ${item.name}`}
+                            onClick={() => removeFromWishlist(item.id)}
+                          >
+                            <X size={16} />
+                          </button>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            width={50}
+                            height={50}
+                            className="rounded"
+                            loading="lazy"
+                          />
+                          <div>
+                            <h4 className="text-sm font-semibold">
+                              <Link href={`/product-detail/${item.id}`}>
+                                {item.name}
+                              </Link>
+                            </h4>
+                            <p className="text-xs text-gray-500">
+                              ${item.price}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               {/* Cart */}

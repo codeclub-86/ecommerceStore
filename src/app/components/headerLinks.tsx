@@ -9,7 +9,8 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useStore } from "@/app/store/apiStore"; // ⬅️ import your zustand store
 
 // 🔗 Social Icon Component
 const SocialIcon = ({
@@ -35,9 +36,17 @@ const SocialIcon = ({
 const HeaderLinks = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Zustand store
+  const { categories, fetchCategories, loading } = useStore();
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
   return (
-    <header className="w-full border-t bg-white border-b ">
-      <div className="px-6 lg:px-10 py-4 flex items-center container  mx-auto justify-between">
+    <header className="w-full border-t bg-white border-b">
+      <div className="px-6 lg:px-10 py-4 flex items-center container mx-auto justify-between">
         {/* Left side (Menu Toggle + Categories) */}
         <div className="flex items-center gap-4">
           {/* Mobile menu button */}
@@ -61,36 +70,32 @@ const HeaderLinks = () => {
             {/* Dropdown */}
             <ul
               className="
-      absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100
-      opacity-0 scale-95 translate-y-2 invisible
-      group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
-      transition-all duration-300 ease-out z-50
-    "
+                absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100
+                opacity-0 scale-95 translate-y-2 invisible
+                group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
+                transition-all duration-300 ease-out z-50
+              "
             >
-              <li>
-                <Link
-                  href="/category/electronics"
-                  className="flex justify-between items-center px-5 py-3 hover:bg-gray-50 hover:text-blue-600 transition rounded-t-xl"
-                >
-                  Electronics <ChevronDown size={16} />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/category/fashion"
-                  className="flex justify-between items-center px-5 py-3 hover:bg-gray-50 hover:text-blue-600 transition"
-                >
-                  Fashion <ChevronDown size={16} />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/category/home"
-                  className="flex justify-between items-center px-5 py-3 hover:bg-gray-50 hover:text-blue-600 transition rounded-b-xl"
-                >
-                  Home & Living <ChevronDown size={16} />
-                </Link>
-              </li>
+              {loading && (
+                <li className="px-5 py-3 text-gray-500">Loading...</li>
+              )}
+
+              {!loading && categories.length === 0 && (
+                <li className="px-5 py-3 text-gray-500">No categories found</li>
+              )}
+
+              {categories.map((cat: any, idx: number) => (
+                <li key={cat.id}>
+                  <Link
+                    href={`/category/${cat.id}`}
+                    className={`flex justify-between items-center px-5 py-3 hover:bg-gray-50 hover:text-blue-600 transition ${
+                      idx === 0 ? "rounded-t-xl" : ""
+                    } ${idx === categories.length - 1 ? "rounded-b-xl" : ""}`}
+                  >
+                    {cat.category_name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

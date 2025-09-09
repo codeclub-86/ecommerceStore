@@ -3,6 +3,9 @@ import React from "react";
 import Image from "next/image";
 import { ShoppingCart, Star, Heart } from "lucide-react";
 import Link from "next/link";
+import { useWishlistStore } from "@/app/store/wishListStore";
+import { useAuthStore } from "@/app/store/authStore";
+import { useRouter } from "next/navigation";
 
 interface TrendingSingleProps {
   id: string;
@@ -18,22 +21,50 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   name,
   price,
   image,
-  category = "Watches",
+  category,
   rating = 4,
 }) => {
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
+  const { initializeAuth, isLoggedIn } = useAuthStore();
+  const router = useRouter();
+
+  const inWishlist = isInWishlist(id);
+
+  const toggleWishlist = (e: React.MouseEvent) => {
+    initializeAuth();
+
+    if (!isLoggedIn) {
+      router.push("/login"); // 👈 redirect to login page
+      return;
+    }
+
+    e.preventDefault();
+
+    if (inWishlist) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist({ id, name, price, image });
+    }
+  };
   return (
     <Link
-      href={`/product-detail`}
+      href={`/product-detail/${id}`}
       className="border rounded-lg shadow-sm hover:shadow-lg transition bg-white group relative"
     >
       {/* Wishlist Button */}
       <button
         aria-label="Add to Wishlist"
-        className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white shadow hover:bg-red-50 transition"
+        onClick={toggleWishlist}
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${
+          inWishlist ? "bg-red-100" : "bg-white"
+        }`}
       >
         <Heart
           size={18}
-          className="text-gray-500 hover:text-red-500 transition"
+          className={`transition ${
+            inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
+          }`}
         />
       </button>
 
@@ -80,9 +111,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
         {/* Price */}
         <div className="mt-2">
-          <span className="text-blue-600 font-bold text-lg">
-            ${price.toFixed(2)}
-          </span>
+          <span className="text-blue-600 font-bold text-lg">${price}</span>
         </div>
       </div>
     </Link>
