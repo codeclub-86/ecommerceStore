@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Phone, Heart, X } from "lucide-react";
+import { Search, Heart, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HeaderLinks from "./headerLinks";
@@ -12,9 +12,8 @@ import { useWishlistStore } from "@/app/store/wishListStore";
 function SearchBar({ mobile = false }: { mobile?: boolean }) {
   return (
     <div
-      className={`flex w-full border rounded-md overflow-hidden ${
-        mobile ? "" : "border-gray-400 rounded-sm"
-      }`}
+      className={`flex w-full border rounded-md overflow-hidden ${mobile ? "" : "border-gray-400 rounded-sm"
+        }`}
     >
       <select
         className="appearance-none px-3 py-2 border-r border-gray-400 text-gray-600 text-sm outline-none"
@@ -49,6 +48,8 @@ export default function ShopGridsHeader() {
     (state) => state.removeFromWishlist
   );
 
+  const [wishlistOpen, setWishlistOpen] = useState(false);
+
   return (
     <header className="w-full bg-white shadow-sm">
       <div className="w-full lg:px-8 md:px-6 px-2 py-10 container mx-auto">
@@ -72,43 +73,36 @@ export default function ShopGridsHeader() {
 
             {/* Right Area */}
             <div className="flex items-center gap-6">
-              {/* Hotline */}
-              {/* <div className="hidden lg:flex items-center gap-2 text-sm">
-                <div className="h-10 w-10 rounded-full border flex items-center justify-center">
-                  <Phone className="text-black" size={18} />
-                </div>
-                <div>
-                  <span className="font-semibold">Hotline:</span> <br />
-                  <span className="text-gray-500">(+100) 123 456 7890</span>
-                </div>
-              </div> */}
-
               {/* Wishlist */}
-              <div className="relative group">
-                <span
-                  className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border group hover:bg-black transition-all"
+              <div className="relative">
+                <button
+                  onClick={() => setWishlistOpen(!wishlistOpen)}
+                  className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border hover:bg-black transition-all"
                   aria-label="Wishlist"
                 >
                   <Heart
                     size={22}
-                    className="text-gray-700 group-hover:text-white"
+                    className={`${wishlistOpen ? "text-white" : "text-gray-700"
+                      }`}
                   />
                   {wishlist.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full px-1">
                       {wishlist.length}
                     </span>
                   )}
-                </span>
+                </button>
 
                 {/* Dropdown */}
-                {wishlist.length > 0 && (
-                  <div
-                    className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg 
-                    opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-                    transform group-hover:translate-y-1 transition-all duration-200 z-50"
-                  >
+                {wishlistOpen && wishlist.length > 0 && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg z-50">
                     <div className="p-4 border-b text-sm flex justify-between">
                       <span>{wishlist.length} Items</span>
+                      <button
+                        className="text-xs text-red-500 hover:underline"
+                        onClick={() => setWishlistOpen(false)}
+                      >
+                        Close
+                      </button>
                     </div>
 
                     <ul className="max-h-64 overflow-auto">
@@ -139,7 +133,7 @@ export default function ShopGridsHeader() {
                               </Link>
                             </h4>
                             <p className="text-xs text-gray-500">
-                              ${item.price}
+                              ${Number(item.price).toFixed(2)}
                             </p>
                           </div>
                         </li>

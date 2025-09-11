@@ -14,6 +14,8 @@ interface TrendingSingleProps {
   image: string;
   category?: string;
   rating?: number;
+  status?: string; // ✅ coming from API
+  sale_price?: number | string; // ✅ optional if provided
 }
 
 const TrendingSingle: React.FC<TrendingSingleProps> = ({
@@ -23,6 +25,8 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   image,
   category,
   rating = 4,
+  status,
+  sale_price,
 }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
@@ -35,7 +39,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
     initializeAuth();
 
     if (!isLoggedIn) {
-      router.push("/login"); // 👈 redirect to login page
+      router.push("/login");
       return;
     }
 
@@ -47,6 +51,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       addToWishlist({ id, name, price, image });
     }
   };
+
   return (
     <Link
       href={`/product-detail/${id}`}
@@ -56,17 +61,22 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${
-          inWishlist ? "bg-red-100" : "bg-white"
-        }`}
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${inWishlist ? "bg-red-100" : "bg-white"
+          }`}
       >
         <Heart
           size={18}
-          className={`transition ${
-            inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
-          }`}
+          className={`transition ${inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
+            }`}
         />
       </button>
+
+      {/* 🟢 Badge */}
+      {status && (
+        <span className="absolute top-3 left-3 z-10 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+          {status}
+        </span>
+      )}
 
       {/* Product Image */}
       <div className="relative overflow-hidden">
@@ -111,7 +121,18 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
         {/* Price */}
         <div className="mt-2">
-          <span className="text-blue-600 font-bold text-lg">${price}</span>
+          {sale_price ? (
+            <div className="flex items-center gap-2">
+              <span className="text-red-600 font-bold text-lg">
+                ${sale_price}
+              </span>
+              <span className="text-gray-500 line-through text-sm">
+                ${price}
+              </span>
+            </div>
+          ) : (
+            <span className="text-blue-600 font-bold text-lg">${price}</span>
+          )}
         </div>
       </div>
     </Link>
