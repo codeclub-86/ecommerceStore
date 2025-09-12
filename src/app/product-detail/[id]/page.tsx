@@ -177,7 +177,7 @@ export default function ProductDetails() {
 
         {/* Reviews */}
         <div className="mt-12">
-          <ReviewModal />
+          <ReviewModal pid={id} />
         </div>
       </div>
     </section>
