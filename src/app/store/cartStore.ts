@@ -1,77 +1,52 @@
+// app/store/cartStore.ts
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface CartItem {
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-    quantity: number;
-    category?: string;
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category?: string;
+  quantity: number;
+  variation?: { name: string; value: string; price?: number };
 }
-
 
 interface CartState {
-    items: CartItem[];
-    addToCart: (item: Omit<CartItem, "quantity">) => void;
-    removeFromCart: (id: string) => void;
-    increaseQuantity: (id: string) => void;
-    decreaseQuantity: (id: string) => void;
-    clearCart: () => void;
-    totalItems: () => number;
-    totalPrice: () => number;
+  cart: CartItem[];
+  addToCart: (item: Omit<CartItem, "quantity">) => void;
+  removeFromCart: (id: string) => void;
+  clearCart: () => void;
 }
 
-export const useCartStore = create<CartState>()(
-    persist(
-        (set, get) => ({
-            items: [],
+export const useCartStore = create<CartState>((set) => ({
+  cart: [],
+  addToCart: (item) =>
+    set((state) => {
+      const existing = state.cart.find(
+        (cartItem) =>
+          cartItem.id === item.id &&
+          cartItem.variation?.value === item.variation?.value
+      );
 
-            addToCart: (item) =>
-                set((state) => {
-                    const existing = state.items.find((p) => p.id === item.id);
-                    if (existing) {
-                        return {
-                            items: state.items.map((p) =>
-                                p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
-                            ),
-                        };
-                    }
-                    return { items: [...state.items, { ...item, quantity: 1 }] };
-                }),
-
-            removeFromCart: (id) =>
-                set((state) => ({
-                    items: state.items.filter((p) => p.id !== id),
-                })),
-
-            increaseQuantity: (id) =>
-                set((state) => ({
-                    items: state.items.map((p) =>
-                        p.id === id ? { ...p, quantity: p.quantity + 1 } : p
-                    ),
-                })),
-
-            decreaseQuantity: (id) =>
-                set((state) => ({
-                    items: state.items
-                        .map((p) =>
-                            p.id === id && p.quantity > 1
-                                ? { ...p, quantity: p.quantity - 1 }
-                                : p
-                        )
-                        .filter((p) => p.quantity > 0),
-                })),
-
-            clearCart: () => set({ items: [] }),
-
-            totalItems: () => get().items.reduce((sum, p) => sum + p.quantity, 0),
-
-            totalPrice: () =>
-                get().items.reduce((sum, p) => sum + p.price * p.quantity, 0),
-        }),
-        {
-            name: "cart-storage",
-        }
-    )
-);
+      if (existing) {
+        // If same product + same variation → increase quantity
+        return {
+          cart: state.cart.map((cartItem) =>
+            cartItem === existing
+              ? { ...cartItem, quantity: cartItem.quantity + 1 }
+              : cartItem
+          ),
+        };
+      } else {
+        // Add new product
+        return {
+          cart: [...state.cart, { ...item, quantity: 1 }],
+        };
+      }
+    }),
+  removeFromCart: (id) =>
+    set((state) => ({
+      cart: state.cart.filter((item) => item.id !== id),
+    })),
+  clearCart: () => set({ cart: [] }),
+}));

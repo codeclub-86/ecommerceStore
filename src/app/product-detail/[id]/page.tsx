@@ -1,28 +1,35 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { FaHeart, FaStar } from "react-icons/fa";
 import ReviewModal from "../../components/review/ReviewModal";
 import { useStore } from "@/app/store/apiStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useWishlistStore } from "@/app/store/wishListStore";
+import { useAuthStore } from "@/app/store/authStore"; // ✅ import auth store
 import { Loader } from "lucide-react";
 
 export default function ProductDetails() {
   const { id } = useParams();
+  const router = useRouter();
   const { singleProduct, fetchSingleProduct, loading, error } = useStore();
-
   const { addToCart } = useCartStore();
-  const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlistStore();
+  const { addToWishlist, isInWishlist, removeFromWishlist } =
+    useWishlistStore();
+  const { initializeAuth, isLoggedIn } = useAuthStore(); // ✅ auth state
 
   const [currentImage, setCurrentImage] = useState<string>("");
+  const [selectedVariation, setSelectedVariation] = useState<
+    { name: string; value: string; price?: number } | undefined
+  >(undefined);
 
   useEffect(() => {
+    initializeAuth(); // ✅ load user on mount
     if (id) {
       fetchSingleProduct(Number(id));
     }
-  }, [id, fetchSingleProduct]);
+  }, [id, fetchSingleProduct, initializeAuth]);
 
   useEffect(() => {
     if (singleProduct) {
@@ -30,7 +37,12 @@ export default function ProductDetails() {
     }
   }, [singleProduct]);
 
-  if (loading) return <p className=" flex justify-center py-10"><Loader /></p>;
+  if (loading)
+    return (
+      <p className=" flex justify-center py-10">
+        <Loader />
+      </p>
+    );
   if (error) return <p className="text-center py-10 text-red-500">{error}</p>;
   if (!singleProduct) return null;
 
@@ -72,10 +84,11 @@ export default function ProductDetails() {
                       width={80}
                       height={80}
                       onClick={() => setCurrentImage(img)}
-                      className={`cursor-pointer border rounded-md p-1 hover:border-blue-500 transition ${currentImage === img
-                        ? "border-blue-500"
-                        : "border-gray-300"
-                        }`}
+                      className={`cursor-pointer border rounded-md p-1 hover:border-blue-500 transition ${
+                        currentImage === img
+                          ? "border-blue-500"
+                          : "border-gray-300"
+                      }`}
                     />
                   ))}
                 </div>
@@ -127,12 +140,13 @@ export default function ProductDetails() {
                     addToCart({
                       id: String(singleProduct.id),
                       name: singleProduct.name,
-                      price: singleProduct.price,
+                      price: parseFloat(singleProduct.price),
                       image: singleProduct.image,
                       category: singleProduct.category?.category_name,
+                      variation: selectedVariation, // ✅ include variation if selected
                     })
                   }
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition mt-6"
                 >
                   Add to Cart
                 </button>
@@ -142,20 +156,21 @@ export default function ProductDetails() {
                     isInWishlist(String(singleProduct.id))
                       ? removeFromWishlist(String(singleProduct.id))
                       : addToWishlist({
-                        id: String(singleProduct.id),
-                        name: singleProduct.name,
-                        price: singleProduct.price,
-                        image: singleProduct.image,
-                        category: singleProduct.category?.category_name,
-                      })
+                          id: String(singleProduct.id),
+                          name: singleProduct.name,
+                          price: singleProduct.price,
+                          image: singleProduct.image,
+                          category: singleProduct.category?.category_name,
+                        })
                   }
                   className="w-full border border-gray-300 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100 transition"
                 >
                   <FaHeart
-                    className={`${isInWishlist(String(singleProduct.id))
-                      ? "text-red-500"
-                      : "text-gray-500"
-                      }`}
+                    className={`${
+                      isInWishlist(String(singleProduct.id))
+                        ? "text-red-500"
+                        : "text-gray-500"
+                    }`}
                   />
                   {isInWishlist(String(singleProduct.id))
                     ? "Remove from Wishlist"
@@ -177,7 +192,22 @@ export default function ProductDetails() {
 
         {/* Reviews */}
         <div className="mt-12">
-          <ReviewModal pid={id} />
+          {isLoggedIn ? (
+            <ReviewModal pid={id} />
+          ) : (
+            <div className="text-center p-6 border rounded-lg bg-white shadow">
+              <p className="text-gray-600 mb-4">
+                You must{" "}
+                <button
+                  onClick={() => router.push("/login")}
+                  className="text-blue-600 font-medium underline"
+                >
+                  log in
+                </button>{" "}
+                to write a review.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>

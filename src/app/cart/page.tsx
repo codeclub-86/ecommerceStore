@@ -1,10 +1,11 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import CartItem from "../components/cart/CartItem/CartItem";
 import CartSummary from "../components/cart/CartSummary/CartSummary";
 import CouponForm from "../components/cart/CouponForm/CouponForm";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ProtectedRoute from "../protected";
+import { useRouter } from "next/navigation";
 const CartPage: React.FC = () => {
   return (
     <ProtectedRoute>

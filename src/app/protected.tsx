@@ -1,31 +1,32 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
 
-export default function ProtectedRoute({
-  children,
-}: {
+import { useAuthStore } from "./store/authStore"; // adjust path
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+interface ProtectedRouteProps {
   children: React.ReactNode;
-}) {
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isLoggedIn, initializeAuth } = useAuthStore();
   const router = useRouter();
-  const pathname = usePathname();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    initializeAuth(); // load from localStorage on mount
+  }, [initializeAuth]);
 
-    if (!token && pathname !== "/login" && pathname !== "/register") {
-      router.replace("/login");
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace("/login"); // redirect if not logged in
     }
+  }, [isLoggedIn, router]);
 
-    if (token && (pathname === "/login" || pathname === "/register")) {
-      router.replace("/");
-    }
-
-    setLoading(false);
-  }, [router, pathname]);
-
-  if (loading) return null;
+  if (!isLoggedIn) {
+    return <div className="text-center p-6">Redirecting...</div>; // show loading until redirect
+  }
 
   return <>{children}</>;
-}
+};
+
+export default ProtectedRoute;

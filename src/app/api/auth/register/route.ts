@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
     // check existing user
     const [existing]: any = await db.query(
-      "SELECT * FROM users WHERE email = ?",
+      "SELECT * FROM web_users WHERE email = ?",
       [email]
     );
     if (existing.length > 0) {
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
     // insert user
     const [result]: any = await db.query(
-      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      "INSERT INTO web_users (name, email, password) VALUES (?, ?, ?)",
       [userName, email, hashedPassword]
     );
 

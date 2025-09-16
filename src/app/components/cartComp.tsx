@@ -3,45 +3,64 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, X } from "lucide-react";
-import { useState } from "react";
+import { useCartStore } from "@/app/store/cartStore";
+import { useEffect, useState } from "react";
 
-interface CartItem {
+// Product type from API
+interface Product {
   id: number;
   name: string;
   price: number;
-  quantity: number;
   image: string;
   href: string;
 }
 
 export default function CartDropdown() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Apple Watch Series 6",
-      price: 99.0,
-      quantity: 1,
-      image: "/item1.jpg",
-      href: "/product-details/1",
-    },
-    {
-      id: 2,
-      name: "Wi-Fi Smart Camera",
-      price: 35.0,
-      quantity: 1,
-      image: "/item2.jpg",
-      href: "/product-details/2",
-    },
-  ]);
+  const { cart, removeFromCart } = useCartStore();
+  const [products, setProducts] = useState<Record<string, Product>>({});
 
-  const total = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (cart.length === 0) return;
 
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
+      try {
+        const map: Record<string, Product> = {};
+
+        // Fetch each product individually
+        await Promise.all(
+          cart.map(async (item) => {
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/getSingleProduct/${item.id}`
+            );
+            const data = await res.json();
+
+            if (data.success && data.product) {
+              const p = data.product;
+              map[p.id] = {
+                id: p.id,
+                name: p.name,
+                price: parseFloat(p.price), // since API returns string
+                image: p.image,
+                href: `/product-detail/${p.id}`,
+              };
+            }
+          })
+        );
+
+        setProducts(map);
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      }
+    };
+
+    fetchProducts();
+  }, [cart]);
+
+  // Calculate total
+  const total = cart.reduce((sum, item) => {
+    const product = products[item.id];
+    return sum + (product ? product.price * item.quantity : 0);
+  }, 0);
 
   return (
     <div className="relative group">
@@ -54,9 +73,9 @@ export default function CartDropdown() {
           size={22}
           className="text-gray-700 group-hover:text-white"
         />
-        {cartItems.length > 0 && (
+        {cart.length > 0 && (
           <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full px-1">
-            {cartItems.length}
+            {cart.length}
           </span>
         )}
       </Link>
@@ -69,43 +88,47 @@ export default function CartDropdown() {
       >
         {/* Header */}
         <div className="p-4 border-b flex justify-between text-sm">
-          <span>{cartItems.length} Item(s)</span>
+          <span>{cart.length} Item(s)</span>
           <Link href="/cart" className="text-blue-600 hover:underline">
             View Cart
           </Link>
         </div>
 
         {/* Items */}
-        {cartItems.length > 0 ? (
+        {cart.length > 0 ? (
           <ul className="max-h-64 overflow-auto">
-            {cartItems.map((item) => (
-              <li
-                key={item.id}
-                className="flex items-center gap-3 p-4 border-b hover:bg-gray-50"
-              >
-                <button
-                  onClick={() => removeItem(item.id)}
-                  className="text-gray-400 hover:text-red-500"
+            {cart.map((item) => {
+              const product = products[item.id];
+              if (!product) return null; // still loading
+              return (
+                <li
+                  key={item.id}
+                  className="flex items-center gap-3 p-4 border-b hover:bg-gray-50"
                 >
-                  <X size={16} />
-                </button>
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={50}
-                  height={50}
-                  className="rounded"
-                />
-                <div className="flex-1">
-                  <h4 className="text-sm font-semibold line-clamp-1">
-                    <Link href={item.href}>{item.name}</Link>
-                  </h4>
-                  <p className="text-xs text-gray-500">
-                    {item.quantity}x - ${item.price.toFixed(2)}
-                  </p>
-                </div>
-              </li>
-            ))}
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-gray-400 hover:text-red-500"
+                  >
+                    <X size={16} />
+                  </button>
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={50}
+                    height={50}
+                    className="rounded"
+                  />
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold line-clamp-1">
+                      <Link href={product.href}>{product.name}</Link>
+                    </h4>
+                    <p className="text-xs text-gray-500">
+                      {item.quantity}x - ${product.price.toFixed(2)}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <div className="p-6 text-center text-gray-500 text-sm">
@@ -114,17 +137,17 @@ export default function CartDropdown() {
         )}
 
         {/* Footer */}
-        {cartItems.length > 0 && (
+        {cart.length > 0 && (
           <div className="p-4">
             <div className="flex justify-between text-sm font-semibold mb-2">
               <span>Total</span>
               <span>${total.toFixed(2)}</span>
             </div>
             <Link
-              href="/checkout"
+              href="/cart"
               className="block w-full text-center bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
             >
-              Checkout
+              Cart
             </Link>
           </div>
         )}

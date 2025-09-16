@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAuthStore } from "@/app/store/authStore"; // ✅ import your auth store
 
-export default function ReviewModal({ pid }) {
+export default function ReviewModal({ pid }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [subject, setSubject] = useState("");
   const [rating, setRating] = useState(5);
@@ -32,7 +32,8 @@ export default function ReviewModal({ pid }) {
             subject,
             rating,
             message,
-            user_id: userId, // 👈 send user_id
+            user_id: userId,
+            product_id: pid,
           }),
         }
       );
