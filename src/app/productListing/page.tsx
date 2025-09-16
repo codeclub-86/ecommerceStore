@@ -76,9 +76,8 @@ const ProductListing: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentPage(index + 1)}
-                  className={`px-4 py-2 border rounded ${
-                    currentPage === index + 1 ? "bg-blue-600 text-white" : ""
-                  }`}
+                  className={`px-4 py-2 border rounded ${currentPage === index + 1 ? "bg-blue-600 text-white" : ""
+                    }`}
                 >
                   {index + 1}
                 </button>
