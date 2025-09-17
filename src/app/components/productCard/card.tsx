@@ -54,9 +54,17 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // so Link doesn’t trigger
-    addToCart(id);
+    e.preventDefault();
+    addToCart({
+      id: Number(id), // make sure it’s a number since your CartItem.id is number
+      name,
+      price,
+      image,
+      category,
+      variation: undefined, // or pass selected variation if you support it
+    });
   };
+
 
   return (
     <div className="relative">
@@ -64,15 +72,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${
-          inWishlist ? "bg-red-100" : "bg-white"
-        }`}
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${inWishlist ? "bg-red-100" : "bg-white"
+          }`}
       >
         <Heart
           size={18}
-          className={`transition ${
-            inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
-          }`}
+          className={`transition ${inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
+            }`}
         />
       </button>
 

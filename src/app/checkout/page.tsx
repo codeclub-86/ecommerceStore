@@ -44,7 +44,7 @@ export default function CheckoutPage() {
     console.log("Payload to API:", payload);
 
     try {
-      const res = await fetch("http://localhost:8000/api/checkout", {
+      const res = await fetch("http://localhost:8000/api/placeOrder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -54,7 +54,7 @@ export default function CheckoutPage() {
 
       const data = await res.json();
       alert("Order placed successfully 🚀");
-      clearCart(); // empty cart after order
+      clearCart();
     } catch (error) {
       console.error(error);
       alert("Something went wrong");
