@@ -24,7 +24,7 @@ export default function CheckoutPage() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ transform cart into API-friendly format
+
     const items = cart.map((item) => ({
       product_id: item.id,
       variation: item.variation?.value || null,
@@ -41,6 +41,7 @@ export default function CheckoutPage() {
       postal_code: formData.postalCode,
       items,
     };
+    console.log("Payload to API:", payload);
 
     try {
       const res = await fetch("http://localhost:8000/api/checkout", {
