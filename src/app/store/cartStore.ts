@@ -31,12 +31,12 @@ export const useCartStore = create<CartState>((set) => ({
             );
 
             if (existingIndex > -1) {
-                // ✅ increase qty for same product + same variation
+
                 const updatedCart = [...state.cart];
                 updatedCart[existingIndex].quantity += 1;
                 return { cart: updatedCart };
             } else {
-                // ✅ different product OR different variation → new entry
+
                 return { cart: [...state.cart, { ...item, quantity: 1 }] };
             }
         }),
