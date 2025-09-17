@@ -1,5 +1,5 @@
+// app/store/cartStore.ts
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface CartItem {
     id: number;
@@ -18,53 +18,36 @@ interface CartState {
     clearCart: () => void;
 }
 
-export const useCartStore = create<CartState>()(
-    persist(
-        (set, get) => ({
-            cart: [],
+export const useCartStore = create<CartState>((set) => ({
+    cart: [],
 
-            addToCart: (item) =>
-                set((state) => {
-                    const normalizedItem = {
-                        ...item,
-                        price: Number(item.price) || 0,
-                    };
+    addToCart: (item) =>
+        set((state) => {
+            // check if same product + same variation exists
+            const existingIndex = state.cart.findIndex(
+                (cartItem) =>
+                    cartItem.id === item.id &&
+                    cartItem.variation?.value === item.variation?.value
+            );
 
-                    const existing = state.cart.find(
-                        (cartItem) =>
-                            cartItem.id === normalizedItem.id &&
-                            cartItem.variation?.value === normalizedItem.variation?.value
-                    );
-
-                    if (existing) {
-                        return {
-                            cart: state.cart.map((cartItem) =>
-                                cartItem.id === normalizedItem.id &&
-                                    cartItem.variation?.value === normalizedItem.variation?.value
-                                    ? { ...cartItem, quantity: cartItem.quantity + 1 }
-                                    : cartItem
-                            ),
-                        };
-                    } else {
-                        return {
-                            cart: [...state.cart, { ...normalizedItem, quantity: 1 }],
-                        };
-                    }
-                }),
-
-            removeFromCart: (id, variationValue) =>
-                set((state) => ({
-                    cart: state.cart.filter(
-                        (item) =>
-                            !(item.id === id && item.variation?.value === variationValue)
-                    ),
-                })),
-
-            clearCart: () => set(() => ({ cart: [] })),
+            if (existingIndex > -1) {
+                // ✅ increase qty for same product + same variation
+                const updatedCart = [...state.cart];
+                updatedCart[existingIndex].quantity += 1;
+                return { cart: updatedCart };
+            } else {
+                // ✅ different product OR different variation → new entry
+                return { cart: [...state.cart, { ...item, quantity: 1 }] };
+            }
         }),
-        {
-            name: "cart-storage", // localStorage key
-        }
-    )
-);
 
+    removeFromCart: (id, variationValue) =>
+        set((state) => ({
+            cart: state.cart.filter(
+                (item) =>
+                    !(item.id === id && item.variation?.value === variationValue)
+            ),
+        })),
+
+    clearCart: () => set({ cart: [] }),
+}));

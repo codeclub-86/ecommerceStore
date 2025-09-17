@@ -55,7 +55,7 @@ export default function CartDropdown() {
                 className="flex items-center gap-3 p-4 border-b hover:bg-gray-50"
               >
                 <button
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => removeFromCart(item.id, item.variation?.value)}
                   className="text-gray-400 hover:text-red-500"
                 >
                   <X size={16} />
@@ -69,12 +69,18 @@ export default function CartDropdown() {
                 />
                 <div className="flex-1">
                   <h4 className="text-sm font-semibold line-clamp-1">
-                    <Link href={`/product-detail/${item.id}`}>{item.name}</Link>
+                    <Link href={`/product-detail/${item.id}`}>
+                      {item.name}
+                    </Link>
                   </h4>
                   <p className="text-xs text-gray-500">
-                    {item.quantity}x - $
-                    {Number(item.price || 0).toFixed(2)}
+                    {item.quantity}x - ${Number(item.price || 0).toFixed(2)}
                   </p>
+                  {item.variation && (
+                    <p className="text-xs text-gray-400">
+                      {item.variation.name}: {item.variation.value}
+                    </p>
+                  )}
                 </div>
               </li>
             ))}
