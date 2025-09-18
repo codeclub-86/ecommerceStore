@@ -7,7 +7,7 @@ interface StoreState {
   loading: boolean;
   error: string | null;
 
-  fetchProducts: () => Promise<void>;
+  fetchProducts: (params?: Record<string, any>) => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSingleProduct: (id: number) => Promise<void>;
 }
@@ -19,12 +19,17 @@ export const useStore = create<StoreState>((set) => ({
   loading: false,
   error: null,
 
-  fetchProducts: async () => {
+  // 🔹 Fetch Products with filters
+  fetchProducts: async (params = {}) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/getProducts`);
-      const data = await res.json();
+      // Convert params object -> query string
+      const query = new URLSearchParams(params).toString();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/getProducts?${query}`
+      );
 
+      const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message);
 
       set({ products: data.data, loading: false });
@@ -33,6 +38,7 @@ export const useStore = create<StoreState>((set) => ({
     }
   },
 
+  // 🔹 Fetch Categories
   fetchCategories: async () => {
     set({ loading: true, error: null });
     try {
@@ -49,6 +55,7 @@ export const useStore = create<StoreState>((set) => ({
     }
   },
 
+  // 🔹 Fetch Single Product
   fetchSingleProduct: async (id: number) => {
     set({ loading: true, error: null });
     try {
