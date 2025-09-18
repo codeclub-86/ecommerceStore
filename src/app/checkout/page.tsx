@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import { useCartStore } from "@/app/store/cartStore"; // ✅ import your store
+import { useCartStore } from "@/app/store/cartStore";
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCartStore(); // ✅ access cart items
+  const { cart, clearCart } = useCartStore();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,10 +27,11 @@ export default function CheckoutPage() {
 
     const items = cart.map((item) => ({
       product_id: item.id,
-      variation: item.variation?.value || null,
+      variation: item.variation ? item.variation.map(v => `${v.name}:${v.value}`).join(", ") : null,
       quantity: item.quantity,
       price: item.price,
     }));
+
 
     const payload = {
       customer_name: `${formData.firstName} ${formData.lastName}`,
@@ -187,9 +188,29 @@ export default function CheckoutPage() {
       </div>
 
       {/* RIGHT SIDE - Pricing Summary */}
+      {/* RIGHT SIDE - Pricing Summary */}
       <div className="space-y-6">
         <div className="border rounded-lg p-4 bg-white shadow-sm">
           <h3 className="font-semibold text-gray-700 mb-3">Pricing Summary</h3>
+
+          {/* List all cart items */}
+          <div className="space-y-2 text-sm mb-4">
+            {cart.map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-between items-center border-b pb-2"
+              >
+                <span>
+                  {item.name} × {item.quantity}
+                </span>
+                <span className="font-medium">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Subtotal */}
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Subtotal:</span>
@@ -200,15 +221,19 @@ export default function CheckoutPage() {
                   .toFixed(2)}
               </span>
             </div>
+
             <div className="flex justify-between">
               <span>Shipping:</span>
               <span>$10.50</span>
             </div>
+
             <div className="flex justify-between">
               <span>Tax:</span>
               <span>$10.00</span>
             </div>
+
             <hr />
+
             <div className="flex justify-between font-semibold text-lg">
               <span>Total:</span>
               <span>
@@ -223,6 +248,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }

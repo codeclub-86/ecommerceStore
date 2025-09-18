@@ -5,7 +5,7 @@ import { ShoppingCart, Star, Heart } from "lucide-react";
 import Link from "next/link";
 import { useWishlistStore } from "@/app/store/wishListStore";
 import { useAuthStore } from "@/app/store/authStore";
-import { useCartStore } from "@/app/store/cartStore"; // ✅ import cart store
+import { useCartStore } from "@/app/store/cartStore";
 import { useRouter } from "next/navigation";
 
 interface TrendingSingleProps {
@@ -29,12 +29,11 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   status,
   sale_price,
 }) => {
-  const { addToWishlist, removeFromWishlist, isInWishlist } =
-    useWishlistStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
-  const { addToCart } = useCartStore(); // ✅
-
+  const { addToCart } = useCartStore();
   const router = useRouter();
+
   const inWishlist = isInWishlist(id);
 
   const toggleWishlist = (e: React.MouseEvent) => {
@@ -55,16 +54,19 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+
+
+    const finalPrice = sale_price ? Number(sale_price) : price;
+
     addToCart({
-      id: Number(id), // make sure it’s a number since your CartItem.id is number
+      id: Number(id),
       name,
-      price,
+      price: finalPrice,
       image,
       category,
-      variation: undefined, // or pass selected variation if you support it
+      variation: undefined,
     });
   };
-
 
   return (
     <div className="relative">
@@ -144,16 +146,19 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             {sale_price ? (
               <div className="flex items-center gap-2">
                 <span className="text-red-600 font-bold text-lg">
-                  ${sale_price}
+                  ${Number(sale_price).toFixed(2)}
                 </span>
                 <span className="text-gray-500 line-through text-sm">
-                  ${price}
+                  ${Number(price).toFixed(2)}
                 </span>
               </div>
             ) : (
-              <span className="text-blue-600 font-bold text-lg">${price}</span>
+              <span className="text-blue-600 font-bold text-lg">
+                ${Number(price).toFixed(2)}
+              </span>
             )}
           </div>
+
         </div>
       </Link>
     </div>

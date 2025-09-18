@@ -1,12 +1,12 @@
 "use client";
 
-import { Search, Heart, X } from "lucide-react";
+import { Search, Heart, X, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HeaderLinks from "./headerLinks";
-import CartComp from "./cartComp";
 import { useState } from "react";
 import { useWishlistStore } from "@/app/store/wishListStore";
+import { useCartStore } from "@/app/store/cartStore"; // ✅ import cart
 
 // 🔍 Reusable Search Bar
 function SearchBar({ mobile = false }: { mobile?: boolean }) {
@@ -47,6 +47,7 @@ export default function ShopGridsHeader() {
   const removeFromWishlist = useWishlistStore(
     (state) => state.removeFromWishlist
   );
+  const cart = useCartStore((state) => state.cart);
 
   const [wishlistOpen, setWishlistOpen] = useState(false);
 
@@ -144,7 +145,20 @@ export default function ShopGridsHeader() {
               </div>
 
               {/* Cart */}
-              <CartComp />
+              <div className="relative">
+                <Link
+                  href="/cart"
+                  className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border hover:bg-black transition-all"
+                  aria-label="Cart"
+                >
+                  <ShoppingCart size={22} className="text-gray-700" />
+                  {cart.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full px-1">
+                      {cart.length}
+                    </span>
+                  )}
+                </Link>
+              </div>
             </div>
           </div>
 

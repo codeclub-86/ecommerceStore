@@ -12,7 +12,7 @@ const ProductListing: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 9;
 
-  // ✅ Fetch from store on mount
+
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
