@@ -6,39 +6,54 @@ import Link from "next/link";
 import HeaderLinks from "./headerLinks";
 import { useState } from "react";
 import { useWishlistStore } from "@/app/store/wishListStore";
-import { useCartStore } from "@/app/store/cartStore"; // ✅ import cart
+import { useCartStore } from "@/app/store/cartStore";
+import { useStore } from "@/app/store/apiStore"; // ✅ to access products
 
 // 🔍 Reusable Search Bar
-function SearchBar({ mobile = false }: { mobile?: boolean }) {
+function SearchBar({
+  mobile = false,
+  onSearch,
+}: {
+  mobile?: boolean;
+  onSearch?: (results: any[] | null) => void;
+}) {
+  const { products } = useStore();
+  const [query, setQuery] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) {
+      onSearch?.(null);
+      return;
+    }
+    const results = products.filter((p) =>
+      p.name.toLowerCase().includes(query.toLowerCase())
+    );
+    onSearch?.(results);
+  };
+
   return (
-    <div
+    <form
+      onSubmit={handleSubmit}
       className={`flex w-full border rounded-md overflow-hidden ${mobile ? "" : "border-gray-400 rounded-sm"
         }`}
     >
-      <select
-        className="appearance-none px-3 py-2 border-r border-gray-400 text-gray-600 text-sm outline-none"
-        aria-label="Search category"
-      >
-        <option>All</option>
-        <option>Option 01</option>
-        <option>Option 02</option>
-        <option>Option 03</option>
-      </select>
-
       <input
         type="text"
         placeholder="Search"
         aria-label="Search products"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
         className="flex-1 px-3 py-2 outline-none text-gray-700 text-sm"
       />
-
       <button
+        type="submit"
         className="bg-blue-600 hover:bg-blue-700 px-4 flex items-center justify-center text-white"
         aria-label="Search"
       >
         <Search size={18} />
       </button>
-    </div>
+    </form>
   );
 }
 
