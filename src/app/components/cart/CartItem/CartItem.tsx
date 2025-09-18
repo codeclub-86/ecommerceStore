@@ -1,63 +1,86 @@
+"use client";
 import React from "react";
-import { Trash2 } from "lucide-react";
+import { X, Plus, Minus } from "lucide-react";
+import Image from "next/image";
+import { useCartStore } from "@/app/store/cartStore";
+
+interface Variation {
+  name: string;
+  value: string;
+  price?: number;
+}
 
 interface CartItemProps {
+  id: number;
   image: string;
-  title: string;
-  details: string[];
-  price: string;
-  discount?: string;
+  name: string;
+  price: number;
+  quantity: number;
+  variation?: Variation[];
 }
 
 const CartItem: React.FC<CartItemProps> = ({
+  id,
   image,
-  title,
-  details,
+  name,
   price,
-  discount,
+  quantity,
+  variation,
 }) => {
+  const { removeFromCart, increaseQuantity, decreaseQuantity } = useCartStore();
+
+  const variationExtra =
+    variation?.reduce((acc, v) => acc + Number(v.price ?? 0), 0) ?? 0;
+  const totalPrice = (Number(price ?? 0) + variationExtra) * (quantity ?? 1);
+
   return (
-    <div className="grid grid-cols-6 items-center px-6 py-4">
-      {/* Product Info */}
-      <div className="col-span-2 flex items-center gap-4 text-left">
-        <img
-          src={image}
-          alt={title}
-          className="w-20 h-20 object-contain rounded-md border border-gray-100 bg-gray-50"
+    <div className="flex items-center justify-between border-b py-3">
+      <div className="flex items-center space-x-3">
+        <Image
+          src={image || "/placeholder.png"}
+          alt={name}
+          width={60}
+          height={60}
+          className="rounded"
         />
         <div>
-          <h3 className="font-semibold text-gray-800">{title}</h3>
-          {details.map((d, i) => (
-            <p key={i} className="text-sm text-gray-500">
-              {d}
-            </p>
-          ))}
+          <p className="text-sm font-medium">{name}</p>
+          {variation && variation.length > 0 && (
+            <div className="text-xs text-gray-500">
+              {variation.map((v, idx) => (
+                <p key={idx}>
+                  {v.name}: {v.value} (+${Number(v.price ?? 0).toFixed(2)})
+                </p>
+              ))}
+            </div>
+          )}
+
+          {/* Quantity Controls */}
+          <div className="flex items-center gap-2 mt-1">
+            <button
+              onClick={() => decreaseQuantity(id)}
+              className="p-1 border rounded"
+            >
+              <Minus size={14} />
+            </button>
+            <span className="text-sm">{quantity}</span>
+            <button
+              onClick={() => increaseQuantity(id)}
+              className="p-1 border rounded"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+
+          <p className="text-sm font-semibold mt-1">
+            ${totalPrice.toFixed(2)}
+          </p>
         </div>
       </div>
 
-      {/* Quantity */}
-      <div className="text-center">
-        <select className="border px-2 py-1 rounded w-16 focus:outline-none focus:ring-2 focus:ring-blue-400">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-        </select>
-      </div>
-
-      {/* Subtotal */}
-      <div className="text-gray-700 font-medium text-center">{price}</div>
-
-      {/* Discount */}
-      <div className="text-gray-500 text-center">
-        {discount ? discount : "—"}
-      </div>
-
-      {/* Remove Button */}
-      <div className="text-center">
-        <button className="text-red-500 hover:text-red-700 transition">
-          <Trash2 size={18} />
-        </button>
-      </div>
+      <button onClick={() => removeFromCart(id)}>
+        <X size={16} className="text-gray-500 hover:text-red-500" />
+      </button>
     </div>
   );
 };
