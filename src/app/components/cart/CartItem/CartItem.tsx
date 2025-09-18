@@ -34,53 +34,66 @@ const CartItem: React.FC<CartItemProps> = ({
   const totalPrice = (Number(price ?? 0) + variationExtra) * (quantity ?? 1);
 
   return (
-    <div className="flex items-center justify-between border-b py-3">
-      <div className="flex items-center space-x-3">
+    <div className="grid grid-cols-12 items-center gap-4 border-b border-gray-200 py-4 px-2 hover:bg-gray-50 transition-colors">
+      {/* Image */}
+      <div className="col-span-2 flex justify-center">
         <Image
           src={image || "/placeholder.png"}
           alt={name}
-          width={60}
-          height={60}
-          className="rounded"
+          width={64}
+          height={64}
+          className="rounded-md object-cover border border-gray-200"
         />
-        <div>
-          <p className="text-sm font-medium">{name}</p>
-          {variation && variation.length > 0 && (
-            <div className="text-xs text-gray-500">
-              {variation.map((v, idx) => (
-                <p key={idx}>
-                  {v.name}: {v.value} (+${Number(v.price ?? 0).toFixed(2)})
-                </p>
-              ))}
-            </div>
-          )}
-
-          {/* Quantity Controls */}
-          <div className="flex items-center gap-2 mt-1">
-            <button
-              onClick={() => decreaseQuantity(id)}
-              className="p-1 border rounded"
-            >
-              <Minus size={14} />
-            </button>
-            <span className="text-sm">{quantity}</span>
-            <button
-              onClick={() => increaseQuantity(id)}
-              className="p-1 border rounded"
-            >
-              <Plus size={14} />
-            </button>
-          </div>
-
-          <p className="text-sm font-semibold mt-1">
-            ${totalPrice.toFixed(2)}
-          </p>
-        </div>
       </div>
 
-      <button onClick={() => removeFromCart(id)}>
-        <X size={16} className="text-gray-500 hover:text-red-500" />
-      </button>
+      {/* Name & Variations */}
+      <div className="col-span-4">
+        <p className="text-sm font-semibold text-gray-800">{name}</p>
+        {variation && variation.length > 0 && (
+          <div className="text-xs text-gray-500 mt-1 space-y-0.5">
+            {variation.map((v, idx) => (
+              <p key={idx}>
+                {v.name}: {v.value}{" "}
+                <span className="text-gray-400">
+                  (+${Number(v.price ?? 0).toFixed(2)})
+                </span>
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Quantity Controls */}
+      <div className="col-span-3 flex items-center justify-center gap-2">
+        <button
+          onClick={() => decreaseQuantity(id)}
+          className="p-1 border rounded-md hover:bg-gray-100 transition"
+        >
+          <Minus size={14} />
+        </button>
+        <span className="text-sm font-medium w-6 text-center">{quantity}</span>
+        <button
+          onClick={() => increaseQuantity(id)}
+          className="p-1 border rounded-md hover:bg-gray-100 transition"
+        >
+          <Plus size={14} />
+        </button>
+      </div>
+
+      {/* Price */}
+      <div className="col-span-2 text-sm font-bold text-gray-800 text-center">
+        ${totalPrice.toFixed(2)}
+      </div>
+
+      {/* Remove Button */}
+      <div className="col-span-1 flex justify-center">
+        <button
+          onClick={() => removeFromCart(id)}
+          className="p-1 hover:bg-red-100 rounded-full transition"
+        >
+          <X size={18} className="text-gray-500 hover:text-red-500" />
+        </button>
+      </div>
     </div>
   );
 };
