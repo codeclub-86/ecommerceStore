@@ -16,7 +16,18 @@ export default function CheckoutPage() {
     state: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  // 🔹 Calculate subtotal, shipping, tax, total
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const shipping = 10.5;
+  const tax = 10;
+  const total = subtotal + shipping + tax;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -24,15 +35,22 @@ export default function CheckoutPage() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (cart.length === 0) {
+      alert("Cart is empty!");
+      return;
+    }
 
+    // Prepare items in backend format
     const items = cart.map((item) => ({
       product_id: item.id,
-      variation: item.variation ? item.variation.map(v => `${v.name}:${v.value}`).join(", ") : null,
-      quantity: item.quantity,
-      price: item.price,
+      variation: item.variation
+        ? item.variation.map((v) => v.value).join(", ")
+        : "",
+      quantity: Number(item.quantity),
+      price: Number(item.price),
     }));
 
-
+    // ✅ Build payload with totals
     const payload = {
       customer_name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
@@ -41,8 +59,13 @@ export default function CheckoutPage() {
       city: formData.city,
       postal_code: formData.postalCode,
       items,
+      subtotal,
+      shipping,
+      tax,
+      total,
     };
-    console.log("Payload to API:", payload);
+
+    console.log("Payload to API:", JSON.stringify(payload, null, 2));
 
     try {
       const res = await fetch("http://localhost:8000/api/placeOrder", {
@@ -53,12 +76,25 @@ export default function CheckoutPage() {
 
       if (!res.ok) throw new Error("Failed to submit order");
 
-      const data = await res.json();
-      alert("Order placed successfully 🚀");
+      await res.json();
+      alert("Order placed successfully ✅");
       clearCart();
+
+      // Reset form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        postalCode: "",
+        country: "",
+        state: "",
+      });
     } catch (error) {
       console.error(error);
-      alert("Something went wrong");
+      alert("Something went wrong while placing the order ❌");
     }
   };
 
@@ -188,12 +224,10 @@ export default function CheckoutPage() {
       </div>
 
       {/* RIGHT SIDE - Pricing Summary */}
-      {/* RIGHT SIDE - Pricing Summary */}
       <div className="space-y-6">
         <div className="border rounded-lg p-4 bg-white shadow-sm">
           <h3 className="font-semibold text-gray-700 mb-3">Pricing Summary</h3>
 
-          {/* List all cart items */}
           <div className="space-y-2 text-sm mb-4">
             {cart.map((item) => (
               <div
@@ -210,45 +244,27 @@ export default function CheckoutPage() {
             ))}
           </div>
 
-          {/* Subtotal */}
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Subtotal:</span>
-              <span>
-                $
-                {cart
-                  .reduce((sum, item) => sum + item.price * item.quantity, 0)
-                  .toFixed(2)}
-              </span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
-
             <div className="flex justify-between">
               <span>Shipping:</span>
-              <span>$10.50</span>
+              <span>${shipping.toFixed(2)}</span>
             </div>
-
             <div className="flex justify-between">
               <span>Tax:</span>
-              <span>$10.00</span>
+              <span>${tax.toFixed(2)}</span>
             </div>
-
             <hr />
-
             <div className="flex justify-between font-semibold text-lg">
               <span>Total:</span>
-              <span>
-                $
-                {(
-                  cart.reduce((sum, item) => sum + item.price * item.quantity, 0) +
-                  10.5 +
-                  10
-                ).toFixed(2)}
-              </span>
+              <span>${total.toFixed(2)}</span>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   );
 }
