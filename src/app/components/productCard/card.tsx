@@ -39,25 +39,18 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     initializeAuth();
-
     if (!isLoggedIn) {
       router.push("/login");
       return;
     }
-
-    if (inWishlist) {
-      removeFromWishlist(id);
-    } else {
-      addToWishlist({ id, name, price, image });
-    }
+    inWishlist
+      ? removeFromWishlist(id)
+      : addToWishlist({ id, name, price, image });
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-
-
     const finalPrice = sale_price ? Number(sale_price) : price;
-
     addToCart({
       id: Number(id),
       name,
@@ -69,8 +62,8 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   };
 
   return (
-    <div className="relative">
-      {/* Wishlist Button */}
+    <div className="relative flex flex-col bg-white border rounded-lg shadow-sm hover:shadow-md transition h-full group">
+      {/* Wishlist */}
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
@@ -84,46 +77,44 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
         />
       </button>
 
-      {/* Product Card */}
-      <Link
-        href={`/product-detail/${id}`}
-        className="border rounded-lg shadow-sm hover:shadow-lg transition bg-white group relative block"
-      >
+      {/* Product Link */}
+      <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
+        {/* Status Badge */}
         {status && (
           <span className="absolute top-3 left-3 z-10 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
             {status}
           </span>
         )}
 
-        {/* Product Image */}
-        <div className="relative overflow-hidden">
+        {/* Image */}
+        <div className="relative w-full h-64 overflow-hidden">
           <Image
             src={image}
             alt={name}
             width={400}
             height={400}
-            className="w-full object-cover rounded-t-lg group-hover:scale-110 transition-transform duration-300"
+            className="w-full h-full object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300"
           />
 
-          {/* Add to Cart button */}
+          {/* Add to Cart */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
             <button
               onClick={handleAddToCart}
-              className="inline-flex items-center gap-2 relative top-10 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-black opacity-0 group-hover:opacity-100 group-hover:top-0 transition-all duration-300"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-black opacity-0 group-hover:opacity-100 transition-all duration-300"
             >
               <ShoppingCart size={16} /> Add to Cart
             </button>
           </div>
         </div>
 
-        {/* Product Info */}
-        <div className="p-4 text-start">
+        {/* Info */}
+        <div className="p-4 flex flex-col flex-grow">
           <span className="block text-sm text-gray-500">{category}</span>
-          <h4 className="font-semibold text-lg mt-1">
+          <h4 className="font-semibold text-lg mt-1 line-clamp-2 flex-grow">
             <span className="hover:text-blue-600 transition">{name}</span>
           </h4>
 
-          {/* Reviews */}
+          {/* Rating */}
           <ul className="flex items-center gap-1 mt-2 text-yellow-500">
             {Array.from({ length: 5 }).map((_, i) => (
               <li key={i}>
@@ -136,7 +127,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             ))}
             <li>
               <span className="text-gray-500 text-sm ml-2">
-                {rating.toFixed(1)} Review(s)
+                {rating.toFixed(1)}
               </span>
             </li>
           </ul>
@@ -158,7 +149,6 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
               </span>
             )}
           </div>
-
         </div>
       </Link>
     </div>
