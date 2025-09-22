@@ -6,6 +6,7 @@ import { useStore } from "@/app/store/apiStore";
 interface SearchFilterProps {
     onCategorySelect: (categoryName: string | null) => void;
     onPriceSelect: (priceRange: [number, number] | null) => void;
+    onBrandSelect: (brand: string | null) => void; // added brand filter callback
 }
 
 const priceRanges = [
@@ -15,14 +16,19 @@ const priceRanges = [
     { label: "$1,000 - $5,000", min: 1000, max: 5000 },
 ];
 
+// Temporary static brands list (replace with API later)
+const brandList = ["Apple", "Samsung", "Sony", "Dell", "HP", "Lenovo"];
+
 const SearchFilter: React.FC<SearchFilterProps> = ({
     onCategorySelect,
     onPriceSelect,
+    onBrandSelect,
 }) => {
     const { categories, fetchCategories, loading } = useStore();
     const [search, setSearch] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
 
     useEffect(() => {
         fetchCategories();
@@ -40,6 +46,11 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
     const handlePriceClick = (range: { label: string; min: number; max: number }) => {
         setSelectedPrice(range.label);
         onPriceSelect([range.min, range.max]);
+    };
+
+    const handleBrandClick = (brand: string) => {
+        setSelectedBrand(brand);
+        onBrandSelect(brand);
     };
 
     return (
@@ -97,6 +108,25 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                                 }`}
                         >
                             {range.label}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Brand Filter */}
+            <div className="w-full p-6 bg-white shadow-sm mb-8">
+                <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
+                <div className="space-y-3">
+                    {brandList.map((brand) => (
+                        <div
+                            key={brand}
+                            onClick={() => handleBrandClick(brand)}
+                            className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedBrand === brand
+                                ? "font-semibold text-blue-600"
+                                : "text-gray-600"
+                                }`}
+                        >
+                            {brand}
                         </div>
                     ))}
                 </div>
