@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useStore } from "../../../app/store/apiStore";
@@ -11,9 +11,17 @@ export default function ProductDetailPage() {
   const { id } = useParams();
   const { singleProduct, fetchSingleProduct, loading, error } = useStore();
 
+  const [mainImage, setMainImage] = useState<string | null>(null);
+
   useEffect(() => {
     if (id) fetchSingleProduct(Number(id));
   }, [id, fetchSingleProduct]);
+
+  useEffect(() => {
+    if (singleProduct?.image) {
+      setMainImage(singleProduct.image);
+    }
+  }, [singleProduct]);
 
   const reloadProduct = () => {
     if (id) fetchSingleProduct(Number(id));
@@ -23,7 +31,7 @@ export default function ProductDetailPage() {
   if (error) return <p className="p-10 text-red-500">{error}</p>;
   if (!singleProduct) return <p className="p-10">No product found.</p>;
 
-  const imageUrl = singleProduct.image || "/placeholder.png";
+  const imageUrl = mainImage || "/placeholder.png";
 
   return (
     <section className="bg-white lg:px-25 lg:py-10 sm:px-10 sm:py-5">
@@ -46,19 +54,28 @@ export default function ProductDetailPage() {
 
                 {singleProduct.images?.length > 0 && (
                   <div className="grid grid-cols-4 gap-3 mt-4">
-                    {singleProduct.images.map((img: any, i: number) => (
-                      <div key={i} className="border rounded-lg overflow-hidden">
-                        <Image
-                          src={img.path}
-                          alt={`Product image ${i + 1}`}
-                          width={150}
-                          height={150}
-                          className="object-cover w-full h-auto"
-                        />
-                      </div>
-                    ))}
+                    {singleProduct.images.map((img: any, i: number) => {
+                      const isActive = mainImage === img.path;
+                      return (
+                        <div
+                          key={i}
+                          className={`border rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${isActive ? "ring-2 ring-blue-600 scale-105" : "hover:opacity-80"
+                            }`}
+                          onClick={() => setMainImage(img.path)}
+                        >
+                          <Image
+                            src={img.path}
+                            alt={`Product image ${i + 1}`}
+                            width={150}
+                            height={150}
+                            className="object-cover w-full h-auto"
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
+
               </div>
             </div>
 
@@ -82,7 +99,17 @@ export default function ProductDetailPage() {
                 )}
               </h3>
 
-              <p className="text-gray-700 mt-4">{singleProduct.description}</p>
+              {/* Description Fix */}
+              {singleProduct.description ? (
+                <div
+                  className="mt-4 text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: singleProduct.description }}
+                />
+              ) : (
+                <p className="mt-4 text-gray-500">No description available.</p>
+              )}
+
+
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
                 <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
@@ -110,6 +137,33 @@ export default function ProductDetailPage() {
             </ul>
           </div>
         )}
+
+        {/* Product Details Section */}
+        <div className="bg-gray-50 p-10 mt-12 rounded-lg">
+          <h4 className="text-xl font-semibold mb-5">Product Details</h4>
+          <ul className="space-y-2 text-gray-700">
+            <li><span className="font-medium">Name:</span> {singleProduct.name}</li>
+            <li><span className="font-medium">Category:</span> {singleProduct.category || "N/A"}</li>
+            {singleProduct.sku && (
+              <li><span className="font-medium">SKU:</span> {singleProduct.sku}</li>
+            )}
+            {singleProduct.brand && (
+              <li><span className="font-medium">Brand:</span> {singleProduct.brand}</li>
+            )}
+            {singleProduct.stock !== undefined && (
+              <li><span className="font-medium">Stock:</span> {singleProduct.stock > 0 ? "In Stock" : "Out of Stock"}</li>
+            )}
+          </ul>
+
+          {/* Paragraph Description */}
+          {singleProduct.description && (
+            <div
+              className="mt-6 text-gray-700 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: singleProduct.description }}
+            />
+          )}
+        </div>
+
 
         {/* Reviews Section */}
         <div className="bg-gray-50 p-10 mt-12 rounded-lg">
