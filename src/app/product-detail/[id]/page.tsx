@@ -261,6 +261,45 @@ export default function ProductDetailPage() {
           </div>
         )}
 
+        {/* Product Details Section */}
+        <div className="bg-gray-50 p-10 mt-12 rounded-lg">
+          <h4 className="text-xl font-semibold mb-5">Product Details</h4>
+          <ul className="space-y-2 text-gray-700">
+            <li>
+              <span className="font-medium">Name:</span> {singleProduct.name}
+            </li>
+            <li>
+              <span className="font-medium">Category:</span>{" "}
+              {singleProduct.category || "N/A"}
+            </li>
+            {singleProduct.sku && (
+              <li>
+                <span className="font-medium">SKU:</span> {singleProduct.sku}
+              </li>
+            )}
+            {singleProduct.brand && (
+              <li>
+                <span className="font-medium">Brand:</span>{" "}
+                {singleProduct.brand}
+              </li>
+            )}
+            {singleProduct.stock !== undefined && (
+              <li>
+                <span className="font-medium">Stock:</span>{" "}
+                {singleProduct.stock > 0 ? "In Stock" : "Out of Stock"}
+              </li>
+            )}
+          </ul>
+
+          {/* Paragraph Description */}
+          {singleProduct.description && (
+            <div
+              className="mt-6 text-gray-700 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: singleProduct.description }}
+            />
+          )}
+        </div>
+
         {/* Reviews Section */}
         <div className="bg-gray-50 p-10 mt-12 rounded-lg">
           <h4 className="text-xl font-semibold mb-5">Customer Reviews</h4>

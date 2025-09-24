@@ -98,6 +98,7 @@ const ProductListing: React.FC = () => {
           <SearchFilter
             onCategorySelect={setSelectedCategory}
             onPriceSelect={setSelectedPrice}
+            onBrandSelect={() => { }}
           />
         </div>
 
