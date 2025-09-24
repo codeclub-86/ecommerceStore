@@ -63,20 +63,18 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   };
 
   return (
-    <div className="relative flex flex-col bg-white border rounded-lg shadow-sm hover:shadow-md transition h-full group">
+    <div className="relative flex flex-col bg-white border transition h-full group">
       {/* Wishlist */}
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${
-          inWishlist ? "bg-red-100" : "bg-white"
-        }`}
+        className={`absolute top-3 right-3 z-10 p-2 transition ${inWishlist ? "bg-red-100" : "bg-white"
+          }`}
       >
         <Heart
           size={18}
-          className={`transition ${
-            inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
-          }`}
+          className={`transition ${inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
+            }`}
         />
       </button>
 
@@ -84,7 +82,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
         {/* Status Badge */}
         {status && (
-          <span className="absolute top-3 left-3 z-10 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+          <span className="absolute top-3 left-3 z-10 bg-blue-600 text-white text-xs font-semibold px-3 py-1 shadow">
             {status}
           </span>
         )}
@@ -96,14 +94,14 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             alt={name}
             width={400}
             height={400}
-            className="w-full h-full object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
 
           {/* Add to Cart */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
             <button
               onClick={handleAddToCart}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-black opacity-0 group-hover:opacity-100 transition-all duration-300"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 hover:bg-black opacity-0 group-hover:opacity-100 transition-all duration-300"
             >
               <ShoppingCart size={16} /> Add to Cart
             </button>

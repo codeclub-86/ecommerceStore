@@ -1,27 +1,27 @@
 const products = [
   {
-    id: "1", // 👈 string instead of number
-    image: "/product-1.jpg",
-    category: "Watches",
-    name: "Xiaomi Mi Band 5",
+    id: "1",
+    image: "/p1.jpeg",
+    category: "Men's Clothing",
+    name: "Classic Cotton T-Shirt",
     rating: 4,
     price: 199.0,
   },
   {
     id: "2",
-    image: "/product-1.jpg",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
+    image: "/p2.jpeg",
+    category: "Men's Clothing",
+    name: "Slim Fit Denim Jeans",
     rating: 5,
     price: 275.0,
-    oldPrice: 399.0, // 👈 keep as number for formatting
+    oldPrice: 399.0,
     discount: "-25%",
   },
   {
     id: "3",
-    image: "/product-1.jpg",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
+    image: "/kids3.webp",
+    category: "Kids' Clothing",
+    name: "Printed Kids Hoodie",
     rating: 5,
     price: 275.0,
     oldPrice: 399.0,
@@ -29,15 +29,45 @@ const products = [
   },
   {
     id: "4",
-    image: "/product-1.jpg",
-    category: "Speaker",
-    name: "Big Power Sound Speaker",
+    image: "/p4.jpeg",
+    category: "Women's Clothing",
+    name: "Summer Floral Dress",
     rating: 5,
     price: 275.0,
     oldPrice: 399.0,
     discount: "-25%",
   },
-  // ➝ Add more dummy products here (id must be string)
+  {
+    id: "5",
+    image: "/p5.jpeg",
+    category: "Men's Clothing",
+    name: "Casual Cotton Shirt",
+    rating: 5,
+    price: 275.0,
+    oldPrice: 399.0,
+    discount: "-25%",
+  },
+  {
+    id: "6",
+    image: "/kids2.webp",
+    category: "Kids' Clothing",
+    name: "Boys' Denim Jacket",
+    rating: 5,
+    price: 275.0,
+    oldPrice: 399.0,
+    discount: "-25%",
+  },
+  {
+    id: "7",
+    image: "/p3.jpeg",
+    category: "Women's Clothing",
+    name: "Knitted Wool Sweater",
+    rating: 5,
+    price: 275.0,
+    oldPrice: 399.0,
+    discount: "-25%",
+  },
+
 ];
 
 export default products;

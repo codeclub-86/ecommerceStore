@@ -5,7 +5,6 @@ import {
   Twitter,
   Instagram,
   Menu,
-  ChevronDown,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -88,9 +87,8 @@ const HeaderLinks = () => {
                 <li key={cat.id}>
                   <Link
                     href={`/category/${cat.id}`}
-                    className={`flex justify-between items-center px-5 py-3 hover:bg-gray-50 hover:text-blue-600 transition ${
-                      idx === 0 ? "rounded-t-xl" : ""
-                    } ${idx === categories.length - 1 ? "rounded-b-xl" : ""}`}
+                    className={`flex justify-between items-center px-5 py-3 hover:bg-gray-50 hover:text-blue-600 transition ${idx === 0 ? "rounded-t-xl" : ""
+                      } ${idx === categories.length - 1 ? "rounded-b-xl" : ""}`}
                   >
                     {cat.category_name}
                   </Link>
@@ -103,25 +101,98 @@ const HeaderLinks = () => {
         {/* Desktop Navbar */}
         <nav className="hidden lg:block">
           <ul className="flex gap-8 text-gray-800 font-semibold text-[16px]">
-            <li>
-              <Link href="/" className="hover:text-blue-600">
-                Home
-              </Link>
-            </li>
-            <li>
+
+            {/* Products Dropdown */}
+            <li className="relative group">
               <Link href="/productListing" className="hover:text-blue-600">
-                Shop
+                Products
               </Link>
+              <ul
+                className="
+                  absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100
+                  opacity-0 scale-95 translate-y-2 invisible
+                  group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
+                  transition-all duration-300 ease-out z-50
+                "
+              >
+                <li>
+                  <Link href="/productListing/new" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    New Arrivals
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/productListing/sale" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    On Sale
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/productListing/top" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    Top Rated
+                  </Link>
+                </li>
+              </ul>
             </li>
-            <li>
+
+            {/* Brands Dropdown */}
+            <li className="relative group">
               <Link href="/brands" className="hover:text-blue-600">
                 Brands
               </Link>
+              <ul
+                className="
+                  absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100
+                  opacity-0 scale-95 translate-y-2 invisible
+                  group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
+                  transition-all duration-300 ease-out z-50
+                "
+              >
+                <li>
+                  <Link href="/brands/a" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    Brand A
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/brands/b" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    Brand B
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/brands/c" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    Brand C
+                  </Link>
+                </li>
+              </ul>
             </li>
-            <li>
+
+            {/* Contact Dropdown */}
+            <li className="relative group">
               <Link href="/contact" className="hover:text-blue-600">
                 Contact Us
               </Link>
+              <ul
+                className="
+                  absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100
+                  opacity-0 scale-95 translate-y-2 invisible
+                  group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
+                  transition-all duration-300 ease-out z-50
+                "
+              >
+                <li>
+                  <Link href="/contact/support" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    Support
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact/faq" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact/email" className="block px-4 py-2 hover:bg-gray-50 hover:text-blue-600">
+                    Email Us
+                  </Link>
+                </li>
+              </ul>
             </li>
           </ul>
         </nav>
