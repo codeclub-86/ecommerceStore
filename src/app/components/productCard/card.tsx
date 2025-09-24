@@ -29,7 +29,8 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   status,
   sale_price,
 }) => {
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
   const { addToCart } = useCartStore();
   const router = useRouter();
@@ -67,13 +68,15 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${inWishlist ? "bg-red-100" : "bg-white"
-          }`}
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow transition ${
+          inWishlist ? "bg-red-100" : "bg-white"
+        }`}
       >
         <Heart
           size={18}
-          className={`transition ${inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
-            }`}
+          className={`transition ${
+            inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
+          }`}
         />
       </button>
 

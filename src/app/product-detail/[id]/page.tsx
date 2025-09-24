@@ -1,19 +1,51 @@
 "use client";
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useStore } from "../../../app/store/apiStore";
-import { FaHeart, FaRedoAlt } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import ReviewModal from "../../components/review/ReviewModal";
+import { useWishlistStore } from "@/app/store/wishListStore";
+import { useAuthStore } from "@/app/store/authStore";
+import { useCartStore } from "@/app/store/cartStore";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { singleProduct, fetchSingleProduct, loading, error } = useStore();
 
+  // stores
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
+  const { initializeAuth, isLoggedIn } = useAuthStore();
+  const { addToCart } = useCartStore();
+  const router = useRouter();
+
+  // state for main image
+  const [mainImage, setMainImage] = useState<string | null>(null);
+
+  // state for variations
+  const [selectedVariations, setSelectedVariations] = useState<{
+    [key: string]: string;
+  }>({});
+
+  // handle variation change
+  const handleVariationChange = (name: string, value: string) => {
+    setSelectedVariations((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   useEffect(() => {
     if (id) fetchSingleProduct(Number(id));
   }, [id, fetchSingleProduct]);
+
+  useEffect(() => {
+    if (singleProduct) {
+      setMainImage(singleProduct.image || "/placeholder.png");
+    }
+  }, [singleProduct]);
 
   const reloadProduct = () => {
     if (id) fetchSingleProduct(Number(id));
@@ -23,8 +55,49 @@ export default function ProductDetailPage() {
   if (error) return <p className="p-10 text-red-500">{error}</p>;
   if (!singleProduct) return <p className="p-10">No product found.</p>;
 
-  const imageUrl = singleProduct.image || "/placeholder.png";
+  // wishlist logic
+  const inWishlist = isInWishlist(String(singleProduct.id));
+  const toggleWishlist = () => {
+    initializeAuth();
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
+    inWishlist
+      ? removeFromWishlist(String(singleProduct.id))
+      : addToWishlist({
+          id: String(singleProduct.id),
+          name: singleProduct.name,
+          price: singleProduct.sale_price
+            ? Number(singleProduct.sale_price)
+            : Number(singleProduct.price),
+          image: singleProduct.image,
+        });
+  };
 
+  // cart logic
+  const handleAddToCart = () => {
+    const finalPrice = singleProduct.sale_price
+      ? Number(singleProduct.sale_price)
+      : Number(singleProduct.price);
+
+    // convert { Size: "M", Color: "Blue" } → [{ name: "Size", value: "M" }, { name: "Color", value: "Blue" }]
+    const variationsArray = Object.entries(selectedVariations).map(
+      ([name, value]) => ({
+        name,
+        value,
+      })
+    );
+
+    addToCart({
+      id: Number(singleProduct.id),
+      name: singleProduct.name,
+      price: finalPrice,
+      image: singleProduct.image,
+      category: singleProduct.category,
+      variation: variationsArray, // ✅ now matches CartItem type
+    });
+  };
   return (
     <section className="bg-white lg:px-25 lg:py-10 sm:px-10 sm:py-5">
       <div className="container mx-auto px-4">
@@ -36,7 +109,7 @@ export default function ProductDetailPage() {
               <div className="flex flex-col gap-4">
                 <div className="w-full border rounded-lg overflow-hidden">
                   <Image
-                    src={imageUrl}
+                    src={mainImage || "/placeholder.png"}
                     alt={singleProduct.name}
                     width={600}
                     height={600}
@@ -47,7 +120,13 @@ export default function ProductDetailPage() {
                 {singleProduct.images?.length > 0 && (
                   <div className="grid grid-cols-4 gap-3 mt-4">
                     {singleProduct.images.map((img: any, i: number) => (
-                      <div key={i} className="border rounded-lg overflow-hidden">
+                      <div
+                        key={i}
+                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${
+                          mainImage === img.path ? "ring-2 ring-blue-500" : ""
+                        }`}
+                        onClick={() => setMainImage(img.path)}
+                      >
                         <Image
                           src={img.path}
                           alt={`Product image ${i + 1}`}
@@ -64,7 +143,9 @@ export default function ProductDetailPage() {
 
             {/* Product Info */}
             <div className="lg:w-1/2 w-full">
-              <h2 className="text-2xl font-semibold text-gray-900">{singleProduct.name}</h2>
+              <h2 className="text-2xl font-semibold text-gray-900">
+                {singleProduct.name}
+              </h2>
 
               <p className="text-gray-600 mt-2">
                 <span className="font-medium">Category:</span>{" "}
@@ -74,7 +155,10 @@ export default function ProductDetailPage() {
               </p>
 
               <h3 className="text-3xl font-bold text-blue-600 mt-3">
-                ${Number(singleProduct.sale_price || singleProduct.price).toFixed(2)}{" "}
+                $
+                {Number(
+                  singleProduct.sale_price || singleProduct.price
+                ).toFixed(2)}{" "}
                 {singleProduct.sale_price && (
                   <span className="line-through text-gray-400 ml-2">
                     ${Number(singleProduct.price).toFixed(2)}
@@ -82,26 +166,92 @@ export default function ProductDetailPage() {
                 )}
               </h3>
 
-              <p className="text-gray-700 mt-4">{singleProduct.description}</p>
+              <div
+                className="text-gray-700 mt-4 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: singleProduct.description }}
+              />
+
+              {/* Variations */}
+              {singleProduct.variations?.length > 0 && (
+                <div className="mt-5 space-y-4">
+                  {singleProduct.variations.map((variation: any) => {
+                    // If values is a string → parse it
+                    let valuesArray: any[] = [];
+                    try {
+                      if (typeof variation.values === "string") {
+                        valuesArray = JSON.parse(variation.values);
+                      } else {
+                        valuesArray = variation.values || [];
+                      }
+                    } catch {
+                      valuesArray = [];
+                    }
+
+                    return (
+                      <div key={variation.id}>
+                        <label className="block text-gray-700 font-medium mb-2">
+                          {variation.name}
+                        </label>
+                        <select
+                          className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+                          value={selectedVariations[variation.name] || ""}
+                          onChange={(e) =>
+                            handleVariationChange(
+                              variation.name,
+                              e.target.value
+                            )
+                          }
+                        >
+                          <option value="">Select {variation.name}</option>
+                          {valuesArray.map((val: any, i: number) => (
+                            <option key={i} value={val.value}>
+                              {val.value}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                <button
+                  onClick={handleAddToCart}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                >
                   Add to Cart
                 </button>
-                <button className="w-full border border-gray-300 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100 transition">
-                  <FaRedoAlt /> Compare
-                </button>
-                <button className="w-full border border-gray-300 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100 transition">
-                  <FaHeart /> Wishlist
+                <button
+                  onClick={toggleWishlist}
+                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${
+                    inWishlist
+                      ? "border-red-400 bg-red-50 text-red-500"
+                      : "border-gray-300 hover:bg-gray-100"
+                  }`}
+                >
+                  <FaHeart
+                    className={inWishlist ? "text-red-500" : "text-gray-500"}
+                  />
+                  {inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
                 </button>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Details Section */}
+        <div className="bg-gray-50 p-10 mt-12 rounded-lg">
+          <h4 className="text-xl font-semibold mb-3">Details</h4>
+          <p className="text-gray-700 leading-relaxed">
+            {singleProduct.details ||
+              "No additional details provided for this product."}
+          </p>
+        </div>
+
         {/* Features */}
         {singleProduct.features && (
-          <div className="bg-gray-50 p-10 mt-12">
+          <div className="bg-gray-50 p-10 mt-12 rounded-lg">
             <h4 className="text-xl font-semibold mb-3">Features</h4>
             <ul className="list-disc list-inside space-y-2 text-gray-700">
               {singleProduct.features.map((f: string, i: number) => (

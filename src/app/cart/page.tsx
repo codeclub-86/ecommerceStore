@@ -30,9 +30,6 @@ const CartPage: React.FC = () => {
         {/* Coupon + Summary */}
         {cart.length > 0 && (
           <div className="flex flex-col md:flex-row justify-between gap-6">
-            <div className="w-full md:w-2/3">
-              <CouponForm />
-            </div>
             <CartSummary />
           </div>
         )}
