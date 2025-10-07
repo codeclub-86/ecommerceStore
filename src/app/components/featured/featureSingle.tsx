@@ -11,7 +11,7 @@ type FeatureSingleProps = {
 
 const FeatureSingle: React.FC<FeatureSingleProps> = ({ title, image, alt = "" }) => {
   return (
-    <div className="flex flex-col items-center bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:border-yellow-400">
+    <div className="flex flex-col items-center bg-white  rounded-sm shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:border-yellow-400">
       {/* Image */}
       <div className="relative w-full h-56">
         <Image
@@ -24,7 +24,7 @@ const FeatureSingle: React.FC<FeatureSingleProps> = ({ title, image, alt = "" })
       </div>
 
       {/* Title */}
-      <div className="p-5 text-center bg-black text-white w-full">
+      <div className="p-5 text-center dark-bg-css text-white w-full">
         <h3 className="text-lg font-semibold tracking-wide hover:text-yellow-400 transition-colors duration-200">
           {title}
         </h3>

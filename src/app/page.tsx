@@ -13,7 +13,7 @@ export default function Home() {
     <div className="">
       {/* <Header></Header> */}
       <HeroMain></HeroMain>
-      <CategoryBar></CategoryBar>
+      {/* <CategoryBar></CategoryBar> */}
       <FeaturedMain></FeaturedMain>
       <TrendingMain></TrendingMain>
       <SpecialMain></SpecialMain>

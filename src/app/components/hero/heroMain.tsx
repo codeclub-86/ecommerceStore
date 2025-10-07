@@ -27,7 +27,7 @@ const HeroMain = () => {
   );
 
   return (
-    <section className="relative w-full bg-gray-900">
+    <section className="relative w-full dark-bg-css">
       <div className="max-w-6xl mx-auto py-6 px-4">
         <Carousel
           className="relative group rounded-xl overflow-hidden shadow-lg"

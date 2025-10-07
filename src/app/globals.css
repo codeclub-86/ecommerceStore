@@ -120,3 +120,9 @@
     @apply bg-background text-foreground;
   }
 }
+.light-bg-css {
+  background-color: rgb(42, 40, 40);
+}
+.dark-bg-css {
+  background-color: rgb(35, 33, 33);
+}

@@ -12,13 +12,13 @@ const categories = [
 
 const CategoryBar = () => {
     return (
-        <section className="py-10 px-6 bg-gray-800">
+        <section className="py-10 px-6 bg-gray-800 ">
             <div className="max-w-5xl mx-auto flex flex-wrap justify-center gap-5">
                 {categories.map((cat) => (
                     <Link
                         key={cat.name}
                         href={cat.href}
-                        className="px-10 py-4 rounded-xl font-semibold text-black bg-yellow-400 hover:bg-yellow-300 transition-transform transform hover:scale-105 active:scale-95 shadow-md"
+                        className="px-10 py-4 rounded-xl font-semibold bg-black text-white transition-transform transform hover:scale-105 active:scale-95 shadow-md"
                     >
                         {cat.name}
                     </Link>

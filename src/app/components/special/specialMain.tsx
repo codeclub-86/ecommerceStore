@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import TrendingSingle from "../productCard/card";
+import SpecialSingle from "../../../app/components/SpecialSingle";
 
 const dummyProducts = [
   { id: "1", name: "Men's Casual T-Shirt", price: 25, image: "/p1.jpeg" },
@@ -13,22 +13,22 @@ const dummyProducts = [
 
 const SpecialMain = () => {
   return (
-    <section className="w-full flex flex-col justify-center items-center py-12 px-6 lg:px-20 gap-12 bg-gray-100">
-      {/* Header Section */}
+    <section className="w-full flex flex-col justify-center items-center py-12 px-6 lg:px-20 gap-12 light-bg-css">
+      {/* Header */}
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-3xl lg:text-4xl font-bold text-gray-800">
-          Special Offer
+        <h1 className="text-3xl lg:text-4xl font-bold text-yellow-400">
+          Special Offers
         </h1>
-        <div className="w-12 h-1 mt-4 rounded-lg bg-blue-600"></div>
-        <p className="max-w-lg mt-6 text-gray-500">
+        <div className="w-12 h-1 mt-4 rounded-lg bg-yellow-400"></div>
+        <p className="max-w-lg mt-6 text-gray-200">
           Discover limited-time discounts on our latest clothing collection.
         </p>
       </div>
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+      {/* Product Grid */}
+      <div className="grid gap-6 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {dummyProducts.map((product) => (
-          <TrendingSingle key={product.id} {...product} />
+          <SpecialSingle key={product.id} {...product} />
         ))}
       </div>
     </section>

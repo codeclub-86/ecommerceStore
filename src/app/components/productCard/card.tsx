@@ -62,7 +62,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   };
 
   return (
-    <div className="relative flex flex-col bg-white border border-gray-200 transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+    <div className="relative flex flex-col  transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
       {/* Wishlist */}
       <button
         aria-label="Add to Wishlist"
@@ -81,13 +81,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
         {/* Status Badge */}
         {status && (
-          <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-black text-xs font-semibold px-3 py-1 shadow">
+          <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-white text-xs font-semibold px-3 py-1 shadow">
             {status}
           </span>
         )}
 
         {/* Image */}
-        <div className="relative w-full h-64 overflow-hidden bg-gray-100">
+        <div className="relative w-full h-64 overflow-hidden ">
           <Image
             src={image}
             alt={name}
@@ -108,14 +108,14 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
         </div>
 
         {/* Info */}
-        <div className="p-4 flex flex-col flex-grow">
-          <span className="block text-sm text-gray-500">{category}</span>
-          <h4 className="font-semibold text-lg mt-1 line-clamp-2 flex-grow">
+        <div className="p-4 flex flex-col flex-grow light-bg-css">
+          <span className="block text-sm text-white">{category}</span>
+          <h4 className="font-semibold text-white text-lg mt-1 line-clamp-2 flex-grow">
             <span className="hover:text-yellow-500 transition">{name}</span>
           </h4>
 
           {/* Rating */}
-          <ul className="flex items-center gap-1 mt-2 text-yellow-400">
+          <ul className="flex items-center gap-1 mt-2  text-yellow-400">
             {Array.from({ length: 5 }).map((_, i) => (
               <li key={i}>
                 <Star
@@ -136,7 +136,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           <div className="mt-2">
             {sale_price ? (
               <div className="flex items-center gap-2">
-                <span className="text-yellow-500 font-bold text-lg">
+                <span className="text-white font-bold text-lg">
                   ${Number(sale_price).toFixed(2)}
                 </span>
                 <span className="text-gray-500 line-through text-sm">
@@ -144,7 +144,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
                 </span>
               </div>
             ) : (
-              <span className="text-black font-bold text-lg">
+              <span className="text-white font-bold text-lg">
                 ${Number(price).toFixed(2)}
               </span>
             )}
