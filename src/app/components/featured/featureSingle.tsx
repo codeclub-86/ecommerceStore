@@ -1,57 +1,34 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 
-interface FeatureSingleProps {
+type FeatureSingleProps = {
   title: string;
-  items: string[];
   image: string;
-  alt: string;
-}
+  alt?: string;
+};
 
-const FeatureSingle: React.FC<FeatureSingleProps> = ({
-  title,
-  items,
-  image,
-  alt,
-}) => {
+const FeatureSingle: React.FC<FeatureSingleProps> = ({ title, image, alt = "" }) => {
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-lg p-6 flex flex-col items-center shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+    <div className="flex flex-col items-center bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:border-yellow-400">
       {/* Image */}
-      <div className="relative w-40 h-40 mb-5">
+      <div className="relative w-full h-56">
         <Image
           src={image}
           alt={alt}
           fill
-          className="object-contain rounded-md"
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 25vw"
         />
       </div>
 
       {/* Title */}
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">{title}</h2>
-
-      {/* Items */}
-      <ul className="text-gray-700 space-y-2 text-sm w-full text-left">
-        {items.slice(0, 4).map((item, index) => (
-          <li key={index}>
-            <Link
-              href="#"
-              className="hover:text-blue-600 transition-colors duration-200"
-            >
-              {item}
-            </Link>
-          </li>
-        ))}
-        <li>
-          <Link
-            href="#"
-            className="text-blue-600 hover:underline font-medium"
-          >
-            View All →
-          </Link>
-        </li>
-      </ul>
+      <div className="p-5 text-center bg-black text-white w-full">
+        <h3 className="text-lg font-semibold tracking-wide hover:text-yellow-400 transition-colors duration-200">
+          {title}
+        </h3>
+      </div>
     </div>
   );
 };

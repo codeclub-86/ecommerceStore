@@ -29,8 +29,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   status,
   sale_price,
 }) => {
-  const { addToWishlist, removeFromWishlist, isInWishlist } =
-    useWishlistStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
   const { addToCart } = useCartStore();
   const router = useRouter();
@@ -63,17 +62,17 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   };
 
   return (
-    <div className="relative flex flex-col bg-white border transition h-full group">
+    <div className="relative flex flex-col bg-white border border-gray-200 transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
       {/* Wishlist */}
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
-        className={`absolute top-3 right-3 z-10 p-2 transition ${inWishlist ? "bg-red-100" : "bg-white"
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition ${inWishlist ? "bg-yellow-100" : "bg-white"
           }`}
       >
         <Heart
           size={18}
-          className={`transition ${inWishlist ? "text-red-500 fill-red-500" : "text-gray-500"
+          className={`transition ${inWishlist ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
             }`}
         />
       </button>
@@ -82,13 +81,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
         {/* Status Badge */}
         {status && (
-          <span className="absolute top-3 left-3 z-10 bg-blue-600 text-white text-xs font-semibold px-3 py-1 shadow">
+          <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-black text-xs font-semibold px-3 py-1 shadow">
             {status}
           </span>
         )}
 
         {/* Image */}
-        <div className="relative w-full h-64 overflow-hidden">
+        <div className="relative w-full h-64 overflow-hidden bg-gray-100">
           <Image
             src={image}
             alt={name}
@@ -101,7 +100,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
             <button
               onClick={handleAddToCart}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 hover:bg-black opacity-0 group-hover:opacity-100 transition-all duration-300"
+              className="inline-flex items-center gap-2 bg-yellow-400 text-black px-3 py-2 hover:bg-black hover:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md font-medium"
             >
               <ShoppingCart size={16} /> Add to Cart
             </button>
@@ -112,17 +111,17 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
         <div className="p-4 flex flex-col flex-grow">
           <span className="block text-sm text-gray-500">{category}</span>
           <h4 className="font-semibold text-lg mt-1 line-clamp-2 flex-grow">
-            <span className="hover:text-blue-600 transition">{name}</span>
+            <span className="hover:text-yellow-500 transition">{name}</span>
           </h4>
 
           {/* Rating */}
-          <ul className="flex items-center gap-1 mt-2 text-yellow-500">
+          <ul className="flex items-center gap-1 mt-2 text-yellow-400">
             {Array.from({ length: 5 }).map((_, i) => (
               <li key={i}>
                 <Star
                   size={16}
                   fill={i < rating ? "currentColor" : "none"}
-                  className={i < rating ? "text-yellow-500" : "text-gray-300"}
+                  className={i < rating ? "text-yellow-400" : "text-gray-300"}
                 />
               </li>
             ))}
@@ -137,7 +136,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           <div className="mt-2">
             {sale_price ? (
               <div className="flex items-center gap-2">
-                <span className="text-red-600 font-bold text-lg">
+                <span className="text-yellow-500 font-bold text-lg">
                   ${Number(sale_price).toFixed(2)}
                 </span>
                 <span className="text-gray-500 line-through text-sm">
@@ -145,7 +144,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
                 </span>
               </div>
             ) : (
-              <span className="text-blue-600 font-bold text-lg">
+              <span className="text-black font-bold text-lg">
                 ${Number(price).toFixed(2)}
               </span>
             )}

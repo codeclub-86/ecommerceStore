@@ -6,12 +6,14 @@ import TrendingMain from "./components/trending/trendingMain";
 import SpecialMain from "./components/special/specialMain";
 import TopProducts from "./components/topProducts/TopProducts";
 import BrandsMain from "./components/brands/BrandsMain";
+import CategoryBar from "./components/CategoryBar";
 
 export default function Home() {
   return (
     <div className="">
       {/* <Header></Header> */}
       <HeroMain></HeroMain>
+      <CategoryBar></CategoryBar>
       <FeaturedMain></FeaturedMain>
       <TrendingMain></TrendingMain>
       <SpecialMain></SpecialMain>
