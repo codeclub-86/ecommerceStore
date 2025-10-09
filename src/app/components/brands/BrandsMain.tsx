@@ -14,7 +14,7 @@ const BrandsMain: React.FC = () => {
     Autoplay({ delay: 2500, stopOnInteraction: true })
   );
 
-  // ✅ Select values individually to avoid creating a new object each render
+
   const stores = useStore((state) => state.stores);
   const loading = useStore((state) => state.loading);
   const error = useStore((state) => state.error);
@@ -55,8 +55,8 @@ const BrandsMain: React.FC = () => {
                     <BrandsSingle
                       logo={
                         store.logo
-                          ? `${process.env.NEXT_PUBLIC_IMG_URL}/logos/${store.logo}`
-                          : ""
+                          ? `${process.env.NEXT_PUBLIC_IMG_URL}logos/${store.logo}`
+                          : null
                       }
                       name={store.name}
                     />

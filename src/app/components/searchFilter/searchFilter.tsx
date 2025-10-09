@@ -6,7 +6,7 @@ import { useStore } from "@/app/store/apiStore";
 interface SearchFilterProps {
     onCategorySelect: (categoryName: string | null) => void;
     onPriceSelect: (priceRange: [number, number] | null) => void;
-    onBrandSelect: (brand: string | null) => void; // added brand filter callback
+    onBrandSelect: (brand: string | null) => void;
 }
 
 const priceRanges = [
@@ -16,15 +16,13 @@ const priceRanges = [
     { label: "$1,000 - $5,000", min: 1000, max: 5000 },
 ];
 
-// Temporary static brands list (replace with API later)
-const brandList = ["Apple", "Samsung", "Sony", "Dell", "HP", "Lenovo"];
-
 const SearchFilter: React.FC<SearchFilterProps> = ({
     onCategorySelect,
     onPriceSelect,
     onBrandSelect,
 }) => {
-    const { categories, fetchCategories, loading } = useStore();
+    const { categories, fetchCategories, stores, fetchStores, loading } = useStore();
+
     const [search, setSearch] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
@@ -32,7 +30,12 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
 
     useEffect(() => {
         fetchCategories();
-    }, [fetchCategories]);
+        fetchStores();
+    }, [fetchCategories, fetchStores]);
+
+    useEffect(() => {
+        console.log("✅ Stores data from API:", stores);
+    }, [stores]);
 
     const filteredCategories = categories.filter((cat) =>
         (cat.category_name ?? "").toLowerCase().includes(search.toLowerCase())
@@ -114,23 +117,34 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
             </div>
 
             {/* Brand Filter */}
+
             <div className="w-full p-6 bg-white shadow-sm mb-8">
                 <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
-                <div className="space-y-3">
-                    {brandList.map((brand) => (
-                        <div
-                            key={brand}
-                            onClick={() => handleBrandClick(brand)}
-                            className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedBrand === brand
-                                ? "font-semibold text-blue-600"
-                                : "text-gray-600"
-                                }`}
-                        >
-                            {brand}
-                        </div>
-                    ))}
-                </div>
+                {loading ? (
+                    <p className="text-gray-500">Loading brands...</p>
+                ) : stores.length > 0 ? (
+                    <div className="space-y-3">
+                        {stores.map((store: any) => (
+                            <div
+                                key={store.id}
+                                onClick={() => {
+                                    setSelectedBrand(store.name);
+                                    onBrandSelect(store.name);
+                                }}
+                                className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedBrand === store.name
+                                    ? "font-semibold text-blue-600"
+                                    : "text-gray-600"
+                                    }`}
+                            >
+                                {store.name}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-500">No brands available.</p>
+                )}
             </div>
+
         </>
     );
 };

@@ -99,7 +99,7 @@ const HeaderLinks = () => {
               >
                 Products
               </Link>
-              <ul
+              {/* <ul
                 className="absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg border border-yellow-400/40
                 opacity-0 scale-95 translate-y-2 invisible
                 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
@@ -129,7 +129,7 @@ const HeaderLinks = () => {
                     Top Rated
                   </Link>
                 </li>
-              </ul>
+              </ul> */}
             </li>
 
             {/* Brands / Stores */}
