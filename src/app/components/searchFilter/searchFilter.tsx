@@ -136,35 +136,45 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
 
             {/* Brand Filter */}
 
-            <ul className="space-y-3">
-                <li
-                    onClick={() => {
-                        setSelectedBrand(null);
-                        onBrandSelect(null);
-                    }}
-                    className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === null ? "underline font-semibold text-blue-600" : "text-gray-600"
-                        }`}
-                >
-                    All
-                </li>
+            <div className="w-full p-6 bg-white shadow-sm mb-8">
+                <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
+                {loading ? (
+                    <p className="text-gray-500">Loading brands...</p>
+                ) : stores.length > 0 ? (
+                    <div className="space-y-3">
+                        <ul>
+                            <li
+                                onClick={() => {
+                                    setSelectedBrand(null);
+                                    onBrandSelect(null);
+                                }}
+                                className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === null ? "underline font-semibold text-blue-600" : "text-gray-600"
+                                    }`}
+                            >
+                                All
+                            </li>
+                        </ul>
 
-                {stores.map((store: any) => (
-                    <li
-                        key={store.id}
-                        onClick={() => {
-                            setSelectedBrand(store.name);
-                            onBrandSelect(store.name);
-                        }}
-                        className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === store.name
-                            ? "underline font-semibold text-blue-600"
-                            : "text-gray-600"
-                            }`}
-                    >
-                        {store.name}
-                    </li>
-                ))}
-            </ul>
-
+                        {stores.map((store: any) => (
+                            <div
+                                key={store.id}
+                                onClick={() => {
+                                    setSelectedBrand(store.name);
+                                    onBrandSelect(store.name);
+                                }}
+                                className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === store.name
+                                    ? "underline font-semibold text-blue-600"
+                                    : "text-gray-600"
+                                    }`}
+                            >
+                                {store.name}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-500">No brands available.</p>
+                )}
+            </div>
 
 
         </>
