@@ -28,13 +28,13 @@ const categories = [
 
 const FeaturedMain = () => {
   return (
-    <section className="w-full py-16 px-6 lg:px-20 bg-gray-900">
+    <section className="light-bg-css w-full py-16 px-6 lg:px-20" >
       {/* Section Header */}
       <header className="text-center mb-14">
         <h2 className="text-3xl lg:text-4xl font-bold text-white">
           Featured Categories
         </h2>
-        <div className="w-20 h-1 mt-4 mx-auto rounded bg-yellow-400"></div>
+        {/* <div className="w-20 h-1 mt-4 mx-auto rounded bg-yellow-400"></div> */}
         <p className="max-w-xl mx-auto mt-6 text-gray-200">
           Explore our top categories handpicked for you.
         </p>
