@@ -1,8 +1,21 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import TrendingSingle from "../productCard/card";
-import dummyProducts from "../../productListing/product";
+import { useStore } from "@/app/store/apiStore";
 
 const TrendingMain = () => {
+  const trendingProducts = useStore((state: any) => state.trendingProducts);
+  const loading = useStore((state: any) => state.loading);
+  const error = useStore((state: any) => state.error);
+  const fetchTrendingProducts = useStore(
+    (state: any) => state.fetchTrendingProducts
+  );
+
+  useEffect(() => {
+    fetchTrendingProducts();
+  }, [fetchTrendingProducts]);
+
   return (
     <section className="w-full flex flex-col justify-center items-center py-12 px-6 lg:px-20 gap-12 bg-gray-800">
       {/* Header Section */}
@@ -16,20 +29,30 @@ const TrendingMain = () => {
       </div>
 
       {/* Products Grid */}
-      <div
-        className="
-          grid gap-6 w-full
-          grid-cols-1
-          sm:grid-cols-2
-          md:grid-cols-3
-          lg:grid-cols-4
-          xl:grid-cols-5
-        "
-      >
-        {dummyProducts.map((product) => (
-          <TrendingSingle key={product.id} {...product} />
-        ))}
-      </div>
+      {loading ? (
+        <p className="text-gray-300">Loading trending products...</p>
+      ) : error ? (
+        <p className="text-red-400">Error: {error}</p>
+      ) : (
+        <div
+          className="
+            grid gap-6 w-full
+            grid-cols-1
+            sm:grid-cols-2
+            md:grid-cols-3
+            lg:grid-cols-4
+            xl:grid-cols-5
+          "
+        >
+          {trendingProducts && trendingProducts.length > 0 ? (
+            trendingProducts.map((product: any) => (
+              <TrendingSingle key={product.id} {...product} />
+            ))
+          ) : (
+            <p className="text-gray-300">No trending products available.</p>
+          )}
+        </div>
+      )}
     </section>
   );
 };

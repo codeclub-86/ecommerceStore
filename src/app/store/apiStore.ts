@@ -6,18 +6,24 @@ interface StoreState {
   singleProduct: any | null;
   loading: boolean;
   error: string | null;
+  trendingProducts: any[]; // 👈 new
+  stores: any[]; // 👈 new
 
   fetchProducts: (params?: Record<string, any>) => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSingleProduct: (id: number) => Promise<void>;
+  fetchTrendingProducts: () => Promise<void>; // 👈 new
+  fetchStores: () => Promise<void>; // 👈 new
 }
 
 export const useStore = create<StoreState>((set) => ({
   products: [],
   categories: [],
   singleProduct: null,
+  stores: [], // 👈 new
   loading: false,
   error: null,
+  trendingProducts: [], // 👈 new
 
   // 🔹 Fetch Products with filters
   fetchProducts: async (params = {}) => {
@@ -67,6 +73,44 @@ export const useStore = create<StoreState>((set) => ({
       if (!res.ok || !data.success) throw new Error(data.message);
 
       set({ singleProduct: data.product, loading: false });
+    } catch (err: any) {
+      set({ error: err.message, loading: false });
+    }
+  },
+  fetchTrendingProducts: async () => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/trending`
+      );
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(
+          `API did not return JSON: ${text.substring(0, 200)}...`
+        );
+      }
+
+      if (!res.ok || !data.success)
+        throw new Error(data.message || "Unknown API error");
+
+      set({ trendingProducts: data.data, loading: false });
+    } catch (err: any) {
+      console.error(err);
+      set({ error: err.message, loading: false });
+    }
+  },
+  // 🔹 Fetch Active Stores
+  fetchStores: async () => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/brands`);
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message);
+      set({ stores: data.data, loading: false });
     } catch (err: any) {
       set({ error: err.message, loading: false });
     }

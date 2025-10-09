@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Menu,
-  X,
-} from "lucide-react";
+import { Facebook, Twitter, Instagram, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useStore } from "@/app/store/apiStore";
@@ -33,11 +27,15 @@ const SocialIcon = ({
 
 const HeaderLinks = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { categories, fetchCategories, loading } = useStore();
+
+  // Zustand store
+  const { categories, fetchCategories, stores, fetchStores, loading } =
+    useStore();
 
   useEffect(() => {
     fetchCategories();
-  }, [fetchCategories]);
+    fetchStores(); // fetch brands/stores
+  }, [fetchCategories, fetchStores]);
 
   return (
     <header className="w-full bg-black text-white shadow-md border-b border-yellow-400">
@@ -68,7 +66,9 @@ const HeaderLinks = () => {
               group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
               transition-all duration-300 ease-out z-50"
             >
-              {loading && <li className="px-5 py-3 text-gray-400">Loading...</li>}
+              {loading && (
+                <li className="px-5 py-3 text-gray-400">Loading...</li>
+              )}
               {!loading && categories.length === 0 && (
                 <li className="px-5 py-3 text-gray-400">No categories found</li>
               )}
@@ -93,7 +93,10 @@ const HeaderLinks = () => {
           <ul className="flex gap-10 text-[16px] font-semibold">
             {/* Products */}
             <li className="relative group">
-              <Link href="/productListing" className="hover:text-yellow-400 transition">
+              <Link
+                href="/productListing"
+                className="hover:text-yellow-400 transition"
+              >
                 Products
               </Link>
               <ul
@@ -103,24 +106,33 @@ const HeaderLinks = () => {
                 transition-all duration-300 ease-out z-50"
               >
                 <li>
-                  <Link href="/productListing" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
+                  <Link
+                    href="/productListing"
+                    className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition"
+                  >
                     New Arrivals
                   </Link>
                 </li>
                 <li>
-                  <Link href="/productListing" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
+                  <Link
+                    href="/productListing"
+                    className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition"
+                  >
                     On Sale
                   </Link>
                 </li>
                 <li>
-                  <Link href="/productListing" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
+                  <Link
+                    href="/productListing"
+                    className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition"
+                  >
                     Top Rated
                   </Link>
                 </li>
               </ul>
             </li>
 
-            {/* Brands */}
+            {/* Brands / Stores */}
             <li className="relative group">
               <Link href="/brands" className="hover:text-yellow-400 transition">
                 Brands
@@ -131,21 +143,22 @@ const HeaderLinks = () => {
                 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
                 transition-all duration-300 ease-out z-50"
               >
-                <li>
-                  <Link href="/brands/a" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
-                    Brand A
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/brands/b" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
-                    Brand B
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/brands/c" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
-                    Brand C
-                  </Link>
-                </li>
+                {loading && (
+                  <li className="px-4 py-2 text-gray-100">Loading...</li>
+                )}
+                {!loading && stores.length === 0 && (
+                  <li className="px-4 py-2 text-gray-400">No stores found</li>
+                )}
+                {stores.map((store: any) => (
+                  <li key={store.id}>
+                    <Link
+                      href=""
+                      className="block px-4 py-2 hover:bg-yellow-400 text-white hover:text-black transition"
+                    >
+                      {store.name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </li>
 
@@ -161,7 +174,10 @@ const HeaderLinks = () => {
 
             {/* Contact Us */}
             <li className="relative group">
-              <Link href="/contact" className="hover:text-yellow-400 transition">
+              <Link
+                href="/contact"
+                className="hover:text-yellow-400 transition"
+              >
                 Contact Us
               </Link>
               <ul
@@ -171,17 +187,26 @@ const HeaderLinks = () => {
                 transition-all duration-300 ease-out z-50"
               >
                 <li>
-                  <Link href="/contact/support" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
+                  <Link
+                    href="/contact/support"
+                    className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition"
+                  >
                     Support
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact/faq" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
+                  <Link
+                    href="/contact/faq"
+                    className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition"
+                  >
                     FAQ
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact/email" className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition">
+                  <Link
+                    href="/contact/email"
+                    className="block px-4 py-2 hover:bg-yellow-400 hover:text-black transition"
+                  >
                     Email Us
                   </Link>
                 </li>
@@ -216,11 +241,31 @@ const HeaderLinks = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-yellow-400 bg-black text-white shadow-md animate-fade-in">
           <ul className="flex flex-col p-4 gap-3 font-medium">
-            <li><Link href="/" className="hover:text-yellow-400">Home</Link></li>
-            <li><Link href="/productListing" className="hover:text-yellow-400">Shop</Link></li>
-            <li><Link href="/brands" className="hover:text-yellow-400">Brands</Link></li>
-            <li><Link href="/register" className="text-yellow-400 font-semibold">Register Now</Link></li>
-            <li><Link href="/contact" className="hover:text-yellow-400">Contact Us</Link></li>
+            <li>
+              <Link href="/" className="hover:text-yellow-400">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/productListing" className="hover:text-yellow-400">
+                Shop
+              </Link>
+            </li>
+            <li>
+              <Link href="/brands" className="hover:text-yellow-400">
+                Brands
+              </Link>
+            </li>
+            <li>
+              <Link href="/register" className="text-yellow-400 font-semibold">
+                Register Now
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:text-yellow-400">
+                Contact Us
+              </Link>
+            </li>
           </ul>
 
           <div className="flex justify-center gap-5 py-4 border-t border-yellow-400">
