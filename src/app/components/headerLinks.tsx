@@ -75,15 +75,16 @@ const HeaderLinks = () => {
               {categories.map((cat: any, idx: number) => (
                 <li key={cat.id}>
                   <Link
-                    href={`/category/${cat.id}`}
+                    href={`/productListing?category=${encodeURIComponent(cat.category_name)}`}
                     className={`flex justify-between items-center px-5 py-3 text-white hover:bg-yellow-400 hover:text-black transition 
-                    ${idx === 0 ? "rounded-t-xl" : ""} 
-                    ${idx === categories.length - 1 ? "rounded-b-xl" : ""}`}
+        ${idx === 0 ? "rounded-t-xl" : ""} 
+        ${idx === categories.length - 1 ? "rounded-b-xl" : ""}`}
                   >
                     {cat.category_name}
                   </Link>
                 </li>
               ))}
+
             </ul>
           </div>
         </div>
@@ -97,7 +98,7 @@ const HeaderLinks = () => {
                 href="/productListing"
                 className="hover:text-yellow-400 transition"
               >
-                Products
+                Shop
               </Link>
               {/* <ul
                 className="absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg border border-yellow-400/40
@@ -137,7 +138,7 @@ const HeaderLinks = () => {
               <Link href="/brands" className="hover:text-yellow-400 transition">
                 Brands
               </Link>
-              <ul
+              {/* <ul
                 className="absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg border border-yellow-400/40
                 opacity-0 scale-95 translate-y-2 invisible
                 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
@@ -152,14 +153,14 @@ const HeaderLinks = () => {
                 {stores.map((store: any) => (
                   <li key={store.id}>
                     <Link
-                      href=""
+                      href={`/productListing?brand=${encodeURIComponent(store.name)}`}
                       className="block px-4 py-2 hover:bg-yellow-400 text-white hover:text-black transition"
                     >
                       {store.name}
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </li>
 
             {/* Register Now */}

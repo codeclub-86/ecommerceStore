@@ -13,6 +13,7 @@ interface TrendingSingleProps {
   name: string;
   price: number;
   image: string;
+  store?: string;
   category?: string;
   rating?: number;
   status?: string;
@@ -25,6 +26,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   price,
   image,
   category,
+  store,
   rating = 4,
   status,
   sale_price,
@@ -57,6 +59,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       price: finalPrice,
       image,
       category,
+
       variation: undefined,
     });
   };
@@ -113,6 +116,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           <h4 className="font-semibold text-white text-lg mt-1 line-clamp-2 flex-grow">
             <span className="hover:text-yellow-500 transition">{name}</span>
           </h4>
+          <p className="text-sm text-gray-100">{store}</p>
 
           {/* Rating */}
           <ul className="flex items-center gap-1 mt-2  text-yellow-400">

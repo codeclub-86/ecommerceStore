@@ -73,16 +73,33 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
             </div>
 
             {/* Categories */}
+
             <div className="w-full p-6 bg-white shadow-sm mb-8">
                 <h3 className="text-lg font-semibold mb-4">All Categories</h3>
                 {loading ? (
                     <p className="text-gray-500">Loading categories...</p>
                 ) : filteredCategories.length > 0 ? (
-                    <ul>
+                    <ul className="space-y-2">
+                        {/* 🔹 ALL Categories Option */}
+                        <li
+                            onClick={() => {
+                                setSelectedCategory(null);
+                                onCategorySelect(null);
+                            }}
+                            className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedCategory === null ? "font-semibold text-blue-600" : "text-gray-600"
+                                }`}
+                        >
+                            All
+                        </li>
+
+                        {/* 🔹 Dynamic Category List */}
                         {filteredCategories.map((cat) => (
                             <li
                                 key={cat.id}
-                                onClick={() => handleCategoryClick(cat.category_name)}
+                                onClick={() => {
+                                    setSelectedCategory(cat.category_name);
+                                    onCategorySelect(cat.category_name);
+                                }}
                                 className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedCategory === cat.category_name
                                     ? "font-semibold text-blue-600"
                                     : "text-gray-600"
@@ -96,6 +113,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                     <p className="text-gray-500">No categories found.</p>
                 )}
             </div>
+
 
             {/* Price Filter */}
             <div className="w-full p-6 bg-white shadow-sm mb-8">
@@ -118,32 +136,36 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
 
             {/* Brand Filter */}
 
-            <div className="w-full p-6 bg-white shadow-sm mb-8">
-                <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
-                {loading ? (
-                    <p className="text-gray-500">Loading brands...</p>
-                ) : stores.length > 0 ? (
-                    <div className="space-y-3">
-                        {stores.map((store: any) => (
-                            <div
-                                key={store.id}
-                                onClick={() => {
-                                    setSelectedBrand(store.name);
-                                    onBrandSelect(store.name);
-                                }}
-                                className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedBrand === store.name
-                                    ? "font-semibold text-blue-600"
-                                    : "text-gray-600"
-                                    }`}
-                            >
-                                {store.name}
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="text-gray-500">No brands available.</p>
-                )}
-            </div>
+            <ul className="space-y-3">
+                <li
+                    onClick={() => {
+                        setSelectedBrand(null);
+                        onBrandSelect(null);
+                    }}
+                    className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === null ? "underline font-semibold text-blue-600" : "text-gray-600"
+                        }`}
+                >
+                    All
+                </li>
+
+                {stores.map((store: any) => (
+                    <li
+                        key={store.id}
+                        onClick={() => {
+                            setSelectedBrand(store.name);
+                            onBrandSelect(store.name);
+                        }}
+                        className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === store.name
+                            ? "underline font-semibold text-blue-600"
+                            : "text-gray-600"
+                            }`}
+                    >
+                        {store.name}
+                    </li>
+                ))}
+            </ul>
+
+
 
         </>
     );

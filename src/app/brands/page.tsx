@@ -1,41 +1,17 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
-
-const brands = [
-  {
-    id: 1,
-    name: "Nike",
-    logo: "/brand-1.png",
-  },
-  {
-    id: 2,
-    name: "Adidas",
-    logo: "/brands/adidas.png",
-  },
-  {
-    id: 3,
-    name: "Puma",
-    logo: "/brands/puma.png",
-  },
-  {
-    id: 4,
-    name: "Reebok",
-    logo: "/brands/reebok.png",
-  },
-  {
-    id: 5,
-    name: "Apple",
-    logo: "/brands/apple.png",
-  },
-  {
-    id: 6,
-    name: "Samsung",
-    logo: "/brands/samsung.png",
-  },
-];
+import { useRouter } from "next/navigation";
+import { useStore } from "@/app/store/apiStore"; // adjust path if needed
 
 const BrandsPage = () => {
+  const router = useRouter();
+  const { stores, fetchStores, loading, error } = useStore();
+
+  useEffect(() => {
+    fetchStores();
+  }, [fetchStores]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Page Title */}
@@ -50,26 +26,37 @@ const BrandsPage = () => {
 
       {/* Brands Grid */}
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-          {brands.map((brand) => (
-            <div
-              key={brand.id}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col items-center group cursor-pointer"
-            >
-              <div className="relative w-24 h-24">
-                <Image
-                  src={brand.logo}
-                  alt={brand.name}
-                  fill
-                  className="object-contain group-hover:scale-110 transition-transform"
-                />
+        {loading ? (
+          <p className="text-center text-gray-500">Loading brands...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">Error: {error}</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+            {stores.map((brand) => (
+              <div
+                key={brand.id}
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col items-center group cursor-pointer"
+                onClick={() => router.push(`/productListing?brand=${encodeURIComponent(brand.name)}`)} // ⬅️ optional navigation
+              >
+                <div className="relative w-24 h-24">
+                  <Image
+                    src={
+                      brand.logo
+                        ? `${process.env.NEXT_PUBLIC_IMG_URL}logos/${brand.logo}`
+                        : "/fallback-logo.png"
+                    }
+                    alt={brand.name}
+                    fill
+                    className="object-contain group-hover:scale-110 transition-transform"
+                  />
+                </div>
+                <p className="mt-4 text-lg font-semibold text-gray-700 group-hover:text-blue-600">
+                  {brand.name}
+                </p>
               </div>
-              <p className="mt-4 text-lg font-semibold text-gray-700 group-hover:text-blue-600">
-                {brand.name}
-              </p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

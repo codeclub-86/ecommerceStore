@@ -6,6 +6,7 @@ import SearchFilter from "../components/searchFilter/searchFilter";
 import ProductSort from "../components/ProductSort/ProductSort";
 import TrendingSingle from "../components/productCard/card";
 import { useStore } from "@/app/store/apiStore";
+import { useSearchParams } from "next/navigation";
 
 const ProductListing: React.FC = () => {
   const { products, loading, error, fetchProducts } = useStore();
@@ -17,12 +18,27 @@ const ProductListing: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 9;
 
-  // Fetch all products once
+  const searchParams = useSearchParams();
+
+  // 🔹 Read ?category= from URL on first load
+  useEffect(() => {
+    const categoryFromQuery = searchParams.get("category");
+    const brandFromQuery = searchParams.get("brand");
+    if (categoryFromQuery) {
+      setSelectedCategory(categoryFromQuery);
+    }
+
+    if (brandFromQuery) {
+      setSelectedBrand(brandFromQuery);
+    }
+  }, [searchParams]);
+
+  // 🔹 Fetch all products once
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Apply filters + sorting whenever filters/sort change
+  // 🔹 Apply filters and sorting
   useEffect(() => {
     let result = [...products];
 
@@ -41,7 +57,7 @@ const ProductListing: React.FC = () => {
 
     if (selectedBrand) {
       result = result.filter(
-        (p) => p.brand?.toLowerCase() === selectedBrand.toLowerCase()
+        (p) => p.store?.toLowerCase() === selectedBrand.toLowerCase()
       );
     }
 
@@ -63,21 +79,15 @@ const ProductListing: React.FC = () => {
     setCurrentPage(1);
   }, [products, selectedCategory, selectedPrice, selectedBrand, sortOption]);
 
-  // Pagination
+  // 🔹 Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   const showingRange =
     filteredProducts.length > 0
-      ? `Showing: ${indexOfFirstProduct + 1} - ${Math.min(
-        indexOfLastProduct,
-        filteredProducts.length
-      )} of ${filteredProducts.length} items`
+      ? `Showing: ${indexOfFirstProduct + 1} - ${Math.min(indexOfLastProduct, filteredProducts.length)} of ${filteredProducts.length} items`
       : "No items to show";
 
   return (
@@ -87,7 +97,7 @@ const ProductListing: React.FC = () => {
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
-            { label: "Products", href: "/products" },
+            { label: "Products", href: "/productListing" },
           ]}
         />
       </div>
@@ -102,7 +112,7 @@ const ProductListing: React.FC = () => {
           />
         </div>
 
-        {/* Products Section */}
+        {/* Product Grid */}
         <div className="lg:col-span-3">
           <ProductSort
             sortOption={sortOption}
@@ -143,10 +153,7 @@ const ProductListing: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentPage(index + 1)}
-                  className={`px-4 py-2 border rounded ${currentPage === index + 1
-                    ? "bg-blue-600 text-white"
-                    : ""
-                    }`}
+                  className={`px-4 py-2 border rounded ${currentPage === index + 1 ? "bg-blue-600 text-white" : ""}`}
                 >
                   {index + 1}
                 </button>
