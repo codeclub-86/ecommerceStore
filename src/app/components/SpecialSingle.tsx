@@ -7,6 +7,7 @@ import { useWishlistStore } from "@/app/store/wishListStore";
 import { useAuthStore } from "@/app/store/authStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface SpecialSingleProps {
     id: string;
@@ -43,9 +44,13 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
             router.push("/login");
             return;
         }
-        inWishlist
-            ? removeFromWishlist(id)
-            : addToWishlist({ id, name, price, image });
+        if (inWishlist) {
+            removeFromWishlist(id);
+            toast.error("Removed from Favorites ❤️"); // ✅ added
+        } else {
+            addToWishlist({ id, name, price, image });
+            toast.success("Added to Favorites ❤️"); // ✅ added
+        }
     };
 
     const handleAddToCart = (e: React.MouseEvent) => {
@@ -59,6 +64,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
             category,
             variation: undefined,
         });
+        toast.success(`${name} added to cart 🛒`); // ✅ added
     };
 
     return (

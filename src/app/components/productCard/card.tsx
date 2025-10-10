@@ -7,6 +7,7 @@ import { useWishlistStore } from "@/app/store/wishListStore";
 import { useAuthStore } from "@/app/store/authStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast"; // ✅ import toast
 
 interface TrendingSingleProps {
   id: string;
@@ -42,12 +43,21 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
     e.preventDefault();
     initializeAuth();
     if (!isLoggedIn) {
+      toast.error("Please log in to use the wishlist.");
       router.push("/login");
       return;
     }
-    inWishlist
-      ? removeFromWishlist(id)
-      : addToWishlist({ id, name, price, image });
+
+    if (inWishlist) {
+      removeFromWishlist(id);
+      toast("Removed from wishlist 💔", {
+        icon: "❌",
+        style: { background: "#222", color: "#fff" },
+      });
+    } else {
+      addToWishlist({ id, name, price, image });
+      toast.success("Added to wishlist ❤️");
+    }
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -59,13 +69,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       price: finalPrice,
       image,
       category,
-
       variation: undefined,
     });
+    toast.success("Added to cart 🛒");
   };
 
   return (
-    <div className="relative flex flex-col  transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+    <div className="relative flex flex-col transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
       {/* Wishlist */}
       <button
         aria-label="Add to Wishlist"
@@ -82,7 +92,6 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
       {/* Product Link */}
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
-        {/* Status Badge */}
         {status && (
           <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-white text-xs font-semibold px-3 py-1 shadow">
             {status}
@@ -90,7 +99,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
         )}
 
         {/* Image */}
-        <div className="relative w-full h-64 overflow-hidden ">
+        <div className="relative w-full h-64 overflow-hidden">
           <Image
             src={image}
             alt={name}
@@ -98,8 +107,6 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             height={400}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-
-          {/* Add to Cart */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
             <button
               onClick={handleAddToCart}
@@ -119,7 +126,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           <p className="text-sm text-gray-100">{store}</p>
 
           {/* Rating */}
-          <ul className="flex items-center gap-1 mt-2  text-yellow-400">
+          <ul className="flex items-center gap-1 mt-2 text-yellow-400">
             {Array.from({ length: 5 }).map((_, i) => (
               <li key={i}>
                 <Star
