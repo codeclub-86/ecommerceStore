@@ -59,7 +59,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
     return (
         <>
             {/* Search */}
-            <div className="w-full p-6 bg-white shadow-sm mb-8">
+            {/* <div className="w-full p-6 bg-white shadow-sm mb-8">
                 <h3 className="text-lg font-semibold mb-4">Search Product</h3>
                 <div className="relative">
                     <input
@@ -70,7 +70,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                         className="w-full py-2 px-4 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
-            </div>
+            </div> */}
 
             {/* Categories */}
 

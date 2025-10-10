@@ -12,11 +12,16 @@ import {
 
 const footerData = {
   contact: {
-    phone: "+1 (900) 33 169 7720",
-    hours: ["Mon–Fri: 9am – 8pm", "Sat: 10am – 6pm"],
-    email: "abc@gmail.com",
+    phone: "+92 314 0078748",
+    hours: ["Mon–Fri: 2pm – 10pm"],
+    email: "info@codeclub.tech",
   },
-  information: ["About Us", "Contact Us", "Downloads", "Sitemap", "FAQs"],
+  information: [
+    { name: "Shop", href: "/productListing" },
+    { name: "Register Now", href: "/register" },
+    { name: "Brands", href: "/brands" },
+    { name: "Contact Us", href: "/contact" },
+  ],
   departments: [
     "Computers & Accessories",
     "Smartphones & Tablets",
@@ -122,13 +127,13 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm max-w-7xl mx-auto">
           {/* Payment */}
           <div className="flex items-center gap-2">
-            <span>We Accept:</span>
-            <Image
+            <span>We Accept:</span>Cash on Delivery
+            {/* <Image
               src="/credit-cards-footer.png"
               alt="Payment Methods"
               width={180}
               height={30}
-            />
+            /> */}
           </div>
 
           {/* Copyright */}
@@ -164,21 +169,31 @@ export default function Footer() {
   );
 }
 
-const FooterColumn = ({ title, links }: { title: string; links: string[] }) => (
+const FooterColumn = ({
+  title,
+  links,
+}: {
+  title: string;
+  links: { name: string; href: string }[] | string[];
+}) => (
   <div>
     <h2 className="text-lg font-semibold text-white">{title}</h2>
     <div className="w-12 h-0.5 bg-blue-600 mt-2"></div>
     <ul className="mt-6 space-y-3 text-sm">
-      {links.map((link, idx) => (
+      {links.map((link: any, idx) => (
         <li key={idx}>
-          <Link
-            href="#"
-            className="hover:underline hover:text-gray-100 transition"
-          >
-            {link}
-          </Link>
+          {typeof link === "string" ? (
+            <Link href="#" className="hover:underline hover:text-gray-100 transition">
+              {link}
+            </Link>
+          ) : (
+            <Link href={link.href} className="hover:underline hover:text-gray-100 transition">
+              {link.name}
+            </Link>
+          )}
         </li>
       ))}
     </ul>
   </div>
 );
+

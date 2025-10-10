@@ -110,10 +110,11 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
             <button
               onClick={handleAddToCart}
-              className="inline-flex items-center gap-2 bg-yellow-400 text-black px-3 py-2 hover:bg-black hover:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md font-medium"
+              className="flex items-center justify-center gap-2 whitespace-nowrap bg-yellow-400 text-black px-4 py-2 hover:bg-black hover:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md font-medium"
             >
               <ShoppingCart size={16} /> Add to Cart
             </button>
+
           </div>
         </div>
 
