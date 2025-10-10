@@ -62,30 +62,65 @@ const HeaderLinks = () => {
 
             <ul
               className="absolute left-0 mt-2 w-64 bg-black rounded-xl shadow-xl border border-yellow-400/40
-              opacity-0 scale-95 translate-y-2 invisible
-              group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
-              transition-all duration-300 ease-out z-50"
+  opacity-0 scale-95 translate-y-2 invisible
+  group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
+  transition-all duration-300 ease-out z-50"
             >
-              {loading && (
-                <li className="px-5 py-3 text-gray-400">Loading...</li>
-              )}
+              {loading && <li className="px-5 py-3 text-gray-400">Loading...</li>}
               {!loading && categories.length === 0 && (
                 <li className="px-5 py-3 text-gray-400">No categories found</li>
               )}
-              {categories.map((cat: any, idx: number) => (
-                <li key={cat.id}>
-                  <Link
-                    href={`/productListing?category=${encodeURIComponent(cat.category_name)}`}
-                    className={`flex justify-between items-center px-5 py-3 text-white hover:bg-yellow-400 hover:text-black transition 
-        ${idx === 0 ? "rounded-t-xl" : ""} 
-        ${idx === categories.length - 1 ? "rounded-b-xl" : ""}`}
+
+              {!loading &&
+                categories.map((group: any, groupIdx: number) => (
+                  <li
+                    key={groupIdx}
+                    className="relative group/category border-b border-gray-700 last:border-none"
                   >
-                    {cat.category_name}
-                  </Link>
-                </li>
-              ))}
+                    {/* Parent category */}
+                    <span
+                      className="flex justify-between items-center px-5 py-3 font-semibold text-yellow-400 hover:bg-yellow-400 hover:text-black transition cursor-pointer"
+                    >
+                      {group.parent || "Unnamed Category"}
+                      <svg
+                        className="w-4 h-4 ml-2 transition-transform group-hover/category:rotate-90"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+
+                    {/* Child categories dropdown */}
+                    {group.categories && group.categories.length > 0 && (
+                      <ul
+                        className="absolute left-full top-0 mt-0 ml-1 w-56 bg-black rounded-xl shadow-lg border border-yellow-400/40
+                        opacity-0 scale-95 translate-x-2 invisible
+                        group-hover/category:opacity-100 group-hover/category:scale-100 group-hover/category:translate-x-0 group-hover/category:visible
+                        transition-all duration-300 ease-out z-50"
+                      >
+                        {group.categories.map((cat: any) => (
+                          <li key={cat.id}>
+                            <Link
+                              href={`/productListing?category=${encodeURIComponent(
+                                cat.category_name
+                              )}`}
+                              className="block px-4 py-2 text-white hover:bg-yellow-400 hover:text-black transition"
+                            >
+                              {cat.category_name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
 
             </ul>
+
+
           </div>
         </div>
 
@@ -181,7 +216,7 @@ const HeaderLinks = () => {
               >
                 Contact Us
               </Link>
-              <ul
+              {/* <ul
                 className="absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg border border-yellow-400/40
                 opacity-0 scale-95 translate-y-2 invisible
                 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
@@ -211,7 +246,7 @@ const HeaderLinks = () => {
                     Email Us
                   </Link>
                 </li>
-              </ul>
+              </ul> */}
             </li>
           </ul>
         </nav>

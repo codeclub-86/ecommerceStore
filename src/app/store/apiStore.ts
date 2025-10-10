@@ -48,18 +48,23 @@ export const useStore = create<StoreState>((set) => ({
   fetchCategories: async () => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/getCategories`
-      );
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/getCategories`);
       const data = await res.json();
 
       if (!res.ok || !data.success) throw new Error(data.message);
 
-      set({ categories: data.data, loading: false });
+      // Structure data like: [{ parent: "Men", categories: [{id, category_name}, ...] }]
+      const formatted = data.data.map((group: any) => ({
+        parent: group.parent_category,
+        categories: group.categories,
+      }));
+
+      set({ categories: formatted, loading: false });
     } catch (err: any) {
       set({ error: err.message, loading: false });
     }
   },
+
 
   // 🔹 Fetch Single Product
   fetchSingleProduct: async (id: number) => {

@@ -1,4 +1,4 @@
-// components/Footer.tsx
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,51 +9,55 @@ import {
   FaApple,
   FaGooglePlay,
 } from "react-icons/fa";
-
-const footerData = {
-  contact: {
-    phone: "+92 314 0078748",
-    hours: ["Mon–Fri: 2pm – 10pm"],
-    email: "info@codeclub.tech",
-  },
-  information: [
-    { name: "Shop", href: "/productListing" },
-    { name: "Register Now", href: "/register" },
-    { name: "Brands", href: "/brands" },
-    { name: "Contact Us", href: "/contact" },
-  ],
-  departments: [
-    "Computers & Accessories",
-    "Smartphones & Tablets",
-    "TV, Video & Audio",
-    "Cameras & Photo",
-    "Headphones",
-  ],
-  social: [
-    { href: "#", label: "Facebook", icon: <FaFacebookF size={20} /> },
-    { href: "#", label: "Twitter", icon: <FaTwitter size={20} /> },
-    { href: "#", label: "Instagram", icon: <FaInstagram size={20} /> },
-    { href: "#", label: "Google", icon: <FaGoogle size={20} /> },
-  ],
-};
+import { useEffect } from "react";
+import { useStore } from "@/app/store/apiStore";
 
 export default function Footer() {
+  const { categories, fetchCategories } = useStore();
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  // Extract only parent category names
+  const parentCategories =
+    categories?.map((cat: any) => cat.parent) || [];
+
+  const footerData = {
+    contact: {
+      phone: "+92 314 0078748",
+      hours: ["Mon–Fri: 2pm – 10pm"],
+      email: "info@codeclub.tech",
+    },
+    information: [
+      { name: "Shop", href: "/productListing" },
+      { name: "Register Now", href: "/register" },
+      { name: "Brands", href: "/brands" },
+      { name: "Contact Us", href: "/contact" },
+    ],
+    departments: parentCategories,
+    social: [
+      { href: "#", label: "Facebook", icon: <FaFacebookF size={20} /> },
+      { href: "#", label: "Twitter", icon: <FaTwitter size={20} /> },
+      { href: "#", label: "Instagram", icon: <FaInstagram size={20} /> },
+      { href: "#", label: "Google", icon: <FaGoogle size={20} /> },
+    ],
+  };
+
   return (
     <footer className="bg-[#011828] text-gray-300 w-full px-6 sm:px-10 lg:px-20 py-10 pb-3">
       {/* Top Section */}
       <div className="border-b border-gray-700 py-10">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
-          {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <Image
               src="/white-logo.svg"
-              alt="ShopGrids Logo"
+              alt="Haasil Logo"
               width={200}
               height={60}
               priority
             />
           </Link>
-          {/* You can add newsletter signup here later */}
         </div>
       </div>
 
@@ -84,11 +88,8 @@ export default function Footer() {
           {/* Information */}
           <FooterColumn title="Information" links={footerData.information} />
 
-          {/* Shop Departments */}
-          <FooterColumn
-            title="Shop Departments"
-            links={footerData.departments}
-          />
+          {/* Departments (only parent categories) */}
+          <FooterColumn title="Shop Departments" links={footerData.departments} />
 
           {/* Mobile App */}
           <div>
@@ -125,20 +126,12 @@ export default function Footer() {
       {/* Bottom Section */}
       <div className="py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm max-w-7xl mx-auto">
-          {/* Payment */}
           <div className="flex items-center gap-2">
-            <span>We Accept:</span>Cash on Delivery
-            {/* <Image
-              src="/credit-cards-footer.png"
-              alt="Payment Methods"
-              width={180}
-              height={30}
-            /> */}
+            <span>We Accept:</span> Cash on Delivery
           </div>
 
-          {/* Copyright */}
           <p className="text-gray-400 text-center">
-            © {new Date().getFullYear()} ShopGrids. Designed by{" "}
+            © {new Date().getFullYear()} Haasil. Designed by{" "}
             <a
               href="https://codeclub.tech/"
               target="_blank"
@@ -149,7 +142,6 @@ export default function Footer() {
             </a>
           </p>
 
-          {/* Social Icons */}
           <div className="flex items-center gap-4">
             <span>Follow us:</span>
             {footerData.social.map(({ href, label, icon }, i) => (
@@ -169,6 +161,7 @@ export default function Footer() {
   );
 }
 
+// Reusable Footer Column Component
 const FooterColumn = ({
   title,
   links,
@@ -183,11 +176,14 @@ const FooterColumn = ({
       {links.map((link: any, idx) => (
         <li key={idx}>
           {typeof link === "string" ? (
-            <Link href="#" className="hover:underline hover:text-gray-100 transition">
+            <span className="hover:underline hover:text-gray-100 transition cursor-pointer">
               {link}
-            </Link>
+            </span>
           ) : (
-            <Link href={link.href} className="hover:underline hover:text-gray-100 transition">
+            <Link
+              href={link.href}
+              className="hover:underline hover:text-gray-100 transition"
+            >
               {link.name}
             </Link>
           )}
@@ -196,4 +192,3 @@ const FooterColumn = ({
     </ul>
   </div>
 );
-
