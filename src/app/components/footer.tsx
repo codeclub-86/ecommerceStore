@@ -135,7 +135,7 @@ export default function Footer() {
           <p className="text-gray-400 text-center">
             © {new Date().getFullYear()} ShopGrids. Designed by{" "}
             <a
-              href="https://graygrids.com/"
+              href="https://codeclub.tech/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
