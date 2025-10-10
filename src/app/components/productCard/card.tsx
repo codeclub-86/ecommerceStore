@@ -7,7 +7,7 @@ import { useWishlistStore } from "@/app/store/wishListStore";
 import { useAuthStore } from "@/app/store/authStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast"; // ✅ import toast
+import toast from "react-hot-toast";
 
 interface TrendingSingleProps {
   id: string;
@@ -50,13 +50,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
     if (inWishlist) {
       removeFromWishlist(id);
-      toast("Removed from wishlist 💔", {
+      toast("Removed from wishlist ", {
         icon: "❌",
         style: { background: "#222", color: "#fff" },
       });
     } else {
       addToWishlist({ id, name, price, image });
-      toast.success("Added to wishlist ❤️");
+      toast.success("Added to wishlist ");
     }
   };
 
