@@ -141,23 +141,22 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                 {loading ? (
                     <p className="text-gray-500">Loading brands...</p>
                 ) : stores.length > 0 ? (
-                    <div className="space-y-3">
-                        <ul>
-                            <li
-                                onClick={() => {
-                                    setSelectedBrand(null);
-                                    onBrandSelect(null);
-                                }}
-                                className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === null ? "underline font-semibold text-blue-600" : "text-gray-600"
-                                    }`}
-                            >
-                                All
-                            </li>
-                        </ul>
+                    <ul className="space-y-2">
+                        <li
+                            key="all"
+                            onClick={() => {
+                                setSelectedBrand(null);
+                                onBrandSelect(null);
+                            }}
+                            className={`cursor-pointer py-2 px-3 hover:text-blue-600 transition ${selectedBrand === null ? "underline font-semibold text-blue-600" : "text-gray-600"
+                                }`}
+                        >
+                            All
+                        </li>
 
                         {stores.map((store: any) => (
-                            <div
-                                key={store.id}
+                            <li
+                                key={store.id || store.name} // ✅ unique key
                                 onClick={() => {
                                     setSelectedBrand(store.name);
                                     onBrandSelect(store.name);
@@ -168,13 +167,14 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                                     }`}
                             >
                                 {store.name}
-                            </div>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 ) : (
                     <p className="text-gray-500">No brands available.</p>
                 )}
             </div>
+
 
 
         </>

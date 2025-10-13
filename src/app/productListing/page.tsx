@@ -9,7 +9,15 @@ import { useStore } from "@/app/store/apiStore";
 import { useSearchParams } from "next/navigation";
 
 const ProductListing: React.FC = () => {
-  const { products, loading, error, fetchProducts } = useStore();
+  const {
+    products,
+    searchResults,
+    searchQuery,
+    loading,
+    error,
+    fetchProducts,
+  } = useStore();
+
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
@@ -20,27 +28,28 @@ const ProductListing: React.FC = () => {
 
   const searchParams = useSearchParams();
 
-  // 🔹 Read ?category= from URL on first load
+  // 🔹 Read ?category= or ?brand= from URL
   useEffect(() => {
     const categoryFromQuery = searchParams.get("category");
     const brandFromQuery = searchParams.get("brand");
-    if (categoryFromQuery) {
-      setSelectedCategory(categoryFromQuery);
-    }
-
-    if (brandFromQuery) {
-      setSelectedBrand(brandFromQuery);
-    }
+    if (categoryFromQuery) setSelectedCategory(categoryFromQuery);
+    if (brandFromQuery) setSelectedBrand(brandFromQuery);
   }, [searchParams]);
 
-  // 🔹 Fetch all products once
+  // 🔹 Fetch all products only if not searching
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    if (!searchQuery) {
+      fetchProducts();
+    }
+  }, [fetchProducts, searchQuery]);
 
-  // 🔹 Apply filters and sorting
+  // 🔹 Decide which products to show
+  const sourceProducts =
+    searchQuery && searchResults.length > 0 ? searchResults : products;
+
+  // 🔹 Apply filters + sorting
   useEffect(() => {
-    let result = [...products];
+    let result = [...sourceProducts];
 
     if (selectedCategory) {
       result = result.filter(
@@ -77,7 +86,7 @@ const ProductListing: React.FC = () => {
 
     setFilteredProducts(result);
     setCurrentPage(1);
-  }, [products, selectedCategory, selectedPrice, selectedBrand, sortOption]);
+  }, [sourceProducts, selectedCategory, selectedPrice, selectedBrand, sortOption]);
 
   // 🔹 Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -133,7 +142,7 @@ const ProductListing: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-10 text-gray-500">
-                  No products found for the selected filters.
+                  No products found {searchQuery ? `for "${searchQuery}"` : "for the selected filters"}.
                 </div>
               )}
             </>
@@ -153,7 +162,8 @@ const ProductListing: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentPage(index + 1)}
-                  className={`px-4 py-2 border rounded ${currentPage === index + 1 ? "bg-blue-600 text-white" : ""}`}
+                  className={`px-4 py-2 border rounded ${currentPage === index + 1 ? "bg-blue-600 text-white" : ""
+                    }`}
                 >
                   {index + 1}
                 </button>

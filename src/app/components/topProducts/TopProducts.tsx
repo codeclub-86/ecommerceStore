@@ -7,23 +7,23 @@ import Link from "next/link";
 
 const ProductList = () => {
   const trendingProducts = useStore((state: any) => state.trendingProducts);
+  const newProducts = useStore((state: any) => state.newArrivals);
+  const topProducts = useStore((state: any) => state.topRatedProducts);
   const fetchTrendingProducts = useStore((state: any) => state.fetchTrendingProducts);
+  const fetchNewProducts = useStore((state: any) => state.fetchNewArrivals);
+  const fetchTopProducts = useStore((state: any) => state.fetchTopRatedProducts);
   const loading = useStore((state: any) => state.loading);
   const error = useStore((state: any) => state.error);
 
   useEffect(() => {
     fetchTrendingProducts();
-  }, [fetchTrendingProducts]);
+    fetchNewProducts();
+    fetchTopProducts();
+  }, [fetchTrendingProducts, fetchNewProducts, fetchTopProducts]);
 
   const bestSellers = trendingProducts || [];
-  const newArrivals = [
-    { id: 101, name: "Smartwatch X", price: 189.99, image: "/assets/product-4.jpg" },
-    { id: 102, name: "Gaming Mouse RGB", price: 59.99, image: "/assets/product-5.jpg" },
-  ];
-  const topRated = [
-    { id: 201, name: "Samsung Gear 360 VR Camera", price: 68.0, image: "/assets/product-6.jpg" },
-    { id: 202, name: "DSLR Lens Pro 50mm", price: 220.0, image: "/assets/product-7.jpg" },
-  ];
+  const newArrivals = newProducts || [];
+  const topRated = topProducts || [];
 
   const sections = {
     "Best Sellers": bestSellers,

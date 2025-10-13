@@ -8,7 +8,11 @@ interface StoreState {
   error: string | null;
   trendingProducts: any[]; // 👈 new
   stores: any[]; // 👈 new
+  searchResults: any[]; // 👈 new
+  searchQuery: string; // 👈 new
   saleProducts: any[];
+  newArrivals: any[];
+  topRatedProducts: any[];
 
   fetchProducts: (params?: Record<string, any>) => Promise<void>;
   fetchCategories: () => Promise<void>;
@@ -16,6 +20,9 @@ interface StoreState {
   fetchTrendingProducts: () => Promise<void>; // 👈 new
   fetchStores: () => Promise<void>; // 👈 new
   fetchSaleProducts: () => Promise<void>; // 👈 new
+  fetchNewArrivals: () => Promise<void>; // 👈 new
+  fetchSearchProducts: (query: string) => Promise<void>; // 👈 new
+  fetchTopRatedProducts: () => Promise<void>; // 👈 new
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -27,6 +34,10 @@ export const useStore = create<StoreState>((set) => ({
   error: null,
   trendingProducts: [], // 👈 new
   saleProducts: [],
+  topRatedProducts: [],
+  newArrivals: [],
+  searchResults: [], // 👈 new
+  searchQuery: "", // 👈 new
 
   // 🔹 Fetch Products with filters
   fetchProducts: async (params = {}) => {
@@ -144,6 +155,80 @@ export const useStore = create<StoreState>((set) => ({
         throw new Error(data.message || "Unknown API error");
 
       set({ saleProducts: data.data, loading: false });
+    } catch (err: any) {
+      console.error(err);
+      set({ error: err.message, loading: false });
+    }
+  },
+  fetchNewArrivals: async () => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/new-arrivals`
+      );
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(
+          `API did not return JSON: ${text.substring(0, 200)}...`
+        );
+      }
+
+      if (!res.ok || !data.success)
+        throw new Error(data.message || "Unknown API error");
+
+      set({ newArrivals: data.data, loading: false });
+    } catch (err: any) {
+      console.error(err);
+      set({ error: err.message, loading: false });
+    }
+  },
+  fetchTopRatedProducts: async () => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/top-rated`
+      );
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(`API did not return JSON: ${text.substring(0, 200)}...`);
+      }
+
+      if (!res.ok || !data.success)
+        throw new Error(data.message || "Unknown API error");
+
+      set({ topRatedProducts: data.data, loading: false });
+    } catch (err: any) {
+      console.error(err);
+      set({ error: err.message, loading: false });
+    }
+  },
+  fetchSearchProducts: async (query: string) => {
+    set({ loading: true, error: null, searchQuery: query });
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/searchProducts?search=${encodeURIComponent(query)}`
+      );
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(`API did not return JSON: ${text.substring(0, 200)}...`);
+      }
+
+      if (!res.ok || !data.success)
+        throw new Error(data.message || "Unknown API error");
+
+      set({ searchResults: data.data, loading: false });
     } catch (err: any) {
       console.error(err);
       set({ error: err.message, loading: false });

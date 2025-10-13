@@ -8,28 +8,21 @@ import { useState } from "react";
 import { useWishlistStore } from "@/app/store/wishListStore";
 import { useCartStore } from "@/app/store/cartStore";
 import { useStore } from "@/app/store/apiStore";
+import { useRouter } from "next/navigation";
+
 
 // 🔍 Search Bar
-function SearchBar({
-  mobile = false,
-  onSearch,
-}: {
-  mobile?: boolean;
-  onSearch?: (results: any[] | null) => void;
-}) {
-  const { products } = useStore();
+function SearchBar({ mobile = false }: { mobile?: boolean }) {
   const [query, setQuery] = useState("");
+  const router = useRouter();
+  const { fetchSearchProducts } = useStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) {
-      onSearch?.(null);
-      return;
-    }
-    const results = products.filter((p) =>
-      p.name.toLowerCase().includes(query.toLowerCase())
-    );
-    onSearch?.(results);
+    if (!query.trim()) return;
+
+    await fetchSearchProducts(query);
+    router.push("/productListing"); // redirect user to shop page
   };
 
   return (
@@ -43,7 +36,6 @@ function SearchBar({
       <input
         type="text"
         placeholder="Search products..."
-        aria-label="Search products"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="flex-1 px-4 py-2 outline-none text-gray-800 text-sm bg-transparent placeholder-gray-500"
@@ -51,7 +43,6 @@ function SearchBar({
       <button
         type="submit"
         className="bg-yellow-400 hover:bg-black hover:text-yellow-400 px-4 flex items-center justify-center text-black transition-all"
-        aria-label="Search"
       >
         <Search size={18} />
       </button>
@@ -76,9 +67,9 @@ export default function ShopGridsHeader() {
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <Image
-                src="/logo.svg"
+                src="/logo.jpeg"
                 alt="Logo"
-                width={180}
+                width={120}
                 height={60}
                 priority
                 className="transition-transform duration-300 group-hover:scale-105"

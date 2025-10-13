@@ -17,8 +17,6 @@ interface TrendingSingleProps {
   store?: string;
   category?: string;
   rating?: number;
-  status?: string;
-  sale_price?: number | string;
 }
 
 const TrendingSingle: React.FC<TrendingSingleProps> = ({
@@ -29,8 +27,6 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   category,
   store,
   rating = 4,
-  status,
-  sale_price,
 }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
@@ -62,11 +58,10 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    const finalPrice = sale_price ? Number(sale_price) : price;
     addToCart({
       id: Number(id),
       name,
-      price: finalPrice,
+      price,
       image,
       category,
       variation: undefined,
@@ -85,19 +80,15 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       >
         <Heart
           size={18}
-          className={`transition ${inWishlist ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
+          className={`transition ${inWishlist
+            ? "text-yellow-500 fill-yellow-500"
+            : "text-gray-700"
             }`}
         />
       </button>
 
       {/* Product Link */}
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
-        {status && (
-          <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-white text-xs font-semibold px-3 py-1 shadow">
-            {status}
-          </span>
-        )}
-
         {/* Image */}
         <div className="relative w-full h-64 overflow-hidden">
           <Image
@@ -114,7 +105,6 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             >
               <ShoppingCart size={16} /> Add to Cart
             </button>
-
           </div>
         </div>
 
@@ -146,20 +136,9 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
           {/* Price */}
           <div className="mt-2">
-            {sale_price ? (
-              <div className="flex items-center gap-2">
-                <span className="text-white font-bold text-lg">
-                  ${Number(sale_price).toFixed(2)}
-                </span>
-                <span className="text-gray-500 line-through text-sm">
-                  ${Number(price).toFixed(2)}
-                </span>
-              </div>
-            ) : (
-              <span className="text-white font-bold text-lg">
-                ${Number(price).toFixed(2)}
-              </span>
-            )}
+            <span className="text-white font-bold text-lg">
+              ${Number(price).toFixed(2)}
+            </span>
           </div>
         </div>
       </Link>

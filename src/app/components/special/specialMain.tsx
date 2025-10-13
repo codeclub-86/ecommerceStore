@@ -14,7 +14,7 @@ const SpecialMain = () => {
     <section className="w-full flex flex-col justify-center items-center py-12 px-6 lg:px-20 gap-12 light-bg-css">
       {/* Header */}
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-3xl lg:text-4xl font-bold text-yellow-400">
+        <h1 className="text-3xl lg:text-4xl font-bold text-white">
           Special Offers
         </h1>
         <div className="w-12 h-1 mt-4 rounded-lg bg-yellow-400"></div>
