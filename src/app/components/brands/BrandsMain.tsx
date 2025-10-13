@@ -25,10 +25,10 @@ const BrandsMain: React.FC = () => {
   }, []);
 
   return (
-    <section className="w-full bg-gray-50 py-16">
+    <section className="w-full dark-bg-css py-16 ">
       {/* Section Title */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-800">Popular Brands</h2>
+        <h2 className="text-2xl font-bold text-white">Popular Brands</h2>
         <div className="relative w-16 h-[2px] bg-blue-600 mx-auto mt-3 rounded-full"></div>
       </div>
 

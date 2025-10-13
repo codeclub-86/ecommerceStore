@@ -1,17 +1,15 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import SpecialSingle from "../../../app/components/SpecialSingle";
-
-const dummyProducts = [
-  { id: "1", name: "Men's Casual T-Shirt", price: 25, image: "/p1.jpeg" },
-  { id: "2", name: "Women's Summer Dress", price: 40, image: "/p3.jpeg" },
-  { id: "3", name: "Men's Slim Fit Jeans", price: 55, image: "/p5.jpeg" },
-  { id: "4", name: "Women's Denim Jacket", price: 65, image: "/p2.jpeg" },
-  { id: "5", name: "Men's Hoodie", price: 45, image: "/p4.jpeg" },
-  { id: "6", name: "Women's Blouse", price: 35, image: "/p3.jpeg" },
-];
+import { useStore } from "@/app/store/apiStore";
 
 const SpecialMain = () => {
+  const { saleProducts, fetchSaleProducts, loading, error } = useStore();
+
+  useEffect(() => {
+    fetchSaleProducts();
+  }, [fetchSaleProducts]);
+
   return (
     <section className="w-full flex flex-col justify-center items-center py-12 px-6 lg:px-20 gap-12 light-bg-css">
       {/* Header */}
@@ -26,11 +24,33 @@ const SpecialMain = () => {
       </div>
 
       {/* Product Grid */}
-      <div className="grid gap-6 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {dummyProducts.map((product) => (
-          <SpecialSingle key={product.id} {...product} />
-        ))}
-      </div>
+      {loading ? (
+        <p className="text-gray-400">Loading special offers...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <div className="grid gap-6 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {saleProducts?.length > 0 ? (
+            saleProducts.map((product: any) => (
+              <SpecialSingle
+                key={product.id}
+                id={String(product.id)}
+                name={product.name}
+                price={Number(product.price)}
+                sale_price={product.sale_price}
+                image={product.image || "/fallback.png"}
+                category={product.category}
+                status={product.status} // e.g., "Sale"
+                rating={4.5} // Optional static rating
+              />
+            ))
+          ) : (
+            <p className="text-gray-400 col-span-full text-center">
+              No special offers available right now.
+            </p>
+          )}
+        </div>
+      )}
     </section>
   );
 };

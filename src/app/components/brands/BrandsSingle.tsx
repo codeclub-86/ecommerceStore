@@ -19,10 +19,11 @@ const BrandsSingle: React.FC<BrandsSingleProps> = ({ logo, name }) => {
         />
       ) : (
         // Optional: Show placeholder or text
-        <div className="text-sm text-gray-400">No Logo</div>
+        <div className="text-sm text-white">No Logo</div>
       )}
     </div>
   );
 };
 
 export default BrandsSingle;
+

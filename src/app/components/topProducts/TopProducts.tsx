@@ -1,69 +1,94 @@
 "use client";
-import React from "react";
-import Image from "next/image";
 
-const products = {
-  "Best Sellers": [
-    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
-    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
-    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
-  ],
-  "New Arrivals": [
-    { name: "GoPro Hero4 Silver", price: "$287.99", img: "/product-1.jpg" },
-  ],
-  "Top Rated": [
-    {
-      name: "Samsung Gear 360 VR Camera",
-      price: "$68.00",
-      img: "/product-1.jpg",
-    },
-  ],
-};
+import React, { useEffect } from "react";
+import Image from "next/image";
+import { useStore } from "@/app/store/apiStore";
+import Link from "next/link";
 
 const ProductList = () => {
+  const trendingProducts = useStore((state: any) => state.trendingProducts);
+  const fetchTrendingProducts = useStore((state: any) => state.fetchTrendingProducts);
+  const loading = useStore((state: any) => state.loading);
+  const error = useStore((state: any) => state.error);
+
+  useEffect(() => {
+    fetchTrendingProducts();
+  }, [fetchTrendingProducts]);
+
+  const bestSellers = trendingProducts || [];
+  const newArrivals = [
+    { id: 101, name: "Smartwatch X", price: 189.99, image: "/assets/product-4.jpg" },
+    { id: 102, name: "Gaming Mouse RGB", price: 59.99, image: "/assets/product-5.jpg" },
+  ];
+  const topRated = [
+    { id: 201, name: "Samsung Gear 360 VR Camera", price: 68.0, image: "/assets/product-6.jpg" },
+    { id: 202, name: "DSLR Lens Pro 50mm", price: 220.0, image: "/assets/product-7.jpg" },
+  ];
+
+  const sections = {
+    "Best Sellers": bestSellers,
+    "New Arrivals": newArrivals,
+    "Top Rated": topRated,
+  };
+
   return (
     <section className="w-full bg-white px-6 lg:px-20 py-16">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        {Object.entries(products).map(([section, items]) => (
-          <div key={section} className="space-y-6">
-            {/* Section Title */}
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">{section}</h2>
-              <div className="relative w-full h-[1px] bg-gray-200 mt-2">
-                <span className="absolute bottom-0 left-0 w-16 h-[2px] bg-blue-600 rounded"></span>
+      {loading ? (
+        <p className="text-gray-500 text-center">Loading products...</p>
+      ) : error ? (
+        <p className="text-red-500 text-center">Error: {error}</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {Object.entries(sections).map(([section, items]: [string, any[]]) => (
+            <div key={section} className="space-y-6">
+              {/* Section Title */}
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">{section}</h2>
+                <div className="relative w-full h-[1px] bg-gray-200 mt-2">
+                  <span className="absolute bottom-0 left-0 w-16 h-[2px] bg-blue-600 rounded"></span>
+                </div>
               </div>
-            </div>
 
-            {/* Products */}
-            <ul className="space-y-6">
-              {items.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-4 hover:bg-gray-50 p-2 rounded-lg transition"
-                >
-                  <div className="flex-shrink-0">
-                    <Image
-                      src={item.img}
-                      alt={item.name}
-                      width={64}
-                      height={64}
-                      className="object-contain rounded-md border shadow-sm"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-800 hover:text-blue-600 hover:underline transition-colors cursor-pointer">
-                      {item.name}
-                    </p>
-                    <p className="text-gray-500 text-sm font-semibold">
-                      {item.price}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+              {/* Products */}
+              <ul className="space-y-6">
+                {items && items.length > 0 ? (
+                  items.map((item, index) => (
+                    <Link
+                      key={index}
+                      href={`/product-detail/${item._id || item.id || index}`}
+                      className="block hover:bg-gray-50 p-2 rounded-lg transition"
+                    >
+                      <li className="flex items-center gap-4">
+                        <div className="flex-shrink-0">
+                          <Image
+                            src={item.image || item.img || "/assets/product-1.jpg"}
+                            alt={item.name}
+                            width={64}
+                            height={64}
+                            className="object-contain rounded-md border shadow-sm"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-800 hover:text-blue-600 hover:underline transition-colors">
+                            {item.name}
+                          </p>
+                          <p className="text-gray-500 text-sm font-semibold">
+                            ${item.price}
+                          </p>
+                        </div>
+                      </li>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-sm">
+                    No products found in this section.
+                  </p>
+                )}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 };

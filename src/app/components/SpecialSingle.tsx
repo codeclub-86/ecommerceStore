@@ -46,10 +46,10 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
         }
         if (inWishlist) {
             removeFromWishlist(id);
-            toast.error("Removed from Favorites ❤️"); // ✅ added
+            toast.error("Removed from Favorites ❤️");
         } else {
             addToWishlist({ id, name, price, image });
-            toast.success("Added to Favorites ❤️"); // ✅ added
+            toast.success("Added to Favorites ❤️");
         }
     };
 
@@ -64,8 +64,10 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
             category,
             variation: undefined,
         });
-        toast.success(`${name} added to cart 🛒`); // ✅ added
+        toast.success(`${name} added to cart 🛒`);
     };
+
+    const isOnSale = sale_price && Number(sale_price) < Number(price);
 
     return (
         <div className="relative flex flex-col transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
@@ -86,9 +88,9 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
             {/* Product Link */}
             <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
                 {/* Status Badge */}
-                {status && (
-                    <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-white text-xs font-semibold px-3 py-1 shadow">
-                        {status}
+                {isOnSale && (
+                    <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-black text-xs font-semibold px-3 py-1 rounded shadow">
+                        SALE
                     </span>
                 )}
 
@@ -140,18 +142,18 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
 
                     {/* Price */}
                     <div className="mt-2">
-                        {sale_price ? (
+                        {isOnSale ? (
                             <div className="flex items-center gap-2">
-                                <span className="text-white font-bold text-lg">
-                                    ${Number(sale_price).toFixed(2)}
+                                <span className="text-yellow-400 font-bold text-lg">
+                                    Rs {Number(sale_price).toFixed(0)}
                                 </span>
                                 <span className="text-gray-500 line-through text-sm">
-                                    ${Number(price).toFixed(2)}
+                                    Rs {Number(price).toFixed(0)}
                                 </span>
                             </div>
                         ) : (
                             <span className="text-white font-bold text-lg">
-                                ${Number(price).toFixed(2)}
+                                Rs {Number(price).toFixed(0)}
                             </span>
                         )}
                     </div>

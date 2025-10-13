@@ -8,12 +8,14 @@ interface StoreState {
   error: string | null;
   trendingProducts: any[]; // 👈 new
   stores: any[]; // 👈 new
+  saleProducts: any[];
 
   fetchProducts: (params?: Record<string, any>) => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSingleProduct: (id: number) => Promise<void>;
   fetchTrendingProducts: () => Promise<void>; // 👈 new
   fetchStores: () => Promise<void>; // 👈 new
+  fetchSaleProducts: () => Promise<void>; // 👈 new
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -24,6 +26,7 @@ export const useStore = create<StoreState>((set) => ({
   loading: false,
   error: null,
   trendingProducts: [], // 👈 new
+  saleProducts: [],
 
   // 🔹 Fetch Products with filters
   fetchProducts: async (params = {}) => {
@@ -120,4 +123,31 @@ export const useStore = create<StoreState>((set) => ({
       set({ error: err.message, loading: false });
     }
   },
+  fetchSaleProducts: async () => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/status/2`
+      );
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(
+          `API did not return JSON: ${text.substring(0, 200)}...`
+        );
+      }
+
+      if (!res.ok || !data.success)
+        throw new Error(data.message || "Unknown API error");
+
+      set({ saleProducts: data.data, loading: false });
+    } catch (err: any) {
+      console.error(err);
+      set({ error: err.message, loading: false });
+    }
+  },
+
 }));

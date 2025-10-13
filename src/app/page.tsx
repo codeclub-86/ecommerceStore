@@ -7,7 +7,8 @@ import TrendingMain from "./components/trending/trendingMain";
 import SpecialMain from "./components/special/specialMain";
 import TopProducts from "./components/topProducts/TopProducts";
 import BrandsMain from "./components/brands/BrandsMain";
-import CategoryBar from "./components/CategoryBar";
+// import CategoryBar from "./components/CategoryBar";
+// import HomeReelsPreview from "./components/reels/HomeReelsPreview";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       {/* <CategoryBar></CategoryBar> */}
       <FeaturedMain></FeaturedMain>
       <TrendingMain></TrendingMain>
+      {/* <HomeReelsPreview></HomeReelsPreview> */}
       <SpecialMain></SpecialMain>
       <TopProducts></TopProducts>
       <BrandsMain></BrandsMain>
