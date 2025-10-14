@@ -11,7 +11,7 @@ import { useStore } from "@/app/store/apiStore";
 import { useRouter } from "next/navigation";
 
 
-// 🔍 Search Bar
+// Search Bar
 function SearchBar({ mobile = false }: { mobile?: boolean }) {
   const [query, setQuery] = useState("");
   const router = useRouter();
@@ -67,7 +67,7 @@ export default function ShopGridsHeader() {
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <Image
-                src="/logo.jpeg"
+                src="/logo1.jpeg"
                 alt="Logo"
                 width={120}
                 height={60}

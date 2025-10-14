@@ -43,9 +43,11 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     if (singleProduct) {
+      console.log("🔍 singleProduct data:", singleProduct);
       setMainImage(singleProduct.image || "/placeholder.png");
     }
   }, [singleProduct]);
+
 
   const reloadProduct = () => {
     if (id) fetchSingleProduct(Number(id));
@@ -66,13 +68,13 @@ export default function ProductDetailPage() {
     inWishlist
       ? removeFromWishlist(String(singleProduct.id))
       : addToWishlist({
-          id: String(singleProduct.id),
-          name: singleProduct.name,
-          price: singleProduct.sale_price
-            ? Number(singleProduct.sale_price)
-            : Number(singleProduct.price),
-          image: singleProduct.image,
-        });
+        id: String(singleProduct.id),
+        name: singleProduct.name,
+        price: singleProduct.sale_price
+          ? Number(singleProduct.sale_price)
+          : Number(singleProduct.price),
+        image: singleProduct.image,
+      });
   };
 
   // cart logic
@@ -122,9 +124,8 @@ export default function ProductDetailPage() {
                     {singleProduct.images.map((img: any, i: number) => (
                       <div
                         key={i}
-                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${
-                          mainImage === img.path ? "ring-2 ring-blue-500" : ""
-                        }`}
+                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${mainImage === img.path ? "ring-2 ring-blue-500" : ""
+                          }`}
                         onClick={() => setMainImage(img.path)}
                       >
                         <Image
@@ -224,11 +225,10 @@ export default function ProductDetailPage() {
                 </button>
                 <button
                   onClick={toggleWishlist}
-                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${
-                    inWishlist
+                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${inWishlist
                       ? "border-red-400 bg-red-50 text-red-500"
                       : "border-gray-300 hover:bg-gray-100"
-                  }`}
+                    }`}
                 >
                   <FaHeart
                     className={inWishlist ? "text-red-500" : "text-gray-500"}

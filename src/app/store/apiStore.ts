@@ -99,29 +99,31 @@ export const useStore = create<StoreState>((set) => ({
   fetchTrendingProducts: async () => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/trending`
-      );
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/trending`);
       const text = await res.text();
 
       let data;
       try {
         data = JSON.parse(text);
       } catch {
-        throw new Error(
-          `API did not return JSON: ${text.substring(0, 200)}...`
-        );
+        throw new Error(`API did not return JSON: ${text.substring(0, 200)}...`);
       }
 
       if (!res.ok || !data.success)
         throw new Error(data.message || "Unknown API error");
 
-      set({ trendingProducts: data.data, loading: false });
+      // 🔹 Filter out products that have a sale_price
+      const filteredTrending = data.data.filter(
+        (prod: any) => !prod.sale_price
+      );
+
+      set({ trendingProducts: filteredTrending, loading: false });
     } catch (err: any) {
       console.error(err);
       set({ error: err.message, loading: false });
     }
   },
+
   // 🔹 Fetch Active Stores
   fetchStores: async () => {
     set({ loading: true, error: null });
