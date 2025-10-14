@@ -1,6 +1,6 @@
 "use client";
 
-import { Facebook, Twitter, Instagram, Menu, X } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useStore } from "@/app/store/apiStore";
@@ -252,24 +252,36 @@ const HeaderLinks = () => {
         </nav>
 
         {/* Right side social icons */}
-        <div className="hidden md:flex items-center gap-5">
-          <ul className="flex gap-3">
-            <li>
-              <SocialIcon href="#">
-                <Facebook className="w-5 h-5" />
-              </SocialIcon>
-            </li>
-            <li>
-              <SocialIcon href="#">
-                <Twitter className="w-5 h-5" />
-              </SocialIcon>
-            </li>
-            <li>
-              <SocialIcon href="#">
-                <Instagram className="w-5 h-5" />
-              </SocialIcon>
-            </li>
-          </ul>
+        <div className="flex justify-center gap-5 py-4">
+          <a
+            href="https://www.facebook.com/share/17DoTWFFao/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="text-yellow-400 hover:text-yellow-500 transition"
+          >
+            <Facebook className="w-5 h-5" />
+          </a>
+
+          <a
+            href="https://www.instagram.com/codeclubb_?igsh=MWI0aTQ1dzBlcXZndA=="
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="text-yellow-400 hover:text-yellow-500 transition"
+          >
+            <Instagram className="w-5 h-5" />
+          </a>
+
+          <a
+            href="https://www.linkedin.com/company/code-clubb/posts/?feedView=all"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="text-yellow-400 hover:text-yellow-500 transition"
+          >
+            <Linkedin className="w-5 h-5" />
+          </a>
         </div>
       </div>
 
@@ -305,10 +317,37 @@ const HeaderLinks = () => {
           </ul>
 
           <div className="flex justify-center gap-5 py-4 border-t border-yellow-400">
-            <Facebook className="w-5 h-5 text-yellow-400" />
-            <Twitter className="w-5 h-5 text-yellow-400" />
-            <Instagram className="w-5 h-5 text-yellow-400" />
+            <a
+              href="https://www.facebook.com/share/17DoTWFFao/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="text-yellow-400 hover:text-yellow-500 transition"
+            >
+              <Facebook className="w-5 h-5" />
+            </a>
+
+            <a
+              href="https://www.instagram.com/codeclubb_?igsh=MWI0aTQ1dzBlcXZndA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="text-yellow-400 hover:text-yellow-500 transition"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+
+            <a
+              href="https://www.linkedin.com/company/code-clubb/posts/?feedView=all"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="text-yellow-400 hover:text-yellow-500 transition"
+            >
+              <Linkedin className="w-5 h-5" />
+            </a>
           </div>
+
         </div>
       )}
     </header>

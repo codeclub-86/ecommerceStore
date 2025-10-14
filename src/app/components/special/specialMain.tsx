@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import SpecialSingle from "../../../app/components/SpecialSingle";
+import SpecialSingle from "@/app/components/SpecialSingle";
 import { useStore } from "@/app/store/apiStore";
 
 const SpecialMain = () => {
@@ -30,7 +30,7 @@ const SpecialMain = () => {
         <p className="text-red-500">{error}</p>
       ) : (
         <div className="grid gap-6 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {saleProducts?.length > 0 ? (
+          {saleProducts && saleProducts.length > 0 ? (
             saleProducts.map((product: any) => (
               <SpecialSingle
                 key={product.id}
@@ -39,9 +39,9 @@ const SpecialMain = () => {
                 price={Number(product.price)}
                 sale_price={product.sale_price}
                 image={product.image || "/fallback.png"}
-                category={product.category}
-                status={product.status} // e.g., "Sale"
-                rating={4.5} // Optional static rating
+                category={product.category || "General"}
+                status={product.status}
+                rating={product.rating || 4.5}
               />
             ))
           ) : (

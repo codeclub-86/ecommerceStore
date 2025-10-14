@@ -52,10 +52,22 @@ const ProductListing: React.FC = () => {
     let result = [...sourceProducts];
 
     if (selectedCategory) {
-      result = result.filter(
-        (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
-      );
+      const normalize = (str: string) =>
+        str
+          .toLowerCase()
+          .replace(/['&]/g, "")
+          .replace(/\s+/g, "");
+
+      const target = normalize(selectedCategory);
+
+      result = result.filter((p) => {
+        const category = normalize(p.category || "");
+        const parent = normalize(p.parent_category || "");
+        return category.includes(target) || parent.includes(target);
+      });
     }
+
+
 
     if (selectedPrice) {
       result = result.filter((p) => {

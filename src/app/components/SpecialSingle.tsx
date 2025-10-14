@@ -25,8 +25,8 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     name,
     price,
     image,
-    category,
-    rating = 4,
+    category = "General",
+    rating = 0,
     status,
     sale_price,
 }) => {
@@ -38,6 +38,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     const inWishlist = isInWishlist(id);
 
     const toggleWishlist = (e: React.MouseEvent) => {
+        e.stopPropagation();
         e.preventDefault();
         initializeAuth();
         if (!isLoggedIn) {
@@ -54,6 +55,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     };
 
     const handleAddToCart = (e: React.MouseEvent) => {
+        e.stopPropagation();
         e.preventDefault();
         const finalPrice = sale_price ? Number(sale_price) : price;
         addToCart({
@@ -70,7 +72,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     const isOnSale = sale_price && Number(sale_price) < Number(price);
 
     return (
-        <div className="relative flex flex-col transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+        <div className="relative flex flex-col transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white/5">
             {/* Wishlist */}
             <button
                 aria-label="Add to Wishlist"
@@ -85,15 +87,15 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
                 />
             </button>
 
-            {/* Product Link */}
-            <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
-                {/* Status Badge */}
-                {isOnSale && (
-                    <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-black text-xs font-semibold px-3 py-1 rounded shadow">
-                        SALE
-                    </span>
-                )}
+            {/* SALE Badge */}
+            {isOnSale && (
+                <span className="absolute top-3 left-3 z-10 bg-yellow-400 text-black text-xs font-semibold px-3 py-1 rounded shadow">
+                    SALE
+                </span>
+            )}
 
+            {/* Product Clickable Area */}
+            <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
                 {/* Image */}
                 <div className="relative w-full h-64 overflow-hidden">
                     <Image
@@ -104,7 +106,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
 
-                    {/* Add to Cart */}
+                    {/* Add to Cart Button */}
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
                         <button
                             onClick={handleAddToCart}
@@ -122,23 +124,30 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
                         <span className="hover:text-yellow-500 transition">{name}</span>
                     </h4>
 
-                    {/* Rating */}
-                    <ul className="flex items-center gap-1 mt-2 text-yellow-400">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <li key={i}>
-                                <Star
-                                    size={16}
-                                    fill={i < rating ? "currentColor" : "none"}
-                                    className={i < rating ? "text-yellow-400" : "text-gray-300"}
-                                />
-                            </li>
-                        ))}
-                        <li>
-                            <span className="text-gray-500 text-sm ml-2">
-                                {rating.toFixed(1)}
-                            </span>
-                        </li>
-                    </ul>
+                    {/* Rating (updated logic) */}
+                    <div className="mt-2">
+                        <ul className="flex items-center gap-1 text-yellow-400">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <li key={i}>
+                                    <Star
+                                        size={16}
+                                        fill={i < Math.floor(rating) ? "currentColor" : "none"}
+                                        stroke={
+                                            i < Math.floor(rating) ? "currentColor" : "#9CA3AF"
+                                        }
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+
+                        {rating > 0 ? (
+                            <p className="text-xs text-gray-400 mt-1">
+                                {rating.toFixed(1)} / 5
+                            </p>
+                        ) : (
+                            <p className="text-xs text-gray-500 mt-1">No reviews yet</p>
+                        )}
+                    </div>
 
                     {/* Price */}
                     <div className="mt-2">

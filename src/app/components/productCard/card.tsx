@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import { ShoppingCart, Star, Heart } from "lucide-react";
@@ -12,21 +13,25 @@ import toast from "react-hot-toast";
 interface TrendingSingleProps {
   id: string;
   name: string;
-  price: number;
+  price: number | string;
+  sale_price?: number | string | null;
   image: string;
   store?: string;
   category?: string;
-  rating?: number;
+  average_rating?: number; // ✅ use this directly
+  status?: string | null;
 }
 
 const TrendingSingle: React.FC<TrendingSingleProps> = ({
   id,
   name,
   price,
+  sale_price,
   image,
   category,
   store,
-  rating = 4,
+  average_rating = 0,
+  status,
 }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
@@ -46,13 +51,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
     if (inWishlist) {
       removeFromWishlist(id);
-      toast("Removed from wishlist ", {
+      toast("Removed from wishlist", {
         icon: "❌",
         style: { background: "#222", color: "#fff" },
       });
     } else {
-      addToWishlist({ id, name, price, image });
-      toast.success("Added to wishlist ");
+      addToWishlist({ id, name, price: Number(sale_price || price), image });
+      toast.success("Added to wishlist ❤️");
     }
   };
 
@@ -61,7 +66,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
     addToCart({
       id: Number(id),
       name,
-      price,
+      price: Number(sale_price || price),
       image,
       category,
       variation: undefined,
@@ -80,19 +85,24 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       >
         <Heart
           size={18}
-          className={`transition ${inWishlist
-            ? "text-yellow-500 fill-yellow-500"
-            : "text-gray-700"
+          className={`transition ${inWishlist ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
             }`}
         />
       </button>
+
+      {/* Status Badge */}
+      {status && (
+        <span className="absolute top-3 left-3 bg-yellow-400 text-black text-xs font-semibold px-2 py-1 rounded-md z-10">
+          {status}
+        </span>
+      )}
 
       {/* Product Link */}
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
         {/* Image */}
         <div className="relative w-full h-64 overflow-hidden">
           <Image
-            src={image}
+            src={image || "/placeholder.png"}
             alt={name}
             width={400}
             height={400}
@@ -117,28 +127,46 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           <p className="text-sm text-gray-100">{store}</p>
 
           {/* Rating */}
-          <ul className="flex items-center gap-1 mt-2 text-yellow-400">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <li key={i}>
-                <Star
-                  size={16}
-                  fill={i < rating ? "currentColor" : "none"}
-                  className={i < rating ? "text-yellow-400" : "text-gray-300"}
-                />
-              </li>
-            ))}
-            <li>
-              <span className="text-gray-500 text-sm ml-2">
-                {rating.toFixed(1)}
-              </span>
-            </li>
-          </ul>
+          <div className="mt-2">
+            <ul className="flex items-center gap-1 text-yellow-400">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <li key={i}>
+                  <Star
+                    size={16}
+                    fill={i < Math.floor(average_rating) ? "currentColor" : "none"}
+                    stroke={
+                      i < Math.floor(average_rating) ? "currentColor" : "#9CA3AF"
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+
+            {average_rating > 0 ? (
+              <p className="text-xs text-gray-400 mt-1">
+                {average_rating.toFixed(1)} / 5
+              </p>
+            ) : (
+              <p className="text-xs text-gray-500 mt-1">No reviews yet</p>
+            )}
+          </div>
 
           {/* Price */}
-          <div className="mt-2">
-            <span className="text-white font-bold text-lg">
-              ${Number(price).toFixed(2)}
-            </span>
+          <div className="mt-2 flex items-center gap-2">
+            {sale_price ? (
+              <>
+                <span className="text-yellow-400 font-bold text-lg">
+                  Rs {Number(sale_price).toFixed(2)}
+                </span>
+                <span className="text-gray-400 line-through text-sm">
+                  Rs {Number(price).toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <span className="text-white font-bold text-lg">
+                Rs {Number(price).toFixed(2)}
+              </span>
+            )}
           </div>
         </div>
       </Link>

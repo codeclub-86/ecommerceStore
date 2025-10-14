@@ -8,7 +8,7 @@ type FeatureSingleProps = {
   title: string;
   image: string;
   alt?: string;
-  slug: string; // 👈 Add this
+  slug: string; // 
 };
 
 const FeatureSingle: React.FC<FeatureSingleProps> = ({ title, image, alt = "", slug }) => {
