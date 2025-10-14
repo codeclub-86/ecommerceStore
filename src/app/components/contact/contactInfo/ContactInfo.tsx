@@ -14,7 +14,7 @@ const ContactInfo: React.FC = () => {
                 </div>
                 <div className="ml-4">
                     <h4 className="text-xl font-semibold text-gray-800">Address</h4>
-                    <p className="mt-1 text-gray-600">44 Shirley Ave. West Chicago,<br />IL 60185, USA.</p>
+                    <p className="mt-1 text-gray-600">Liberty Mall Opp: Airport runway,<br /> University Rd, Tehkal, Peshawar, 25000, Pakistan.</p>
                 </div>
             </div>
 
@@ -27,7 +27,7 @@ const ContactInfo: React.FC = () => {
                 </div>
                 <div className="ml-4">
                     <h4 className="text-xl font-semibold text-gray-800">Call us on</h4>
-                    <p className="mt-1 text-gray-600">+1 800 555 44 00 (Toll free)<br />+321 55 666 7890</p>
+                    <p className="mt-1 text-gray-600">+92 314 0078748 (Toll free)<br />+92 314 1334484</p>
                 </div>
             </div>
 
@@ -40,7 +40,8 @@ const ContactInfo: React.FC = () => {
                 </div>
                 <div className="ml-4">
                     <h4 className="text-xl font-semibold text-gray-800">Mail at</h4>
-                    <p className="mt-1 text-gray-600">support@shopgrids.com<br />career@shopgrids.com</p>
+                    <p className="mt-1 text-gray-600">info@codeclub.tech<br />codeclubb1@gmail.com
+                    </p>
                 </div>
             </div>
 

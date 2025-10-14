@@ -6,7 +6,7 @@ import { useStore } from "@/app/store/apiStore";
 interface SearchFilterProps {
     onCategorySelect: (categoryName: string | null) => void;
     onPriceSelect: (priceRange: [number, number] | null) => void;
-    onBrandSelect: (brand: string | null) => void; // added brand filter callback
+    onBrandSelect: (brand: string | null) => void;
 }
 
 const priceRanges = [
@@ -16,76 +16,101 @@ const priceRanges = [
     { label: "$1,000 - $5,000", min: 1000, max: 5000 },
 ];
 
-// Temporary static brands list (replace with API later)
-const brandList = ["Apple", "Samsung", "Sony", "Dell", "HP", "Lenovo"];
-
 const SearchFilter: React.FC<SearchFilterProps> = ({
     onCategorySelect,
     onPriceSelect,
     onBrandSelect,
 }) => {
-    const { categories, fetchCategories, loading } = useStore();
-    const [search, setSearch] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const { categories, fetchCategories, stores, fetchStores, loading } = useStore();
+
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     useEffect(() => {
         fetchCategories();
-    }, [fetchCategories]);
-
-    const filteredCategories = categories.filter((cat) =>
-        (cat.category_name ?? "").toLowerCase().includes(search.toLowerCase())
-    );
-
-    const handleCategoryClick = (categoryName: string) => {
-        setSelectedCategory(categoryName);
-        onCategorySelect(categoryName);
-    };
-
-    const handlePriceClick = (range: { label: string; min: number; max: number }) => {
-        setSelectedPrice(range.label);
-        onPriceSelect([range.min, range.max]);
-    };
-
-    const handleBrandClick = (brand: string) => {
-        setSelectedBrand(brand);
-        onBrandSelect(brand);
-    };
+        fetchStores();
+    }, [fetchCategories, fetchStores]);
 
     return (
         <>
-            {/* Search */}
-            <div className="w-full p-6 bg-white shadow-sm mb-8">
-                <h3 className="text-lg font-semibold mb-4">Search Product</h3>
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Search Here..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full py-2 px-4 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-            </div>
-
             {/* Categories */}
-            <div className="w-full p-6 bg-white shadow-sm mb-8">
+            <div className="w-full p-6 bg-white shadow-sm mb-8 rounded-lg relative">
                 <h3 className="text-lg font-semibold mb-4">All Categories</h3>
+
                 {loading ? (
                     <p className="text-gray-500">Loading categories...</p>
-                ) : filteredCategories.length > 0 ? (
-                    <ul>
-                        {filteredCategories.map((cat) => (
+                ) : categories.length > 0 ? (
+                    <ul className="space-y-3">
+                        <li
+                            onClick={() => {
+                                setSelectedCategory(null);
+                                onCategorySelect(null);
+                            }}
+                            className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory === null
+                                ? "bg-yellow-100 text-yellow-700 font-semibold"
+                                : "text-gray-700 hover:bg-yellow-50"
+                                }`}
+                        >
+                            All
+                        </li>
+
+                        {/* Parent + Child Categories */}
+                        {categories.map((group: any, idx: number) => (
                             <li
-                                key={cat.id}
-                                onClick={() => handleCategoryClick(cat.category_name)}
-                                className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedCategory === cat.category_name
-                                    ? "font-semibold text-blue-600"
-                                    : "text-gray-600"
-                                    }`}
+                                key={idx}
+                                className="relative group/category"
                             >
-                                {cat.category_name}
+                                {/* Parent category (unclickable) */}
+                                <div
+                                    className={`flex justify-between items-center py-2 px-3 rounded-md cursor-default transition ${selectedCategory === group.parent
+                                        ? "bg-yellow-100 text-yellow-700 font-semibold"
+                                        : "text-gray-800 hover:bg-yellow-50"
+                                        }`}
+                                >
+                                    {group.parent || "Unnamed Category"}
+
+                                    {group.categories && group.categories.length > 0 && (
+                                        <svg
+                                            className="w-4 h-4 ml-2 text-gray-500 group-hover/category:text-yellow-600 transition-transform"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M9 5l7 7-7 7"
+                                            />
+                                        </svg>
+                                    )}
+                                </div>
+
+                                {/* Dropdown on hover */}
+                                {group.categories && group.categories.length > 0 && (
+                                    <ul
+                                        className="absolute left-full top-0 ml-2 hidden group-hover/category:block 
+                    bg-white border border-gray-200 rounded-md shadow-md w-48 z-10"
+                                    >
+                                        {group.categories.map((cat: any) => (
+                                            <li
+                                                key={cat.id}
+                                                className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory === cat.category_name
+                                                    ? "bg-yellow-200 text-yellow-800 font-semibold"
+                                                    : "text-gray-700 hover:bg-yellow-50"
+                                                    }`}
+                                                onClick={() => {
+                                                    setSelectedCategory(cat.category_name);
+                                                    onCategorySelect(cat.category_name);
+                                                }}
+                                            >
+                                                {cat.category_name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </li>
                         ))}
                     </ul>
@@ -95,16 +120,19 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
             </div>
 
             {/* Price Filter */}
-            <div className="w-full p-6 bg-white shadow-sm mb-8">
+            <div className="w-full p-6 bg-white shadow-sm mb-8 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Filter by Price</h3>
                 <div className="space-y-3">
                     {priceRanges.map((range) => (
                         <div
                             key={range.label}
-                            onClick={() => handlePriceClick(range)}
-                            className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedPrice === range.label
-                                ? "font-semibold text-blue-600"
-                                : "text-gray-600"
+                            onClick={() => {
+                                setSelectedPrice(range.label);
+                                onPriceSelect([range.min, range.max]);
+                            }}
+                            className={`py-2 px-3 cursor-pointer rounded-md transition ${selectedPrice === range.label
+                                ? "bg-yellow-100 text-yellow-700 font-semibold"
+                                : "text-gray-700 hover:bg-yellow-50"
                                 }`}
                         >
                             {range.label}
@@ -114,22 +142,43 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
             </div>
 
             {/* Brand Filter */}
-            <div className="w-full p-6 bg-white shadow-sm mb-8">
+            <div className="w-full p-6 bg-white shadow-sm rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
-                <div className="space-y-3">
-                    {brandList.map((brand) => (
-                        <div
-                            key={brand}
-                            onClick={() => handleBrandClick(brand)}
-                            className={`py-2 px-3 cursor-pointer hover:text-blue-600 transition ${selectedBrand === brand
-                                ? "font-semibold text-blue-600"
-                                : "text-gray-600"
+                {loading ? (
+                    <p className="text-gray-500">Loading brands...</p>
+                ) : stores.length > 0 ? (
+                    <ul className="space-y-2">
+                        <li
+                            onClick={() => {
+                                setSelectedBrand(null);
+                                onBrandSelect(null);
+                            }}
+                            className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedBrand === null
+                                ? "bg-yellow-100 text-yellow-700 font-semibold"
+                                : "text-gray-700 hover:bg-yellow-50"
                                 }`}
                         >
-                            {brand}
-                        </div>
-                    ))}
-                </div>
+                            All
+                        </li>
+                        {stores.map((store: any) => (
+                            <li
+                                key={store.id || store.name}
+                                onClick={() => {
+                                    setSelectedBrand(store.name);
+                                    onBrandSelect(store.name);
+                                }}
+                                className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedBrand === store.name
+                                    ? "bg-yellow-100 text-yellow-700 font-semibold"
+                                    : "text-gray-700 hover:bg-yellow-50"
+                                    }`}
+                            >
+                                {store.name}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-gray-500">No brands available.</p>
+                )}
             </div>
         </>
     );

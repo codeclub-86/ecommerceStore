@@ -8,21 +8,25 @@ const categories = [
     title: "Men's Clothing",
     image: "/p4.jpeg",
     alt: "Men's clothing collection",
+    slug: "mens"
   },
   {
     title: "Women's Clothing",
     image: "/p1.jpeg",
     alt: "Women's clothing collection",
+    slug: "womens"
   },
   {
     title: "Kids & Juniors",
     image: "/kids1.webp",
     alt: "Kids and juniors clothing",
+    slug: "kids"
   },
   {
     title: "Accessories",
     image: "/acc1.webp",
     alt: "Fashion accessories",
+    slug: "accessories"
   },
 ];
 

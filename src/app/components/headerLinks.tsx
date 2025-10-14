@@ -1,6 +1,6 @@
 "use client";
 
-import { Facebook, Twitter, Instagram, Menu, X } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useStore } from "@/app/store/apiStore";
@@ -62,29 +62,65 @@ const HeaderLinks = () => {
 
             <ul
               className="absolute left-0 mt-2 w-64 bg-black rounded-xl shadow-xl border border-yellow-400/40
-              opacity-0 scale-95 translate-y-2 invisible
-              group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
-              transition-all duration-300 ease-out z-50"
+  opacity-0 scale-95 translate-y-2 invisible
+  group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
+  transition-all duration-300 ease-out z-50"
             >
-              {loading && (
-                <li className="px-5 py-3 text-gray-400">Loading...</li>
-              )}
+              {loading && <li className="px-5 py-3 text-gray-400">Loading...</li>}
               {!loading && categories.length === 0 && (
                 <li className="px-5 py-3 text-gray-400">No categories found</li>
               )}
-              {categories.map((cat: any, idx: number) => (
-                <li key={cat.id}>
-                  <Link
-                    href={`/category/${cat.id}`}
-                    className={`flex justify-between items-center px-5 py-3 text-white hover:bg-yellow-400 hover:text-black transition 
-                    ${idx === 0 ? "rounded-t-xl" : ""} 
-                    ${idx === categories.length - 1 ? "rounded-b-xl" : ""}`}
+
+              {!loading &&
+                categories.map((group: any, groupIdx: number) => (
+                  <li
+                    key={groupIdx}
+                    className="relative group/category border-b border-gray-700 last:border-none"
                   >
-                    {cat.category_name}
-                  </Link>
-                </li>
-              ))}
+                    {/* Parent category */}
+                    <span
+                      className="flex justify-between items-center px-5 py-3 font-semibold text-yellow-400 hover:bg-yellow-400 hover:text-black transition cursor-pointer"
+                    >
+                      {group.parent || "Unnamed Category"}
+                      <svg
+                        className="w-4 h-4 ml-2 transition-transform group-hover/category:rotate-90"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+
+                    {/* Child categories dropdown */}
+                    {group.categories && group.categories.length > 0 && (
+                      <ul
+                        className="absolute left-full top-0 mt-0 ml-1 w-56 bg-black rounded-xl shadow-lg border border-yellow-400/40
+                        opacity-0 scale-95 translate-x-2 invisible
+                        group-hover/category:opacity-100 group-hover/category:scale-100 group-hover/category:translate-x-0 group-hover/category:visible
+                        transition-all duration-300 ease-out z-50"
+                      >
+                        {group.categories.map((cat: any) => (
+                          <li key={cat.id}>
+                            <Link
+                              href={`/productListing?category=${encodeURIComponent(
+                                cat.category_name
+                              )}`}
+                              className="block px-4 py-2 text-white hover:bg-yellow-400 hover:text-black transition"
+                            >
+                              {cat.category_name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+
             </ul>
+
+
           </div>
         </div>
 
@@ -97,9 +133,9 @@ const HeaderLinks = () => {
                 href="/productListing"
                 className="hover:text-yellow-400 transition"
               >
-                Products
+                Shop
               </Link>
-              <ul
+              {/* <ul
                 className="absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg border border-yellow-400/40
                 opacity-0 scale-95 translate-y-2 invisible
                 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
@@ -129,7 +165,7 @@ const HeaderLinks = () => {
                     Top Rated
                   </Link>
                 </li>
-              </ul>
+              </ul> */}
             </li>
 
             {/* Brands / Stores */}
@@ -137,7 +173,7 @@ const HeaderLinks = () => {
               <Link href="/brands" className="hover:text-yellow-400 transition">
                 Brands
               </Link>
-              <ul
+              {/* <ul
                 className="absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg border border-yellow-400/40
                 opacity-0 scale-95 translate-y-2 invisible
                 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
@@ -152,14 +188,14 @@ const HeaderLinks = () => {
                 {stores.map((store: any) => (
                   <li key={store.id}>
                     <Link
-                      href=""
+                      href={`/productListing?brand=${encodeURIComponent(store.name)}`}
                       className="block px-4 py-2 hover:bg-yellow-400 text-white hover:text-black transition"
                     >
                       {store.name}
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </li>
 
             {/* Register Now */}
@@ -180,7 +216,7 @@ const HeaderLinks = () => {
               >
                 Contact Us
               </Link>
-              <ul
+              {/* <ul
                 className="absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg border border-yellow-400/40
                 opacity-0 scale-95 translate-y-2 invisible
                 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-hover:visible
@@ -210,30 +246,42 @@ const HeaderLinks = () => {
                     Email Us
                   </Link>
                 </li>
-              </ul>
+              </ul> */}
             </li>
           </ul>
         </nav>
 
         {/* Right side social icons */}
-        <div className="hidden md:flex items-center gap-5">
-          <ul className="flex gap-3">
-            <li>
-              <SocialIcon href="#">
-                <Facebook className="w-5 h-5" />
-              </SocialIcon>
-            </li>
-            <li>
-              <SocialIcon href="#">
-                <Twitter className="w-5 h-5" />
-              </SocialIcon>
-            </li>
-            <li>
-              <SocialIcon href="#">
-                <Instagram className="w-5 h-5" />
-              </SocialIcon>
-            </li>
-          </ul>
+        <div className="flex justify-center gap-5 py-4">
+          <a
+            href="https://www.facebook.com/share/17DoTWFFao/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="text-yellow-400 hover:text-yellow-500 transition"
+          >
+            <Facebook className="w-5 h-5" />
+          </a>
+
+          <a
+            href="https://www.instagram.com/codeclubb_?igsh=MWI0aTQ1dzBlcXZndA=="
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="text-yellow-400 hover:text-yellow-500 transition"
+          >
+            <Instagram className="w-5 h-5" />
+          </a>
+
+          <a
+            href="https://www.linkedin.com/company/code-clubb/posts/?feedView=all"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="text-yellow-400 hover:text-yellow-500 transition"
+          >
+            <Linkedin className="w-5 h-5" />
+          </a>
         </div>
       </div>
 
@@ -269,10 +317,37 @@ const HeaderLinks = () => {
           </ul>
 
           <div className="flex justify-center gap-5 py-4 border-t border-yellow-400">
-            <Facebook className="w-5 h-5 text-yellow-400" />
-            <Twitter className="w-5 h-5 text-yellow-400" />
-            <Instagram className="w-5 h-5 text-yellow-400" />
+            <a
+              href="https://www.facebook.com/share/17DoTWFFao/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="text-yellow-400 hover:text-yellow-500 transition"
+            >
+              <Facebook className="w-5 h-5" />
+            </a>
+
+            <a
+              href="https://www.instagram.com/codeclubb_?igsh=MWI0aTQ1dzBlcXZndA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="text-yellow-400 hover:text-yellow-500 transition"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+
+            <a
+              href="https://www.linkedin.com/company/code-clubb/posts/?feedView=all"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="text-yellow-400 hover:text-yellow-500 transition"
+            >
+              <Linkedin className="w-5 h-5" />
+            </a>
           </div>
+
         </div>
       )}
     </header>

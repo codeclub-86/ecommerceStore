@@ -14,7 +14,7 @@ const BrandsMain: React.FC = () => {
     Autoplay({ delay: 2500, stopOnInteraction: true })
   );
 
-  // ✅ Select values individually to avoid creating a new object each render
+
   const stores = useStore((state) => state.stores);
   const loading = useStore((state) => state.loading);
   const error = useStore((state) => state.error);
@@ -25,10 +25,10 @@ const BrandsMain: React.FC = () => {
   }, []);
 
   return (
-    <section className="w-full bg-gray-50 py-16">
+    <section className="w-full dark-bg-css py-16 ">
       {/* Section Title */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-800">Popular Brands</h2>
+        <h2 className="text-2xl font-bold text-white">Popular Brands</h2>
         <div className="relative w-16 h-[2px] bg-blue-600 mx-auto mt-3 rounded-full"></div>
       </div>
 
@@ -55,8 +55,8 @@ const BrandsMain: React.FC = () => {
                     <BrandsSingle
                       logo={
                         store.logo
-                          ? `${process.env.NEXT_PUBLIC_IMG_URL}/logos/${store.logo}`
-                          : ""
+                          ? `${process.env.NEXT_PUBLIC_IMG_URL}logos/${store.logo}`
+                          : null
                       }
                       name={store.name}
                     />

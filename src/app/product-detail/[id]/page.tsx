@@ -8,6 +8,7 @@ import ReviewModal from "../../components/review/ReviewModal";
 import { useWishlistStore } from "@/app/store/wishListStore";
 import { useAuthStore } from "@/app/store/authStore";
 import { useCartStore } from "@/app/store/cartStore";
+import toast from "react-hot-toast";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -42,9 +43,11 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     if (singleProduct) {
+      console.log("🔍 singleProduct data:", singleProduct);
       setMainImage(singleProduct.image || "/placeholder.png");
     }
   }, [singleProduct]);
+
 
   const reloadProduct = () => {
     if (id) fetchSingleProduct(Number(id));
@@ -59,20 +62,27 @@ export default function ProductDetailPage() {
   const toggleWishlist = () => {
     initializeAuth();
     if (!isLoggedIn) {
+      toast.error("Please log in to manage your wishlist");
       router.push("/login");
       return;
     }
-    inWishlist
-      ? removeFromWishlist(String(singleProduct.id))
-      : addToWishlist({
-          id: String(singleProduct.id),
-          name: singleProduct.name,
-          price: singleProduct.sale_price
-            ? Number(singleProduct.sale_price)
-            : Number(singleProduct.price),
-          image: singleProduct.image,
-        });
+
+    if (inWishlist) {
+      removeFromWishlist(String(singleProduct.id));
+      toast.error("Removed from wishlist");
+    } else {
+      addToWishlist({
+        id: String(singleProduct.id),
+        name: singleProduct.name,
+        price: singleProduct.sale_price
+          ? Number(singleProduct.sale_price)
+          : Number(singleProduct.price),
+        image: singleProduct.image,
+      });
+      toast.success("Added to wishlist ❤️");
+    }
   };
+
 
   // cart logic
   const handleAddToCart = () => {
@@ -80,12 +90,8 @@ export default function ProductDetailPage() {
       ? Number(singleProduct.sale_price)
       : Number(singleProduct.price);
 
-    // convert { Size: "M", Color: "Blue" } → [{ name: "Size", value: "M" }, { name: "Color", value: "Blue" }]
     const variationsArray = Object.entries(selectedVariations).map(
-      ([name, value]) => ({
-        name,
-        value,
-      })
+      ([name, value]) => ({ name, value })
     );
 
     addToCart({
@@ -94,9 +100,12 @@ export default function ProductDetailPage() {
       price: finalPrice,
       image: singleProduct.image,
       category: singleProduct.category,
-      variation: variationsArray, // ✅ now matches CartItem type
+      variation: variationsArray,
     });
+
+    toast.success(`${singleProduct.name} added to cart 🛒`);
   };
+
   return (
     <section className="bg-white lg:px-25 lg:py-10 sm:px-10 sm:py-5">
       <div className="container mx-auto px-4">
@@ -121,9 +130,8 @@ export default function ProductDetailPage() {
                     {singleProduct.images.map((img: any, i: number) => (
                       <div
                         key={i}
-                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${
-                          mainImage === img.path ? "ring-2 ring-blue-500" : ""
-                        }`}
+                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${mainImage === img.path ? "ring-2 ring-blue-500" : ""
+                          }`}
                         onClick={() => setMainImage(img.path)}
                       >
                         <Image
@@ -223,11 +231,10 @@ export default function ProductDetailPage() {
                 </button>
                 <button
                   onClick={toggleWishlist}
-                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${
-                    inWishlist
-                      ? "border-red-400 bg-red-50 text-red-500"
-                      : "border-gray-300 hover:bg-gray-100"
-                  }`}
+                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${inWishlist
+                    ? "border-red-400 bg-red-50 text-red-500"
+                    : "border-gray-300 hover:bg-gray-100"
+                    }`}
                 >
                   <FaHeart
                     className={inWishlist ? "text-red-500" : "text-gray-500"}
