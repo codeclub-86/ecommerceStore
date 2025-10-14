@@ -15,7 +15,7 @@ interface SpecialSingleProps {
     price: number;
     image: string;
     category?: string;
-    rating?: number;
+    average_rating?: number; // ✅ renamed for clarity
     status?: string;
     sale_price?: number | string;
 }
@@ -26,7 +26,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     price,
     image,
     category = "General",
-    rating = 0,
+    average_rating = 0,
     status,
     sale_price,
 }) => {
@@ -70,6 +70,9 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     };
 
     const isOnSale = sale_price && Number(sale_price) < Number(price);
+
+    // ⭐ Round rating to one decimal safely
+    const roundedRating = Number(average_rating) || 0;
 
     return (
         <div className="relative flex flex-col transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white/5">
@@ -124,25 +127,25 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
                         <span className="hover:text-yellow-500 transition">{name}</span>
                     </h4>
 
-                    {/* Rating (updated logic) */}
+                    {/* ⭐ Rating */}
                     <div className="mt-2">
                         <ul className="flex items-center gap-1 text-yellow-400">
                             {Array.from({ length: 5 }).map((_, i) => (
                                 <li key={i}>
                                     <Star
                                         size={16}
-                                        fill={i < Math.floor(rating) ? "currentColor" : "none"}
+                                        fill={i < Math.floor(roundedRating) ? "currentColor" : "none"}
                                         stroke={
-                                            i < Math.floor(rating) ? "currentColor" : "#9CA3AF"
+                                            i < Math.floor(roundedRating) ? "currentColor" : "#9CA3AF"
                                         }
                                     />
                                 </li>
                             ))}
                         </ul>
 
-                        {rating > 0 ? (
+                        {roundedRating > 0 ? (
                             <p className="text-xs text-gray-400 mt-1">
-                                {rating.toFixed(1)} / 5
+                                {roundedRating.toFixed(1)} / 5
                             </p>
                         ) : (
                             <p className="text-xs text-gray-500 mt-1">No reviews yet</p>

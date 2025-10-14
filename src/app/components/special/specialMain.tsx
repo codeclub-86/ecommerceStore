@@ -41,8 +41,9 @@ const SpecialMain = () => {
                 image={product.image || "/fallback.png"}
                 category={product.category || "General"}
                 status={product.status}
-                rating={product.rating || 4.5}
+                average_rating={product.average_rating} // ✅ fixed prop name
               />
+
             ))
           ) : (
             <p className="text-gray-400 col-span-full text-center">
