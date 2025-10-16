@@ -33,16 +33,16 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   average_rating = 0,
   status,
 }) => {
+  // ⛔ Skip rendering sale products
+  if (sale_price) return null;
+
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
   const { addToCart } = useCartStore();
   const router = useRouter();
 
   const inWishlist = isInWishlist(id);
-
-  const finalPrice = sale_price && !isNaN(Number(sale_price))
-    ? Number(sale_price)
-    : Number(price);
+  const finalPrice = Number(price);
 
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,7 +70,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
     addToCart({
       id: Number(id),
       name,
-      price: finalPrice, // ✅ always uses sale price if available
+      price: finalPrice,
       image,
       category,
       variation: undefined,
@@ -80,7 +80,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
   return (
     <div className="relative flex flex-col transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
-      {/* Wishlist */}
+      {/* Wishlist Button */}
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
@@ -103,9 +103,9 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
         </span>
       )}
 
-      {/* Product Link */}
+      {/* Product Card */}
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
-        {/* Image */}
+        {/* Product Image */}
         <div className="relative w-full h-64 overflow-hidden">
           <Image
             src={image || "/placeholder.png"}
@@ -124,7 +124,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
           </div>
         </div>
 
-        {/* Info */}
+        {/* Product Details */}
         <div className="p-4 flex flex-col flex-grow light-bg-css">
           <span className="block text-sm text-white">{category}</span>
           <h4 className="font-semibold text-white text-lg mt-1 line-clamp-2 flex-grow">
@@ -158,20 +158,9 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
           {/* Price */}
           <div className="mt-2 flex items-center gap-2">
-            {sale_price ? (
-              <>
-                <span className="text-yellow-400 font-bold text-lg">
-                  Rs {finalPrice.toFixed(2)}
-                </span>
-                <span className="text-gray-400 line-through text-sm">
-                  Rs {Number(price).toFixed(2)}
-                </span>
-              </>
-            ) : (
-              <span className="text-white font-bold text-lg">
-                Rs {finalPrice.toFixed(2)}
-              </span>
-            )}
+            <span className="text-white font-bold text-lg">
+              Rs {finalPrice.toFixed(2)}
+            </span>
           </div>
         </div>
       </Link>
