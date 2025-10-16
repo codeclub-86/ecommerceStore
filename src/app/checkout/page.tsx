@@ -7,11 +7,10 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import emailjs from "emailjs-com";
 
-
 export default function CheckoutPage() {
   const router = useRouter();
   const { cart, clearCart } = useCartStore();
-  const { user, initializeAuth } = useAuthStore();
+  const { initializeAuth } = useAuthStore();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -25,13 +24,11 @@ export default function CheckoutPage() {
     state: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false); // ✅ Prevent double submit
 
-
-  // Run initializeAuth only once on mount
   useEffect(() => {
     initializeAuth();
 
-    // get email from localStorage immediately (avoids dependency loops)
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const parsed = JSON.parse(storedUser);
@@ -39,12 +36,9 @@ export default function CheckoutPage() {
         setFormData((prev) => ({ ...prev, email: parsed.email }));
       }
     }
-  }, []); // ← only run once
+  }, []);
 
-  const subtotal = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = 250;
   const tax = 100;
   const total = subtotal + shipping + tax;
@@ -58,9 +52,12 @@ export default function CheckoutPage() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return; // ✅ Stop multiple clicks
+    setIsSubmitting(true);
 
     if (cart.length === 0) {
       toast.error("Your cart is empty!");
+      setIsSubmitting(false);
       return;
     }
 
@@ -87,8 +84,6 @@ export default function CheckoutPage() {
       total,
     };
 
-    console.log("Payload to API:", JSON.stringify(payload, null, 2));
-
     try {
       const res = await fetch("http://localhost:8000/api/placeOrder", {
         method: "POST",
@@ -99,7 +94,7 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error("Failed to submit order");
       const data = await res.json();
 
-      // ✅ send email with order details
+      // ✅ Send email with order details
       const emailPayload = {
         customer_name: payload.customer_name,
         email: payload.email,
@@ -108,7 +103,6 @@ export default function CheckoutPage() {
         city: payload.city,
         postal_code: payload.postal_code,
         total: payload.total,
-        // status: "Pending",
         order_date: new Date().toLocaleString(),
         order_id: data.order_id || Math.floor(Math.random() * 10000),
         items: payload.items.map((item) => ({
@@ -127,7 +121,6 @@ export default function CheckoutPage() {
       );
 
       clearCart();
-
       toast.success("Order placed successfully 🎉", {
         description: "Click below to view your orders",
         action: {
@@ -150,6 +143,8 @@ export default function CheckoutPage() {
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong while placing the order ❌");
+    } finally {
+      setIsSubmitting(false); // ✅ Re-enable after completion
     }
   };
 
@@ -272,9 +267,13 @@ export default function CheckoutPage() {
 
             <button
               type="submit"
-              className="w-full bg-yellow-400 text-black font-semibold py-3 rounded-lg hover:bg-yellow-500 transition"
+              disabled={isSubmitting} // ✅ Prevent re-click
+              className={`w-full font-semibold py-3 rounded-lg transition ${isSubmitting
+                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                : "bg-yellow-400 text-black hover:bg-yellow-500"
+                }`}
             >
-              Place Order
+              {isSubmitting ? "Placing Order..." : "Place Order"}
             </button>
           </div>
         </form>

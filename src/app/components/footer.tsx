@@ -106,6 +106,7 @@ export default function Footer() {
                   <p className="text-xs">Download on the</p>
                   <p className="font-bold">App Store</p>
                 </div>
+                <p>Coming Soon</p>
               </a>
               <a
                 href="#"
@@ -117,7 +118,10 @@ export default function Footer() {
                   <p className="text-xs">Get it on</p>
                   <p className="font-bold">Google Play</p>
                 </div>
+                <p>Coming Soon</p>
+
               </a>
+
             </div>
           </div>
         </div>
