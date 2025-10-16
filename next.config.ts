@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         pathname: "/uploads/**",
       },
       {
+        protocol: "https",
+        hostname: "codeclub.tech",
+        pathname: "/haasil/public/**",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
       },
