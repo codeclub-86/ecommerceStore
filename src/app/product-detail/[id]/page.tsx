@@ -8,7 +8,7 @@ import ReviewModal from "../../components/review/ReviewModal";
 import { useWishlistStore } from "@/app/store/wishListStore";
 import { useAuthStore } from "@/app/store/authStore";
 import { useCartStore } from "@/app/store/cartStore";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -57,10 +57,13 @@ export default function ProductDetailPage() {
   if (error) return <p className="p-10 text-red-500">{error}</p>;
   if (!singleProduct) return <p className="p-10">No product found.</p>;
 
+
   // wishlist logic
   const inWishlist = isInWishlist(String(singleProduct.id));
+
   const toggleWishlist = () => {
     initializeAuth();
+
     if (!isLoggedIn) {
       toast.error("Please log in to manage your wishlist");
       router.push("/login");
@@ -73,7 +76,7 @@ export default function ProductDetailPage() {
 
     if (inWishlist) {
       removeFromWishlist(String(singleProduct.id));
-      toast.error("Removed from wishlist");
+      toast.error("Removed from wishlist 💔", { icon: "💔" });
     } else {
       addToWishlist({
         id: String(singleProduct.id),
@@ -81,7 +84,7 @@ export default function ProductDetailPage() {
         price: productPrice,
         image: singleProduct.image,
       });
-      toast.success("Added to wishlist ❤️");
+      toast.success("Added to wishlist ❤️", { icon: "❤️" });
     }
   };
 
@@ -105,8 +108,9 @@ export default function ProductDetailPage() {
       variation: variationsArray,
     });
 
-    toast.success(`${singleProduct.name} added to cart 🛒`);
+    toast.success(`${singleProduct.name} added to cart 🛒`, { icon: "🛒" });
   };
+
 
   return (
     <section className="bg-white lg:px-25 lg:py-10 sm:px-10 sm:py-5">

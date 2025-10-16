@@ -25,7 +25,9 @@ export default function CheckoutPage() {
     state: "",
   });
 
-  // ✅ Run initializeAuth only once on mount
+
+
+  // Run initializeAuth only once on mount
   useEffect(() => {
     initializeAuth();
 
