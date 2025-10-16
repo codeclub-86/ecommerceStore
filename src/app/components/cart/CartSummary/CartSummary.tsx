@@ -50,10 +50,10 @@ const CartSummary = () => {
                                         </p>
                                     )}
                                     <p className="text-xs text-gray-500">
-                                        {item.quantity} × ${basePrice.toFixed(2)}
+                                        {item.quantity} ×{basePrice.toFixed(2)}
                                     </p>
                                 </div>
-                                <span className="text-sm font-semibold">${total.toFixed(2)}</span>
+                                <span className="text-sm font-semibold">Rs {total.toFixed(2)}</span>
                             </div>
                         );
                     })
@@ -67,7 +67,7 @@ const CartSummary = () => {
             {/* Subtotal */}
             <div className="border-t pt-4 mt-4 flex justify-between text-base font-medium">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>Rs {subtotal.toFixed(2)}</span>
             </div>
 
             {/* Checkout Button */}

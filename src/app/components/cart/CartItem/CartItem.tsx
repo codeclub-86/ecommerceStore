@@ -88,7 +88,7 @@ const CartTable: React.FC = () => {
                             {v.name}: {v.value}{" "}
                             {v.price ? (
                               <span className="text-gray-400 dark:text-gray-500">
-                                (+${Number(v.price).toFixed(2)})
+                                (+ ${Number(v.price).toFixed(2)})
                               </span>
                             ) : null}
                           </p>
@@ -130,7 +130,7 @@ const CartTable: React.FC = () => {
 
                   {/* Price */}
                   <td className="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100 text-center">
-                    ${totalPrice.toFixed(2)}
+                    Rs {totalPrice.toFixed(2)}
                   </td>
 
                   {/* Remove Button */}
@@ -166,7 +166,7 @@ const CartTable: React.FC = () => {
             <tr className="bg-gray-100 dark:bg-gray-800">
               <td colSpan={4}></td>
               <td className="px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100 text-center">
-                Total: ${grandTotal.toFixed(2)}
+                Total: Rs {grandTotal.toFixed(2)}
               </td>
               <td></td>
             </tr>

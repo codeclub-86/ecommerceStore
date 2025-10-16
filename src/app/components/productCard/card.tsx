@@ -18,7 +18,7 @@ interface TrendingSingleProps {
   image: string;
   store?: string;
   category?: string;
-  average_rating?: number; // ✅ use this directly
+  average_rating?: number;
   status?: string | null;
 }
 
@@ -40,6 +40,10 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
   const inWishlist = isInWishlist(id);
 
+  const finalPrice = sale_price && !isNaN(Number(sale_price))
+    ? Number(sale_price)
+    : Number(price);
+
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     initializeAuth();
@@ -56,7 +60,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
         style: { background: "#222", color: "#fff" },
       });
     } else {
-      addToWishlist({ id, name, price: Number(sale_price || price), image });
+      addToWishlist({ id, name, price: finalPrice, image });
       toast.success("Added to wishlist ❤️");
     }
   };
@@ -66,7 +70,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
     addToCart({
       id: Number(id),
       name,
-      price: Number(sale_price || price),
+      price: finalPrice, // ✅ always uses sale price if available
       image,
       category,
       variation: undefined,
@@ -85,7 +89,9 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       >
         <Heart
           size={18}
-          className={`transition ${inWishlist ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
+          className={`transition ${inWishlist
+            ? "text-yellow-500 fill-yellow-500"
+            : "text-gray-700"
             }`}
         />
       </button>
@@ -141,7 +147,6 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
                 </li>
               ))}
             </ul>
-
             {average_rating > 0 ? (
               <p className="text-xs text-gray-400 mt-1">
                 {average_rating.toFixed(1)} / 5
@@ -156,7 +161,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             {sale_price ? (
               <>
                 <span className="text-yellow-400 font-bold text-lg">
-                  Rs {Number(sale_price).toFixed(2)}
+                  Rs {finalPrice.toFixed(2)}
                 </span>
                 <span className="text-gray-400 line-through text-sm">
                   Rs {Number(price).toFixed(2)}
@@ -164,7 +169,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
               </>
             ) : (
               <span className="text-white font-bold text-lg">
-                Rs {Number(price).toFixed(2)}
+                Rs {finalPrice.toFixed(2)}
               </span>
             )}
           </div>

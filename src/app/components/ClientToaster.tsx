@@ -1,19 +1,14 @@
 "use client";
 
-import { Toaster } from "react-hot-toast";
+import { Toaster } from "sonner";
 
 export default function ClientToaster() {
     return (
         <Toaster
-            position="top-right"
-            toastOptions={{
-                style: {
-                    background: "#222",
-                    color: "#fff",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                },
-            }}
+            position="top-center"
+            expand
+            richColors
+            closeButton
         />
     );
 }

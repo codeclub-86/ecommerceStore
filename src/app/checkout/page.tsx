@@ -1,9 +1,18 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/app/store/cartStore";
+import { useAuthStore } from "@/app/store/authStore";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import emailjs from "emailjs-com";
+
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { cart, clearCart } = useCartStore();
+  const { user, initializeAuth } = useAuthStore();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -16,13 +25,26 @@ export default function CheckoutPage() {
     state: "",
   });
 
-  // 🔹 Calculate subtotal, shipping, tax, total
+  // ✅ Run initializeAuth only once on mount
+  useEffect(() => {
+    initializeAuth();
+
+    // get email from localStorage immediately (avoids dependency loops)
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser);
+      if (parsed?.email) {
+        setFormData((prev) => ({ ...prev, email: parsed.email }));
+      }
+    }
+  }, []); // ← only run once
+
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping = 10.5;
-  const tax = 10;
+  const shipping = 250;
+  const tax = 100;
   const total = subtotal + shipping + tax;
 
   const handleChange = (
@@ -36,11 +58,10 @@ export default function CheckoutPage() {
     e.preventDefault();
 
     if (cart.length === 0) {
-      alert("Cart is empty!");
+      toast.error("Your cart is empty!");
       return;
     }
 
-    // Prepare items in backend format
     const items = cart.map((item) => ({
       product_id: item.id,
       variation: item.variation
@@ -50,7 +71,6 @@ export default function CheckoutPage() {
       price: Number(item.price),
     }));
 
-    // ✅ Build payload with totals
     const payload = {
       customer_name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
@@ -75,16 +95,49 @@ export default function CheckoutPage() {
       });
 
       if (!res.ok) throw new Error("Failed to submit order");
+      const data = await res.json();
 
-      await res.json();
-      alert("Order placed successfully ✅");
+      // ✅ send email with order details
+      const emailPayload = {
+        customer_name: payload.customer_name,
+        email: payload.email,
+        phone: payload.phone,
+        shipping_address: payload.shipping_address,
+        city: payload.city,
+        postal_code: payload.postal_code,
+        total: payload.total,
+        // status: "Pending",
+        order_date: new Date().toLocaleString(),
+        order_id: data.order_id || Math.floor(Math.random() * 10000),
+        items: payload.items.map((item) => ({
+          product_name: item.product_id,
+          variation: item.variation || "Default",
+          quantity: item.quantity,
+          subtotal: item.price * item.quantity,
+        })),
+      };
+
+      await emailjs.send(
+        "service_5yxvuaq",
+        "template_23c12jv",
+        emailPayload,
+        "RsdRulyOeRPxmhBhR"
+      );
+
       clearCart();
 
-      // Reset form
+      toast.success("Order placed successfully 🎉", {
+        description: "Click below to view your orders",
+        action: {
+          label: "View Orders",
+          onClick: () => router.push("/orders"),
+        },
+      });
+
       setFormData({
         firstName: "",
         lastName: "",
-        email: "",
+        email: formData.email,
         phone: "",
         address: "",
         city: "",
@@ -94,7 +147,7 @@ export default function CheckoutPage() {
       });
     } catch (error) {
       console.error(error);
-      alert("Something went wrong while placing the order ❌");
+      toast.error("Something went wrong while placing the order ❌");
     }
   };
 
@@ -141,10 +194,10 @@ export default function CheckoutPage() {
                 name="email"
                 type="email"
                 required
+                readOnly
                 placeholder="example@email.com"
                 value={formData.email}
-                onChange={handleChange}
-                className="border rounded-lg px-4 py-2 w-full"
+                className="border rounded-lg px-4 py-2 w-full bg-gray-100 text-gray-700 cursor-not-allowed"
               />
               <input
                 name="phone"
@@ -215,8 +268,10 @@ export default function CheckoutPage() {
               </select>
             </div>
 
-            {/* Submit */}
-            <button className="w-full mt-4 bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition font-medium">
+            <button
+              type="submit"
+              className="w-full bg-yellow-400 text-black font-semibold py-3 rounded-lg hover:bg-yellow-500 transition"
+            >
               Place Order
             </button>
           </div>
@@ -238,7 +293,7 @@ export default function CheckoutPage() {
                   {item.name} × {item.quantity}
                 </span>
                 <span className="font-medium">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  Rs {(item.price * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
@@ -247,20 +302,20 @@ export default function CheckoutPage() {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Subtotal:</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>Rs {subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping:</span>
-              <span>${shipping.toFixed(2)}</span>
+              <span>Rs {shipping.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Tax:</span>
-              <span>${tax.toFixed(2)}</span>
+              <span>Rs {tax.toFixed(2)}</span>
             </div>
             <hr />
             <div className="flex justify-between font-semibold text-lg">
               <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>Rs {total.toFixed(2)}</span>
             </div>
           </div>
         </div>

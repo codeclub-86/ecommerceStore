@@ -68,6 +68,10 @@ export default function ProductDetailPage() {
       return;
     }
 
+    const productPrice = singleProduct.sale_price
+      ? Number(singleProduct.sale_price)
+      : Number(singleProduct.price);
+
     if (inWishlist) {
       removeFromWishlist(String(singleProduct.id));
       toast.error("Removed from wishlist");
@@ -75,9 +79,7 @@ export default function ProductDetailPage() {
       addToWishlist({
         id: String(singleProduct.id),
         name: singleProduct.name,
-        price: singleProduct.sale_price
-          ? Number(singleProduct.sale_price)
-          : Number(singleProduct.price),
+        price: productPrice,
         image: singleProduct.image,
       });
       toast.success("Added to wishlist ❤️");
@@ -163,13 +165,10 @@ export default function ProductDetailPage() {
               </p>
 
               <h3 className="text-3xl font-bold text-blue-600 mt-3">
-                $
-                {Number(
-                  singleProduct.sale_price || singleProduct.price
-                ).toFixed(2)}{" "}
+                Rs {Number(singleProduct.sale_price || singleProduct.price).toFixed(2)}
                 {singleProduct.sale_price && (
-                  <span className="line-through text-gray-400 ml-2">
-                    ${Number(singleProduct.price).toFixed(2)}
+                  <span className="line-through text-gray-400 ml-2 text-lg">
+                    Rs {Number(singleProduct.price).toFixed(2)}
                   </span>
                 )}
               </h3>

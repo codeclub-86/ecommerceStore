@@ -8,7 +8,7 @@ export async function getConnection() {
       host: "localhost", // or your MySQL server host
       user: "root", // your MySQL username
       password: "", // your MySQL password
-      database: "rts_db", // your database name
+      database: "haasil_db", // your database name
     });
   }
   return connection;

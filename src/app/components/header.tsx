@@ -10,7 +10,6 @@ import { useCartStore } from "@/app/store/cartStore";
 import { useStore } from "@/app/store/apiStore";
 import { useRouter } from "next/navigation";
 
-
 // Search Bar
 function SearchBar({ mobile = false }: { mobile?: boolean }) {
   const [query, setQuery] = useState("");
@@ -20,17 +19,16 @@ function SearchBar({ mobile = false }: { mobile?: boolean }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-
     await fetchSearchProducts(query);
-    router.push("/productListing"); // redirect user to shop page
+    router.push("/productListing");
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex w-full border-2 rounded-full overflow-hidden ${mobile
+      className={`flex w-full rounded-full overflow-hidden border-2 ${mobile
         ? "border-yellow-400"
-        : "border-gray-300 hover:border-yellow-400 transition-all"
+        : "border-gray-600 hover:border-yellow-400 transition-all"
         }`}
     >
       <input
@@ -38,11 +36,11 @@ function SearchBar({ mobile = false }: { mobile?: boolean }) {
         placeholder="Search products..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="flex-1 px-4 py-2 outline-none text-gray-800 text-sm bg-transparent placeholder-gray-500"
+        className="flex-1 px-4 py-2 outline-none text-white text-sm bg-transparent placeholder-gray-400"
       />
       <button
         type="submit"
-        className="bg-yellow-400 hover:bg-black hover:text-yellow-400 px-4 flex items-center justify-center text-black transition-all"
+        className="bg-yellow-400 hover:bg-yellow-500 px-4 flex items-center justify-center text-black font-semibold transition-all"
       >
         <Search size={18} />
       </button>
@@ -56,23 +54,22 @@ export default function ShopGridsHeader() {
     (state) => state.removeFromWishlist
   );
   const cart = useCartStore((state) => state.cart);
-
   const [wishlistOpen, setWishlistOpen] = useState(false);
 
   return (
-    <header className="w-full bg-white shadow-sm border-b border-gray-200">
+    <header className="w-full dark-bg-css shadow-md border-b border-gray-700">
       <div className="w-full lg:px-8 md:px-6 px-3 py-8 container mx-auto">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-6">
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <Image
-                src="/logo1.jpeg"
+                src="/logo3.png"
                 alt="Logo"
                 width={120}
                 height={60}
                 priority
-                className="transition-transform duration-300 group-hover:scale-105"
+                className="transition-transform duration-300 group-hover:scale-105 rounded-md"
               />
             </Link>
 
@@ -87,18 +84,18 @@ export default function ShopGridsHeader() {
               <div className="relative">
                 <button
                   onClick={() => setWishlistOpen(!wishlistOpen)}
-                  className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border border-gray-300 hover:bg-black hover:border-black transition-all group"
+                  className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border border-gray-600 hover:bg-yellow-400 hover:text-black transition-all group"
                   aria-label="Wishlist"
                 >
                   <Heart
                     size={22}
                     className={`${wishlistOpen
                       ? "text-yellow-400"
-                      : "text-gray-700 group-hover:text-yellow-400"
+                      : "text-white group-hover:text-black"
                       }`}
                   />
                   {wishlist.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-black text-yellow-400 text-xs font-bold rounded-full px-1.5">
+                    <span className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold rounded-full px-1.5">
                       {wishlist.length}
                     </span>
                   )}
@@ -106,11 +103,11 @@ export default function ShopGridsHeader() {
 
                 {/* Wishlist Dropdown */}
                 {wishlistOpen && wishlist.length > 0 && (
-                  <div className="absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-fade-in">
-                    <div className="p-4 border-b bg-yellow-50 flex justify-between text-sm text-gray-700">
+                  <div className="absolute right-0 mt-3 w-80 bg-[#1a1a1a] border border-gray-700 rounded-2xl shadow-xl z-50 overflow-hidden animate-fade-in">
+                    <div className="p-4 border-b border-gray-700 bg-[#252525] flex justify-between text-sm text-yellow-400">
                       <span>{wishlist.length} Items</span>
                       <button
-                        className="text-xs text-red-500 hover:underline"
+                        className="text-xs text-white hover:text-yellow-400 transition"
                         onClick={() => setWishlistOpen(false)}
                       >
                         Close
@@ -121,7 +118,7 @@ export default function ShopGridsHeader() {
                       {wishlist.map((item) => (
                         <li
                           key={item.id}
-                          className="flex items-center gap-3 p-4 border-b hover:bg-yellow-50 transition"
+                          className="flex items-center gap-3 p-4 border-b border-gray-700 hover:bg-[#2a2a2a] transition"
                         >
                           <button
                             className="text-gray-400 hover:text-red-500"
@@ -139,12 +136,12 @@ export default function ShopGridsHeader() {
                             loading="lazy"
                           />
                           <div>
-                            <h4 className="text-sm font-semibold text-gray-800 hover:text-yellow-500">
+                            <h4 className="text-sm font-semibold text-white hover:text-yellow-400">
                               <Link href={`/product-detail/${item.id}`}>
                                 {item.name}
                               </Link>
                             </h4>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-400">
                               ${Number(item.price).toFixed(2)}
                             </p>
                           </div>
@@ -159,15 +156,15 @@ export default function ShopGridsHeader() {
               <div className="relative">
                 <Link
                   href="/cart"
-                  className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border border-gray-300 hover:bg-black hover:border-black transition-all group"
+                  className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border border-gray-600 hover:bg-yellow-400 hover:text-black transition-all group"
                   aria-label="Cart"
                 >
                   <ShoppingCart
                     size={22}
-                    className="text-gray-700 group-hover:text-yellow-400"
+                    className="text-white group-hover:text-black"
                   />
                   {cart.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-black text-yellow-400 text-xs font-bold rounded-full px-1.5">
+                    <span className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold rounded-full px-1.5">
                       {cart.length}
                     </span>
                   )}
