@@ -64,9 +64,9 @@ export default function ShopGridsHeader() {
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <Image
-                src="/logo3.png"
+                src="/logo4.png"
                 alt="Logo"
-                width={120}
+                width={140}
                 height={60}
                 priority
                 className="transition-transform duration-300 group-hover:scale-105 rounded-md"

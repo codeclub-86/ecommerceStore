@@ -10,10 +10,10 @@ interface SearchFilterProps {
 }
 
 const priceRanges = [
-    { label: "$50 - $100", min: 50, max: 100 },
-    { label: "$100 - $500", min: 100, max: 500 },
-    { label: "$500 - $1,000", min: 500, max: 1000 },
-    { label: "$1,000 - $5,000", min: 1000, max: 5000 },
+    { label: "Rs 50 - Rs 100", min: 50, max: 100 },
+    { label: "Rs 100 - Rs 500", min: 100, max: 500 },
+    { label: "Rs 500 - Rs 1,000", min: 500, max: 1000 },
+    { label: "Rs 1,000 - Rs 5,000", min: 1000, max: 5000 },
 ];
 
 const SearchFilter: React.FC<SearchFilterProps> = ({
