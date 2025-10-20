@@ -57,6 +57,13 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
+
+        initializeAuth();
+        if (!isLoggedIn) {
+            router.push("/login");
+            return;
+        }
+
         const finalPrice = sale_price ? Number(sale_price) : price;
         addToCart({
             id: Number(id),
@@ -68,6 +75,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
         });
         toast.success(`${name} added to cart 🛒`);
     };
+
 
     const isOnSale = sale_price && Number(sale_price) < Number(price);
 

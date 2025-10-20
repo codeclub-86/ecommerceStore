@@ -90,7 +90,16 @@ export default function ProductDetailPage() {
 
 
   // cart logic
+  // cart logic
   const handleAddToCart = () => {
+    initializeAuth();
+
+    if (!isLoggedIn) {
+      toast.error("Please log in to add items to your cart.");
+      router.push("/login");
+      return;
+    }
+
     const finalPrice = singleProduct.sale_price
       ? Number(singleProduct.sale_price)
       : Number(singleProduct.price);
@@ -110,6 +119,7 @@ export default function ProductDetailPage() {
 
     toast.success(`${singleProduct.name} added to cart 🛒`, { icon: "🛒" });
   };
+
 
 
   return (

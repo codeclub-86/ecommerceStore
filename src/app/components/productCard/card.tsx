@@ -67,6 +67,14 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+
+    initializeAuth();
+    if (!isLoggedIn) {
+      toast.error("Please log in to add items to your cart.");
+      router.push("/login");
+      return;
+    }
+
     addToCart({
       id: Number(id),
       name,
@@ -77,6 +85,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
     });
     toast.success("Added to cart 🛒");
   };
+
 
   return (
     <div className="relative flex flex-col transition h-full group rounded-lg overflow-hidden shadow-sm hover:shadow-md">
