@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Heart, X, ShoppingCart } from "lucide-react";
+import { Search, Heart, X, ShoppingCart, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HeaderLinks from "./headerLinks";
@@ -59,7 +59,6 @@ export default function ShopGridsHeader() {
   return (
     <header className="w-full dark-bg-css shadow-md border-b border-gray-700">
       <div className="w-full lg:px-8 md:px-6 px-3 py-4 container mx-auto">
-
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-6">
             {/* Logo */}
@@ -72,7 +71,6 @@ export default function ShopGridsHeader() {
                 priority
                 className="transition-transform duration-300 group-hover:scale-105 rounded-md object-contain"
               />
-
             </Link>
 
             {/* Desktop Search */}
@@ -172,6 +170,17 @@ export default function ShopGridsHeader() {
                   )}
                 </Link>
               </div>
+
+              {/* Switch to Selling */}
+              <Link
+                href={process.env.NEXT_PUBLIC_REGISTER_URL || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:inline-flex items-center bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-white hover:text-black transition whitespace-nowrap"
+              >
+                Switch to Selling
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
             </div>
           </div>
 

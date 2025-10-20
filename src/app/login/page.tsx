@@ -13,7 +13,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
-  const [verified, setVerified] = useState(false); // for forgot password flow
+  const [verified, setVerified] = useState(false);
+  const [messageType, setMessageType] = useState<"success" | "error">("error");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +25,7 @@ const Register = () => {
       // -------- REGISTER --------
       if (state === "register") {
         if (!/^\d{11}$/.test(phone)) {
+          setMessageType("error");
           setMessage("Phone number must be exactly 11 digits");
           setLoading(false);
           return;
@@ -37,6 +39,7 @@ const Register = () => {
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
+        setMessageType("success");
         setMessage("Account created successfully!");
         setState("login");
         setName("");
@@ -71,6 +74,7 @@ const Register = () => {
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.message);
+          setMessageType("success");
           setMessage("Phone verified. Please enter your new password.");
           setVerified(true);
         } else {
@@ -82,15 +86,17 @@ const Register = () => {
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.message);
+          setMessageType("success");
           setMessage("Password updated successfully! You can now log in.");
           setVerified(false);
           setState("login");
           setPassword("");
           setPhone("");
-          setEmail(""); // <-- add this line
+          setEmail("");
         }
       }
     } catch (err: any) {
+      setMessageType("error");
       setMessage(err.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -149,8 +155,6 @@ const Register = () => {
           </div>
         </>
       )}
-
-
 
       {state === "login" && (
         <div className="w-full">
@@ -263,7 +267,10 @@ const Register = () => {
       </button>
 
       {message && (
-        <p className="text-center text-sm mt-2 w-full text-red-500">
+        <p
+          className={`text-center text-sm mt-2 w-full ${messageType === "success" ? "text-green-600" : "text-red-500"
+            }`}
+        >
           {message}
         </p>
       )}
