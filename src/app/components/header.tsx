@@ -173,7 +173,8 @@ export default function ShopGridsHeader() {
 
               {/* Switch to Selling */}
               <Link
-                href={process.env.NEXT_PUBLIC_REGISTER_URL || "#"}
+                // href={process.env.NEXT_PUBLIC_REGISTER_URL || "#"}
+                href="/register"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden md:inline-flex items-center bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-white hover:text-black transition whitespace-nowrap"

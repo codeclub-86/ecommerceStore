@@ -136,7 +136,7 @@ export default function Footer() {
           </div>
 
           <p className="text-gray-400 text-center">
-            © {new Date().getFullYear()} Haasil. Designed by{" "}
+            © {new Date().getFullYear()} Haasil. Product Of{" "}
             <a
               href="https://codeclub.tech/"
               target="_blank"
