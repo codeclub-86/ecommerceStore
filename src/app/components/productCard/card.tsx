@@ -36,7 +36,8 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   // ⛔ Skip rendering sale products
   if (sale_price) return null;
 
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
   const { addToCart } = useCartStore();
   const router = useRouter();
@@ -84,15 +85,15 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition ${inWishlist ? "bg-yellow-100" : "bg-white"
-          }`}
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition ${
+          inWishlist ? "bg-yellow-100" : "bg-white"
+        }`}
       >
         <Heart
           size={18}
-          className={`transition ${inWishlist
-            ? "text-yellow-500 fill-yellow-500"
-            : "text-gray-700"
-            }`}
+          className={`transition ${
+            inWishlist ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
+          }`}
         />
       </button>
 
@@ -139,9 +140,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
                 <li key={i}>
                   <Star
                     size={16}
-                    fill={i < Math.floor(average_rating) ? "currentColor" : "none"}
+                    fill={
+                      i < Math.floor(average_rating) ? "currentColor" : "none"
+                    }
                     stroke={
-                      i < Math.floor(average_rating) ? "currentColor" : "#9CA3AF"
+                      i < Math.floor(average_rating)
+                        ? "currentColor"
+                        : "#9CA3AF"
                     }
                   />
                 </li>
