@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { useEffect } from "react";
 import { useStore } from "@/app/store/apiStore";
+import logo4 from "../../../public/logo4.png";
 
 export default function Footer() {
   const { categories, fetchCategories } = useStore();
@@ -51,10 +52,10 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/white-logo.svg"
+              src="/logo4.png"
               alt="Haasil Logo"
-              width={200}
-              height={60}
+              width={80}
+              height={40}
               priority
             />
           </Link>
@@ -135,7 +136,7 @@ export default function Footer() {
           </div>
 
           <p className="text-gray-400 text-center">
-            © {new Date().getFullYear()} Haasil. Designed by{" "}
+            © {new Date().getFullYear()} Haasil. Product Of{" "}
             <a
               href="https://codeclub.tech/"
               target="_blank"

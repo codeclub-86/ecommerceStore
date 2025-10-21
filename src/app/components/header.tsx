@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Heart, X, ShoppingCart } from "lucide-react";
+import { Search, Heart, X, ShoppingCart, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HeaderLinks from "./headerLinks";
@@ -58,18 +58,18 @@ export default function ShopGridsHeader() {
 
   return (
     <header className="w-full dark-bg-css shadow-md border-b border-gray-700">
-      <div className="w-full lg:px-8 md:px-6 px-3 py-8 container mx-auto">
+      <div className="w-full lg:px-8 md:px-6 px-3 py-4 container mx-auto">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-6">
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <Image
-                src="/logo4.png"
+                src="/logo6.png"
                 alt="Logo"
-                width={140}
-                height={60}
+                width={100}
+                height={50}
                 priority
-                className="transition-transform duration-300 group-hover:scale-105 rounded-md"
+                className="transition-transform duration-300 group-hover:scale-105 rounded-md object-contain"
               />
             </Link>
 
@@ -170,6 +170,18 @@ export default function ShopGridsHeader() {
                   )}
                 </Link>
               </div>
+
+              {/* Switch to Selling */}
+              <Link
+                // href={process.env.NEXT_PUBLIC_REGISTER_URL || "#"}
+                href="/register"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:inline-flex items-center bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-white hover:text-black transition whitespace-nowrap"
+              >
+                Switch to Selling
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
             </div>
           </div>
 
