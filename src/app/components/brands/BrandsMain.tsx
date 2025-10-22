@@ -25,7 +25,7 @@ const BrandsMain: React.FC = () => {
   }, []);
 
   return (
-    <section className="w-full dark-bg-css py-16 ">
+    <section className="w-full light-bg-css py-16 ">
       {/* Section Title */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Popular Brands</h2>

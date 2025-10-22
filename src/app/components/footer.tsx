@@ -52,7 +52,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/logo4.png"
+              src="/logo6.png"
               alt="Haasil Logo"
               width={80}
               height={40}

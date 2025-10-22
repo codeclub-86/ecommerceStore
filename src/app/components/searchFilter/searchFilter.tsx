@@ -26,6 +26,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [openParent, setOpenParent] = useState<string | null>(null); // added for click toggle
 
     useEffect(() => {
         fetchCategories();
@@ -57,60 +58,72 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
 
                         {/* Parent + Child Categories */}
                         {categories.map((group: any, idx: number) => (
-                            <li
-                                key={idx}
-                                className="relative group/category"
-                            >
-                                {/* Parent category (unclickable) */}
+                            <li key={idx} className="relative">
+                                {/* Parent category (clickable to toggle children) */}
                                 <div
-                                    className={`flex justify-between items-center py-2 px-3 rounded-md cursor-default transition ${selectedCategory === group.parent
+                                    className={`flex justify-between items-center py-2 px-3 rounded-md cursor-pointer transition ${selectedCategory === group.parent
                                         ? "bg-yellow-100 text-yellow-700 font-semibold"
                                         : "text-gray-800 hover:bg-yellow-50"
                                         }`}
+                                    onClick={() =>
+                                        setOpenParent(
+                                            openParent === group.parent
+                                                ? null
+                                                : group.parent
+                                        )
+                                    }
                                 >
                                     {group.parent || "Unnamed Category"}
 
-                                    {group.categories && group.categories.length > 0 && (
-                                        <svg
-                                            className="w-4 h-4 ml-2 text-gray-500 group-hover/category:text-yellow-600 transition-transform"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M9 5l7 7-7 7"
-                                            />
-                                        </svg>
-                                    )}
+                                    {group.categories &&
+                                        group.categories.length > 0 && (
+                                            <svg
+                                                className={`w-4 h-4 ml-2 text-gray-500 transition-transform ${openParent === group.parent
+                                                    ? "rotate-90 text-yellow-600"
+                                                    : ""
+                                                    }`}
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M9 5l7 7-7 7"
+                                                />
+                                            </svg>
+                                        )}
                                 </div>
 
-                                {/* Dropdown on hover */}
-                                {group.categories && group.categories.length > 0 && (
-                                    <ul
-                                        className="absolute left-full top-0 ml-2 hidden group-hover/category:block 
-                    bg-white border border-gray-200 rounded-md shadow-md w-48 z-10"
-                                    >
-                                        {group.categories.map((cat: any) => (
-                                            <li
-                                                key={cat.id}
-                                                className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory === cat.category_name
-                                                    ? "bg-yellow-200 text-yellow-800 font-semibold"
-                                                    : "text-gray-700 hover:bg-yellow-50"
-                                                    }`}
-                                                onClick={() => {
-                                                    setSelectedCategory(cat.category_name);
-                                                    onCategorySelect(cat.category_name);
-                                                }}
-                                            >
-                                                {cat.category_name}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
+                                {/* Dropdown on click */}
+                                {group.categories &&
+                                    group.categories.length > 0 &&
+                                    openParent === group.parent && (
+                                        <ul className="absolute left-full top-0 ml-2 bg-white border border-gray-200 rounded-md shadow-md w-48 z-10">
+                                            {group.categories.map((cat: any) => (
+                                                <li
+                                                    key={cat.id}
+                                                    className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory ===
+                                                        cat.category_name
+                                                        ? "bg-yellow-200 text-yellow-800 font-semibold"
+                                                        : "text-gray-700 hover:bg-yellow-50"
+                                                        }`}
+                                                    onClick={() => {
+                                                        setSelectedCategory(
+                                                            cat.category_name
+                                                        );
+                                                        onCategorySelect(
+                                                            cat.category_name
+                                                        );
+                                                    }}
+                                                >
+                                                    {cat.category_name}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                             </li>
                         ))}
                     </ul>
