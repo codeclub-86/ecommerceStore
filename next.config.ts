@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "codeclub.tech",
-        pathname: "/haasil/public/**",
+        pathname: "/haasil/admin/ecom-admin/public/**",
       },
       {
         protocol: "http",
