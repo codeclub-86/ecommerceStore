@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "../../../../../libs/mysql";
-import { codes } from "@/../libs/codeStore";
+import { codes } from "../../../../../libs/codeStore";
+
 import nodemailer from "nodemailer";
 
 export async function POST(request: Request) {
@@ -62,4 +63,4 @@ export async function POST(request: Request) {
   }
 }
 
-export { codes }; // we export so verify-code can access it
+// export { codes }; // we export so verify-code can access it

@@ -12,8 +12,17 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
+// Define the Product type
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+}
+
 const HeroMain = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const plugin = useRef(
     Autoplay({
       delay: 4000,
@@ -49,7 +58,6 @@ const HeroMain = () => {
             {featuredProducts.map((product, idx) => (
               <CarouselItem key={idx}>
                 <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 md:gap-12 p-6 md:p-10 bg-gradient-to-r from-black via-gray-900 to-black text-white rounded-xl">
-
                   {/* Left: Product Details */}
                   <div className="flex flex-col justify-center space-y-4">
                     <h2 className="text-3xl md:text-4xl font-bold">{product.name}</h2>

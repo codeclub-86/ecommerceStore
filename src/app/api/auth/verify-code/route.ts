@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { codes } from "../forgot-password/route";
+import { codes } from "../../../../../libs/codeStore";
+
 
 export async function POST(request: Request) {
   try {

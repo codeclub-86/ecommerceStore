@@ -239,19 +239,8 @@ export default function ShopGridsHeader() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-1 hover:opacity-80 transition"
                 >
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-black border border-yellow-400 flex items-center justify-center overflow-hidden">
-                    {user?.avatar ? (
-                      <Image
-                        src={user.avatar}
-                        alt="User Avatar"
-                        width={36}
-                        height={36}
-                        className="rounded-full object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <User size={18} className="text-yellow-400" />
-                    )}
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-black border border-yellow-400 flex items-center justify-center">
+                    <User size={18} className="text-yellow-400" />
                   </div>
                   <ChevronDown size={14} className="text-yellow-400" />
                 </button>
@@ -279,7 +268,6 @@ export default function ShopGridsHeader() {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-
                 <Link
                   href="/login"
                   className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-white hover:text-black transition"
@@ -296,7 +284,6 @@ export default function ShopGridsHeader() {
                   <ArrowRight size={14} />
                   Switch to Selling
                 </Link>
-
               </div>
             )}
           </div>
