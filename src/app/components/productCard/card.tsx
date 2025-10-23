@@ -114,23 +114,19 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       {/* Product Card */}
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
         {/* Product Image */}
-        <div className="relative w-full h-64 overflow-hidden">
+        <div className="relative w-full h-80 bg-white rounded-md overflow-hidden flex items-center justify-center">
           <Image
             src={image || "/placeholder.png"}
             alt={name}
             width={400}
             height={400}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-            <button
-              onClick={handleAddToCart}
-              className="flex items-center justify-center gap-2 whitespace-nowrap bg-yellow-400 text-black px-4 py-2 hover:bg-black hover:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md font-medium"
-            >
-              <ShoppingCart size={16} /> Add to Cart
-            </button>
-          </div>
         </div>
+
+
+
+
 
 
 
