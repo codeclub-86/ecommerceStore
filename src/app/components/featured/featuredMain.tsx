@@ -19,7 +19,7 @@ const FeaturedMain = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/getCategories");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/getCategories`);
         const data = await res.json();
 
         if (data.success && Array.isArray(data.data)) {

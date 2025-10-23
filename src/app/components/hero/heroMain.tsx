@@ -33,7 +33,7 @@ const HeroMain = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/products/status/featured");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/status/featured`);
         const data = await res.json();
         if (data.success) {
           setFeaturedProducts(data.data);
