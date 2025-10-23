@@ -77,8 +77,9 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
     };
 
 
-    const isOnSale = sale_price && Number(sale_price) < Number(price);
-
+    const isOnSale =
+        status?.toLowerCase() === "sale" ||
+        (sale_price && Number(sale_price) < Number(price));
     // ⭐ Round rating to one decimal safely
     const roundedRating = Number(average_rating) || 0;
 

@@ -34,7 +34,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
   status,
 }) => {
   // ⛔ Skip rendering sale products
-  if (sale_price) return null;
+  // if (sale_price) return null;
 
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
@@ -94,15 +94,13 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       <button
         aria-label="Add to Wishlist"
         onClick={toggleWishlist}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition ${
-          inWishlist ? "bg-yellow-100" : "bg-white"
-        }`}
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition ${inWishlist ? "bg-yellow-100" : "bg-white"
+          }`}
       >
         <Heart
           size={18}
-          className={`transition ${
-            inWishlist ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
-          }`}
+          className={`transition ${inWishlist ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
+            }`}
         />
       </button>
 
@@ -133,6 +131,8 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             </button>
           </div>
         </div>
+
+
 
         {/* Product Details */}
         <div className="p-4 flex flex-col flex-grow light-bg-css">
@@ -172,9 +172,20 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
 
           {/* Price */}
           <div className="mt-2 flex items-center gap-2">
-            <span className="text-white font-bold text-lg">
-              Rs {finalPrice.toFixed(2)}
-            </span>
+            {status?.toLowerCase() === "sale" && sale_price ? (
+              <>
+                <span className="text-yellow-400 font-bold text-lg">
+                  Rs {Number(sale_price).toFixed(2)}
+                </span>
+                <span className="text-gray-500 line-through text-sm">
+                  Rs {Number(price).toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <span className="text-white font-bold text-lg">
+                Rs {Number(price).toFixed(2)}
+              </span>
+            )}
           </div>
         </div>
       </Link>

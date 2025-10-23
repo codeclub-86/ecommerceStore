@@ -135,10 +135,11 @@ export default function ProductDetailPage() {
                   <Image
                     src={mainImage || "/placeholder.png"}
                     alt={singleProduct.name}
-                    width={600}
-                    height={600}
-                    className="object-cover w-full h-auto"
+                    width={300}
+                    height={400}
+                    className="w-full h-96 object-contain bg-white rounded-lg"
                   />
+
                 </div>
 
                 {singleProduct.images?.length > 0 && (
