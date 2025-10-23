@@ -36,13 +36,14 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
     return (
         <>
             {/* Categories */}
-            <div className="w-full p-6 bg-white shadow-sm mb-8 rounded-lg relative">
+            <div className="w-full p-6 bg-white shadow-sm mb-8 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">All Categories</h3>
 
                 {loading ? (
                     <p className="text-gray-500">Loading categories...</p>
                 ) : categories.length > 0 ? (
                     <ul className="space-y-3">
+                        {/* All Option */}
                         <li
                             onClick={() => {
                                 setSelectedCategory(null);
@@ -56,74 +57,64 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                             All
                         </li>
 
-                        {/* Parent + Child Categories */}
+                        {/* Parent Categories */}
                         {categories.map((group: any, idx: number) => (
-                            <li key={idx} className="relative">
-                                {/* Parent category (clickable to toggle children) */}
+                            <li key={idx}>
                                 <div
                                     className={`flex justify-between items-center py-2 px-3 rounded-md cursor-pointer transition ${selectedCategory === group.parent
                                         ? "bg-yellow-100 text-yellow-700 font-semibold"
                                         : "text-gray-800 hover:bg-yellow-50"
                                         }`}
                                     onClick={() =>
-                                        setOpenParent(
-                                            openParent === group.parent
-                                                ? null
-                                                : group.parent
-                                        )
+                                        setOpenParent(openParent === group.parent ? null : group.parent)
                                     }
                                 >
                                     {group.parent || "Unnamed Category"}
 
-                                    {group.categories &&
-                                        group.categories.length > 0 && (
-                                            <svg
-                                                className={`w-4 h-4 ml-2 text-gray-500 transition-transform ${openParent === group.parent
-                                                    ? "rotate-90 text-yellow-600"
-                                                    : ""
-                                                    }`}
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M9 5l7 7-7 7"
-                                                />
-                                            </svg>
-                                        )}
+                                    {group.categories?.length > 0 && (
+                                        <svg
+                                            className={`w-4 h-4 ml-2 text-gray-500 transition-transform ${openParent === group.parent ? "rotate-90 text-yellow-600" : ""
+                                                }`}
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M9 5l7 7-7 7"
+                                            />
+                                        </svg>
+                                    )}
                                 </div>
 
-                                {/* Dropdown on click */}
-                                {group.categories &&
-                                    group.categories.length > 0 &&
-                                    openParent === group.parent && (
-                                        <ul className="absolute left-full top-0 ml-2 bg-white border border-gray-200 rounded-md shadow-md w-48 z-10">
-                                            {group.categories.map((cat: any) => (
-                                                <li
-                                                    key={cat.id}
-                                                    className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory ===
-                                                        cat.category_name
-                                                        ? "bg-yellow-200 text-yellow-800 font-semibold"
-                                                        : "text-gray-700 hover:bg-yellow-50"
-                                                        }`}
-                                                    onClick={() => {
-                                                        setSelectedCategory(
-                                                            cat.category_name
-                                                        );
-                                                        onCategorySelect(
-                                                            cat.category_name
-                                                        );
-                                                    }}
-                                                >
-                                                    {cat.category_name}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
+                                {/* Subcategories */}
+                                {group.categories?.length > 0 && openParent === group.parent && (
+                                    <ul
+                                        className="
+                                      mt-2 ml-3 border-l border-gray-300 pl-3 space-y-2
+                                      sm:mt-2 sm:ml-3 sm:border-l sm:border-gray-300 sm:pl-3 sm:space-y-2
+                                    "
+                                    >
+                                        {group.categories.map((cat: any) => (
+                                            <li
+                                                key={cat.id}
+                                                className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory === cat.category_name
+                                                    ? "bg-yellow-200 text-yellow-800 font-semibold"
+                                                    : "text-gray-700 hover:bg-yellow-50"
+                                                    }`}
+                                                onClick={() => {
+                                                    setSelectedCategory(cat.category_name);
+                                                    onCategorySelect(cat.category_name);
+                                                }}
+                                            >
+                                                {cat.category_name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </li>
                         ))}
                     </ul>
@@ -131,6 +122,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                     <p className="text-gray-500">No categories found.</p>
                 )}
             </div>
+
 
             {/* Price Filter */}
             <div className="w-full p-6 bg-white shadow-sm mb-8 rounded-lg">

@@ -122,8 +122,8 @@ export default function ShopGridsHeader() {
 
   return (
     <header className="w-full dark-bg-css shadow-md border-b border-gray-700">
-      <div className="w-full lg:px-8 md:px-6 px-3 py-4 container mx-auto">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 container mx-auto">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 sm:gap-6">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <Image
@@ -137,12 +137,12 @@ export default function ShopGridsHeader() {
           </Link>
 
           {/* Desktop Search */}
-          <div className="hidden md:flex flex-1 max-w-xl">
+          <div className="hidden md:flex flex-1 max-w-md lg:max-w-xl">
             <SearchBar />
           </div>
 
           {/* Right Icons */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 sm:gap-5">
             {/* Wishlist */}
             <div className="relative">
               <button
@@ -166,7 +166,7 @@ export default function ShopGridsHeader() {
 
               {/* Wishlist Dropdown */}
               {wishlistOpen && wishlist.length > 0 && (
-                <div className="absolute right-0 mt-3 w-80 bg-[#0c1a2b] border border-gray-700 rounded-2xl shadow-xl z-50 overflow-hidden animate-fade-in">
+                <div className="absolute right-0 mt-3 w-72 sm:w-80 bg-[#0c1a2b] border border-gray-700 rounded-2xl shadow-xl z-50 overflow-hidden animate-fade-in">
                   <div className="p-4 border-b border-gray-700 bg-[#13243b] flex justify-between text-sm text-yellow-400">
                     <span>{wishlist.length} Items</span>
                     <button
@@ -181,7 +181,7 @@ export default function ShopGridsHeader() {
                     {wishlist.map((item) => (
                       <li
                         key={item.id}
-                        className="flex items-center gap-3 p-4 border-b border-gray-700 hover:bg-[#1b304d] transition"
+                        className="flex items-center gap-3 p-3 border-b border-gray-700 hover:bg-[#1b304d] transition"
                       >
                         <button
                           className="text-gray-400 hover:text-red-500"
@@ -193,13 +193,12 @@ export default function ShopGridsHeader() {
                         <Image
                           src={item.image}
                           alt={item.name}
-                          width={50}
-                          height={50}
+                          width={45}
+                          height={45}
                           className="rounded-md"
-                          loading="lazy"
                         />
-                        <div>
-                          <h4 className="text-sm font-semibold text-white hover:text-yellow-400">
+                        <div className="min-w-0">
+                          <h4 className="text-sm font-semibold text-white truncate hover:text-yellow-400">
                             <Link href={`/product-detail/${item.id}`}>
                               {item.name}
                             </Link>
@@ -232,7 +231,7 @@ export default function ShopGridsHeader() {
               )}
             </Link>
 
-            {/* Profile / Selling */}
+            {/* Profile / Auth */}
             {isLoggedIn ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -267,7 +266,7 @@ export default function ShopGridsHeader() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Link
                   href="/login"
                   className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-white hover:text-black transition"
@@ -279,10 +278,10 @@ export default function ShopGridsHeader() {
                   href="/register"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-[#0b1a2d] border border-yellow-400 rounded-full text-yellow-400 hover:bg-[#142a46] transition"
+                  className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-semibold bg-[#0b1a2d] border border-yellow-400 rounded-full text-yellow-400 hover:bg-[#142a46] transition"
                 >
                   <ArrowRight size={14} />
-                  Switch to Selling
+                  <span className="hidden sm:inline">Sell</span>
                 </Link>
               </div>
             )}
