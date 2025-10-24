@@ -24,7 +24,6 @@ const Register = () => {
     setMessage("");
 
     try {
-      // -------- REGISTER --------
       if (state === "register") {
         if (!/^\d{11}$/.test(phone)) {
           setMessageType("error");
@@ -41,6 +40,7 @@ const Register = () => {
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
+
         setMessageType("success");
         setMessage("Account created successfully!");
         setState("login");
@@ -50,7 +50,6 @@ const Register = () => {
         setPhone("");
       }
 
-      // -------- LOGIN --------
       else if (state === "login") {
         const res = await fetch("/api/auth/login", {
           method: "POST",
@@ -65,10 +64,8 @@ const Register = () => {
         router.push("/");
       }
 
-      // -------- FORGOT PASSWORD --------
       else if (state === "forgot") {
         if (step === "email") {
-          // Step 1: Send code to email
           const res = await fetch("/api/auth/forgot-password", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -81,7 +78,6 @@ const Register = () => {
           setMessage("Verification code sent to your email.");
           setStep("verify");
         } else if (step === "verify") {
-          // Step 2: Verify code
           const res = await fetch("/api/auth/verify-code", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -94,7 +90,6 @@ const Register = () => {
           setMessage("Email verified! Now set your new password.");
           setStep("reset");
         } else if (step === "reset") {
-          // Step 3: Reset password
           const res = await fetch("/api/auth/reset-password", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -121,217 +116,208 @@ const Register = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 m-auto items-start p-8 py-12 w-150 sm:w-[352px] text-gray-500 rounded-lg shadow-xl border border-gray-200 bg-white my-20"
-    >
-      <p className="text-2xl font-medium m-auto">
-        {state === "login"
-          ? "Login"
-          : state === "register"
-            ? "Sign Up"
-            : "Forgot Password"}
-      </p>
+    <div className="w-full min-h-screen flex justify-center items-center px-4 bg-gray-50">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 w-full max-w-sm text-gray-600 rounded-xl shadow-lg border border-gray-200 bg-white p-6 sm:p-8"
+      >
+        <p className="text-2xl font-semibold text-center">
+          {state === "login"
+            ? "Login"
+            : state === "register"
+              ? "Sign Up"
+              : "Forgot Password"}
+        </p>
 
-      {state === "register" && (
-        <>
-          <div className="w-full">
-            <p>Name</p>
-            <input
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-              placeholder="type here"
-              className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
-              required
-            />
-          </div>
+        {state === "register" && (
+          <>
+            <Field label="Name">
+              <input
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                placeholder="type here"
+                className="input"
+                required
+              />
+            </Field>
 
-          <div className="w-full">
-            <p>Email</p>
+            <Field label="Email">
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                placeholder="type here"
+                className="input"
+                type="email"
+                required
+              />
+            </Field>
+
+            <Field label="Phone">
+              <input
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+                placeholder="e.g. 03123456789"
+                className="input"
+                type="tel"
+                maxLength={11}
+                required
+              />
+            </Field>
+          </>
+        )}
+
+        {state === "login" && (
+          <Field label="Email">
             <input
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               placeholder="type here"
-              className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
+              className="input"
               type="email"
               required
             />
-          </div>
+          </Field>
+        )}
 
-          <div className="w-full">
-            <p>Phone</p>
+        {state === "forgot" && (
+          <>
+            {step === "email" && (
+              <Field label="Email">
+                <input
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  placeholder="Enter registered email"
+                  className="input"
+                  type="email"
+                  required
+                />
+              </Field>
+            )}
+
+            {step === "verify" && (
+              <Field label="Verification Code">
+                <input
+                  onChange={(e) => setCode(e.target.value)}
+                  value={code}
+                  placeholder="Enter code"
+                  className="input"
+                  required
+                />
+              </Field>
+            )}
+
+            {step === "reset" && (
+              <Field label="New Password">
+                <input
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  placeholder="Enter new password"
+                  className="input"
+                  type={show ? "text" : "password"}
+                  required
+                />
+              </Field>
+            )}
+          </>
+        )}
+
+        {(state === "login" || state === "register" || verified) && (
+          <Field label="Password">
             <input
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
-              placeholder="e.g. 03123456789"
-              className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
-              type="tel"
-              maxLength={11}
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              placeholder="type here"
+              className="input"
+              type={show ? "text" : "password"}
               required
             />
-          </div>
-        </>
-      )}
+          </Field>
+        )}
 
-      {state === "login" && (
-        <div className="w-full">
-          <p>Email</p>
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            placeholder="type here"
-            className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
-            type="email"
-            required
-          />
-        </div>
-      )}
+        <SwitchLinks
+          state={state}
+          setState={setState}
+          setVerified={setVerified}
+          setMessage={setMessage}
+        />
 
-      {state === "forgot" && (
-        <>
-          {step === "email" && (
-            <div className="w-full">
-              <p>Email</p>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                placeholder="Enter your registered email"
-                className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
-                type="email"
-                required
-              />
-            </div>
-          )}
-
-          {step === "verify" && (
-            <div className="w-full">
-              <p>Verification Code</p>
-              <input
-                onChange={(e) => setCode(e.target.value)}
-                value={code}
-                placeholder="Enter the code sent to your email"
-                className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
-                type="text"
-                required
-              />
-            </div>
-          )}
-
-          {step === "reset" && (
-            <div className="w-full">
-              <p>New Password</p>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                placeholder="Enter new password"
-                className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
-                type={show ? "text" : "password"}
-                required
-              />
-              <span
-                onClick={() => setShow((prev) => !prev)}
-                className="text-sm text-blue-600 cursor-pointer"
-              >
-                {show ? "hide" : "show"}
-              </span>
-            </div>
-          )}
-        </>
-      )}
-
-      {(state === "login" || state === "register" || verified) && (
-        <div className="w-full">
-          <p>Password</p>
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            placeholder="type here"
-            className="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500"
-            type={show ? "text" : "password"}
-            required
-          />
-          <span
-            onClick={() => setShow((prev) => !prev)}
-            className="text-sm text-blue-600 cursor-pointer"
-          >
-            {show ? "hide" : "show"}
-          </span>
-        </div>
-      )}
-
-      {state === "register" ? (
-        <p>
-          Already have account?{" "}
-          <span
-            onClick={() => setState("login")}
-            className="text-blue-600 cursor-pointer"
-          >
-            click here
-          </span>
-        </p>
-      ) : state === "login" ? (
-        <p>
-          Create an account?{" "}
-          <span
-            onClick={() => setState("register")}
-            className="text-blue-600 cursor-pointer"
-          >
-            click here
-          </span>
-          <br />
-          <span
-            onClick={() => {
-              setState("forgot");
-              setMessage("");
-            }}
-            className="text-blue-600 cursor-pointer text-sm"
-          >
-            Forgot password?
-          </span>
-        </p>
-      ) : (
-        <p>
-          Back to login?{" "}
-          <span
-            onClick={() => {
-              setState("login");
-              setVerified(false);
-              setMessage("");
-            }}
-            className="text-blue-600 cursor-pointer"
-          >
-            click here
-          </span>
-        </p>
-      )}
-
-      <button
-        disabled={loading}
-        className="bg-blue-600 hover:bg-black transition-all text-white w-full py-2 rounded-md cursor-pointer"
-      >
-        {loading
-          ? "Please wait..."
-          : state === "register"
-            ? "Create Account"
-            : state === "login"
-              ? "Login"
-              : step === "email"
-                ? "Send Code"
-                : step === "verify"
-                  ? "Verify Code"
-                  : "Reset Password"}
-      </button>
-
-      {message && (
-        <p
-          className={`text-center text-sm mt-2 w-full ${messageType === "success" ? "text-green-600" : "text-red-500"
-            }`}
+        <button
+          disabled={loading}
+          className="mt-2 bg-blue-600 hover:bg-blue-700 transition-all text-white w-full py-3 rounded-md text-sm font-medium disabled:opacity-50"
         >
-          {message}
-        </p>
-      )}
-    </form>
+          {loading
+            ? "Please wait..."
+            : state === "register"
+              ? "Create Account"
+              : state === "login"
+                ? "Login"
+                : step === "email"
+                  ? "Send Code"
+                  : step === "verify"
+                    ? "Verify"
+                    : "Reset Password"}
+        </button>
+
+        {message && (
+          <p className={`text-center text-sm mt-1 ${messageType === "success" ? "text-green-600" : "text-red-500"}`}>
+            {message}
+          </p>
+        )}
+      </form>
+    </div>
   );
 };
+
+// ✅ Reusable Components for cleaner code
+const Field = ({ label, children }: any) => (
+  <div className="w-full">
+    <p className="text-sm font-medium mb-1">{label}</p>
+    {children}
+  </div>
+);
+
+const SwitchLinks = ({ state, setState, setVerified, setMessage }: any) => (
+  <div className="text-sm text-center w-full">
+    {state === "register" ? (
+      <p>
+        Already have an account?{" "}
+        <span className="text-blue-600 cursor-pointer" onClick={() => setState("login")}>
+          Login
+        </span>
+      </p>
+    ) : state === "login" ? (
+      <p>
+        Create an account?{" "}
+        <span className="text-blue-600 cursor-pointer" onClick={() => setState("register")}>
+          Sign up
+        </span>
+        <br />
+        <span
+          onClick={() => {
+            setState("forgot");
+            setMessage("");
+          }}
+          className="text-blue-600 cursor-pointer block mt-1"
+        >
+          Forgot password?
+        </span>
+      </p>
+    ) : (
+      <p>
+        Back to login?{" "}
+        <span
+          onClick={() => {
+            setState("login");
+            setVerified(false);
+            setMessage("");
+          }}
+          className="text-blue-600 cursor-pointer"
+        >
+          Click here
+        </span>
+      </p>
+    )}
+  </div>
+);
 
 export default Register;
