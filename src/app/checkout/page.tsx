@@ -63,6 +63,7 @@ export default function CheckoutPage() {
 
     const items = cart.map((item) => ({
       product_id: item.id,
+      product_name: item.name,
       variation: item.variation
         ? item.variation.map((v) => v.value).join(", ")
         : "",
@@ -107,7 +108,8 @@ export default function CheckoutPage() {
         order_date: new Date().toLocaleString(),
         order_id: data.order_id || Math.floor(Math.random() * 10000),
         items: payload.items.map((item) => ({
-          product_name: item.product_id,
+          product_name: item.product_name,
+
           variation: item.variation || "Default",
           quantity: item.quantity,
           subtotal: item.price * item.quantity,
