@@ -83,9 +83,19 @@ export default function OrdersPage() {
 
     if (error) {
         return (
-            <section className="min-h-screen bg-[#0f0f0f] text-white flex justify-center items-center">
-                <p className="text-red-400">Error: {error}</p>
+            <section className="min-h-screen bg-[#0f0f0f] text-white flex flex-col justify-center items-center">
+                <p className="text-gray-300 text-xl font-medium tracking-wide">
+                    You have no orders yet
+                </p>
+
+                <button
+                    onClick={() => window.location.href = "/"}
+                    className="mt-4 px-6 py-2 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-300 transition-all"
+                >
+                    Start Shopping
+                </button>
             </section>
+
         );
     }
 
