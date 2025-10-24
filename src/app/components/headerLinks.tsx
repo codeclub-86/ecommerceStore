@@ -251,7 +251,7 @@ const HeaderLinks = () => {
             </a>
 
             <a
-              href="https://www.instagram.com/codeclubb_?igsh=MWI0aTQ1dzBlcXZndA=="
+              href="https://www.instagram.com/haasil.store?igsh=MTQ2bnpoMWFwYWl5MA=="
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
