@@ -73,7 +73,7 @@ const ProductList = () => {
                             {item.name}
                           </p>
                           <p className="text-gray-400 text-sm font-semibold">
-                            ${item.price}
+                            Rs {item.price}
                           </p>
                         </div>
                       </li>
