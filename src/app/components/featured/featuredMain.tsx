@@ -21,7 +21,6 @@ const FeaturedMain = () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/getCategories`);
         const data = await res.json();
-
         if (data.success && Array.isArray(data.data)) {
           setCategories(data.data);
         }
@@ -31,7 +30,6 @@ const FeaturedMain = () => {
         setLoading(false);
       }
     };
-
     fetchCategories();
   }, []);
 
@@ -61,7 +59,7 @@ const FeaturedMain = () => {
             title={item.parent_category}
             image={item.parent_image}
             alt={item.parent_category}
-            slug={item.categories[0]?.category_name || item.parent_category}
+            slug={item.parent_category} // <-- IMPORTANT: parent slug, not subcategory
           />
         ))}
       </div>

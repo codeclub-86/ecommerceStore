@@ -26,7 +26,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [openParent, setOpenParent] = useState<string | null>(null); // added for click toggle
+    const [openParent, setOpenParent] = useState<string | null>(null);
 
     useEffect(() => {
         fetchCategories();
@@ -35,7 +35,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
 
     return (
         <>
-            {/* Categories */}
+            {/* Categories (only subcategories) */}
             <div className="w-full p-6 bg-white shadow-sm mb-8 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">All Categories</h3>
 
@@ -57,63 +57,59 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                             All
                         </li>
 
-                        {/* Parent Categories */}
                         {categories.map((group: any, idx: number) => (
                             <li key={idx}>
-                                <div
-                                    className={`flex justify-between items-center py-2 px-3 rounded-md cursor-pointer transition ${selectedCategory === group.parent
-                                        ? "bg-yellow-100 text-yellow-700 font-semibold"
-                                        : "text-gray-800 hover:bg-yellow-50"
-                                        }`}
-                                    onClick={() =>
-                                        setOpenParent(openParent === group.parent ? null : group.parent)
-                                    }
-                                >
-                                    {group.parent || "Unnamed Category"}
-
-                                    {group.categories?.length > 0 && (
-                                        <svg
-                                            className={`w-4 h-4 ml-2 text-gray-500 transition-transform ${openParent === group.parent ? "rotate-90 text-yellow-600" : ""
+                                {/* Toggle subcategory list */}
+                                {group.categories?.length > 0 && (
+                                    <>
+                                        <div
+                                            className={`flex justify-between items-center py-2 px-3 rounded-md cursor-pointer transition ${openParent === group.parent
+                                                ? "bg-gray-100 font-semibold"
+                                                : "text-gray-800 hover:bg-gray-50"
                                                 }`}
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
+                                            onClick={() =>
+                                                setOpenParent(openParent === group.parent ? null : group.parent)
+                                            }
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M9 5l7 7-7 7"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-
-                                {/* Subcategories */}
-                                {group.categories?.length > 0 && openParent === group.parent && (
-                                    <ul
-                                        className="
-                                      mt-2 ml-3 border-l border-gray-300 pl-3 space-y-2
-                                      sm:mt-2 sm:ml-3 sm:border-l sm:border-gray-300 sm:pl-3 sm:space-y-2
-                                    "
-                                    >
-                                        {group.categories.map((cat: any) => (
-                                            <li
-                                                key={cat.id}
-                                                className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory === cat.category_name
-                                                    ? "bg-yellow-200 text-yellow-800 font-semibold"
-                                                    : "text-gray-700 hover:bg-yellow-50"
+                                            {group.parent || "Unnamed Category"}
+                                            <svg
+                                                className={`w-4 h-4 ml-2 text-gray-500 transition-transform ${openParent === group.parent ? "rotate-90 text-yellow-600" : ""
                                                     }`}
-                                                onClick={() => {
-                                                    setSelectedCategory(cat.category_name);
-                                                    onCategorySelect(cat.category_name);
-                                                }}
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
                                             >
-                                                {cat.category_name}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M9 5l7 7-7 7"
+                                                />
+                                            </svg>
+                                        </div>
+
+                                        {/* Subcategories */}
+                                        {openParent === group.parent && (
+                                            <ul className="mt-2 ml-3 border-l border-gray-300 pl-3 space-y-2">
+                                                {group.categories.map((cat: any) => (
+                                                    <li
+                                                        key={cat.id}
+                                                        className={`cursor-pointer py-2 px-3 rounded-md transition ${selectedCategory === cat.category_name
+                                                            ? "bg-yellow-200 text-yellow-800 font-semibold"
+                                                            : "text-gray-700 hover:bg-yellow-50"
+                                                            }`}
+                                                        onClick={() => {
+                                                            setSelectedCategory(cat.category_name);
+                                                            onCategorySelect(cat.category_name);
+                                                        }}
+                                                    >
+                                                        {cat.category_name}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </>
                                 )}
                             </li>
                         ))}
@@ -122,7 +118,6 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                     <p className="text-gray-500">No categories found.</p>
                 )}
             </div>
-
 
             {/* Price Filter */}
             <div className="w-full p-6 bg-white shadow-sm mb-8 rounded-lg">
