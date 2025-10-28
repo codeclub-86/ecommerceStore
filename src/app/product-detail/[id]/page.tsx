@@ -14,27 +14,17 @@ export default function ProductDetailPage() {
   const { id } = useParams();
   const { singleProduct, fetchSingleProduct, loading, error } = useStore();
 
-  // stores
-  const { addToWishlist, removeFromWishlist, isInWishlist } =
-    useWishlistStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { initializeAuth, isLoggedIn } = useAuthStore();
   const { addToCart } = useCartStore();
   const router = useRouter();
 
-  // state for main image
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [mainImage, setMainImage] = useState<string | null>(null);
+  const [selectedVariations, setSelectedVariations] = useState<{ [key: string]: string }>({});
 
-  // state for variations
-  const [selectedVariations, setSelectedVariations] = useState<{
-    [key: string]: string;
-  }>({});
-
-  // handle variation change
   const handleVariationChange = (name: string, value: string) => {
-    setSelectedVariations((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setSelectedVariations(prev => ({ ...prev, [name]: value }));
   };
 
   useEffect(() => {
@@ -42,12 +32,35 @@ export default function ProductDetailPage() {
   }, [id, fetchSingleProduct]);
 
   useEffect(() => {
-    if (singleProduct) {
-      console.log("🔍 singleProduct data:", singleProduct);
-      setMainImage(singleProduct.image || "/placeholder.png");
+    if (singleProduct?.images?.length > 0) {
+      setCurrentImageIndex(0);
+      setMainImage(singleProduct.images[0].path);
+    } else if (singleProduct?.image) {
+      setCurrentImageIndex(-1); // single main image
+      setMainImage(singleProduct.image);
     }
   }, [singleProduct]);
 
+  // Arrow key navigation
+  useEffect(() => {
+    if (!singleProduct?.images || singleProduct.images.length === 0) return;
+
+    const handleArrowKeys = (e: KeyboardEvent) => {
+      let nextIndex = currentImageIndex;
+
+      if (e.key === "ArrowRight") {
+        nextIndex = (currentImageIndex + 1) % singleProduct.images.length;
+      } else if (e.key === "ArrowLeft") {
+        nextIndex = (currentImageIndex - 1 + singleProduct.images.length) % singleProduct.images.length;
+      }
+
+      setCurrentImageIndex(nextIndex);
+      setMainImage(singleProduct.images[nextIndex].path);
+    };
+
+    window.addEventListener("keydown", handleArrowKeys);
+    return () => window.removeEventListener("keydown", handleArrowKeys);
+  }, [currentImageIndex, singleProduct]);
 
   const reloadProduct = () => {
     if (id) fetchSingleProduct(Number(id));
@@ -57,22 +70,17 @@ export default function ProductDetailPage() {
   if (error) return <p className="p-10 text-red-500">{error}</p>;
   if (!singleProduct) return <p className="p-10">No product found.</p>;
 
-
-  // wishlist logic
   const inWishlist = isInWishlist(String(singleProduct.id));
 
   const toggleWishlist = () => {
     initializeAuth();
-
     if (!isLoggedIn) {
       toast.error("Please log in to manage your wishlist");
       router.push("/login");
       return;
     }
 
-    const productPrice = singleProduct.sale_price
-      ? Number(singleProduct.sale_price)
-      : Number(singleProduct.price);
+    const productPrice = singleProduct.sale_price ? Number(singleProduct.sale_price) : Number(singleProduct.price);
 
     if (inWishlist) {
       removeFromWishlist(String(singleProduct.id));
@@ -88,25 +96,16 @@ export default function ProductDetailPage() {
     }
   };
 
-
-  // cart logic
-  // cart logic
   const handleAddToCart = () => {
     initializeAuth();
-
     if (!isLoggedIn) {
       toast.error("Please log in to add items to your cart.");
       router.push("/login");
       return;
     }
 
-    const finalPrice = singleProduct.sale_price
-      ? Number(singleProduct.sale_price)
-      : Number(singleProduct.price);
-
-    const variationsArray = Object.entries(selectedVariations).map(
-      ([name, value]) => ({ name, value })
-    );
+    const finalPrice = singleProduct.sale_price ? Number(singleProduct.sale_price) : Number(singleProduct.price);
+    const variationsArray = Object.entries(selectedVariations).map(([name, value]) => ({ name, value }));
 
     addToCart({
       id: Number(singleProduct.id),
@@ -119,8 +118,6 @@ export default function ProductDetailPage() {
 
     toast.success(`${singleProduct.name} added to cart 🛒`, { icon: "🛒" });
   };
-
-
 
   return (
     <section className="bg-white lg:px-25 lg:py-10 sm:px-10 sm:py-5">
@@ -139,7 +136,6 @@ export default function ProductDetailPage() {
                     height={400}
                     className="w-full h-96 object-contain bg-white rounded-lg"
                   />
-
                 </div>
 
                 {singleProduct.images?.length > 0 && (
@@ -147,9 +143,12 @@ export default function ProductDetailPage() {
                     {singleProduct.images.map((img: any, i: number) => (
                       <div
                         key={i}
-                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${mainImage === img.path ? "ring-2 ring-blue-500" : ""
+                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${currentImageIndex === i ? "ring-2 ring-blue-500" : ""
                           }`}
-                        onClick={() => setMainImage(img.path)}
+                        onClick={() => {
+                          setCurrentImageIndex(i);
+                          setMainImage(img.path);
+                        }}
                       >
                         <Image
                           src={img.path}
@@ -167,15 +166,10 @@ export default function ProductDetailPage() {
 
             {/* Product Info */}
             <div className="lg:w-1/2 w-full">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                {singleProduct.name}
-              </h2>
-
+              <h2 className="text-2xl font-semibold text-gray-900">{singleProduct.name}</h2>
               <p className="text-gray-600 mt-2">
                 <span className="font-medium">Category:</span>{" "}
-                <span className="text-blue-600">
-                  {singleProduct.category || "Uncategorized"}
-                </span>
+                <span className="text-blue-600">{singleProduct.category || "Uncategorized"}</span>
               </p>
 
               <h3 className="text-3xl font-bold text-blue-600 mt-3">
@@ -192,42 +186,26 @@ export default function ProductDetailPage() {
                 dangerouslySetInnerHTML={{ __html: singleProduct.description }}
               />
 
-              {/* Variations */}
               {singleProduct.variations?.length > 0 && (
                 <div className="mt-5 space-y-4">
                   {singleProduct.variations.map((variation: any) => {
-                    // If values is a string → parse it
                     let valuesArray: any[] = [];
                     try {
-                      if (typeof variation.values === "string") {
-                        valuesArray = JSON.parse(variation.values);
-                      } else {
-                        valuesArray = variation.values || [];
-                      }
+                      valuesArray = typeof variation.values === "string" ? JSON.parse(variation.values) : variation.values || [];
                     } catch {
                       valuesArray = [];
                     }
-
                     return (
                       <div key={variation.id}>
-                        <label className="block text-gray-700 font-medium mb-2">
-                          {variation.name}
-                        </label>
+                        <label className="block text-gray-700 font-medium mb-2">{variation.name}</label>
                         <select
                           className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
                           value={selectedVariations[variation.name] || ""}
-                          onChange={(e) =>
-                            handleVariationChange(
-                              variation.name,
-                              e.target.value
-                            )
-                          }
+                          onChange={(e) => handleVariationChange(variation.name, e.target.value)}
                         >
                           <option value="">Select {variation.name}</option>
                           {valuesArray.map((val: any, i: number) => (
-                            <option key={i} value={val.value}>
-                              {val.value}
-                            </option>
+                            <option key={i} value={val.value}>{val.value}</option>
                           ))}
                         </select>
                       </div>
@@ -245,14 +223,10 @@ export default function ProductDetailPage() {
                 </button>
                 <button
                   onClick={toggleWishlist}
-                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${inWishlist
-                    ? "border-red-400 bg-red-50 text-red-500"
-                    : "border-gray-300 hover:bg-gray-100"
+                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${inWishlist ? "border-red-400 bg-red-50 text-red-500" : "border-gray-300 hover:bg-gray-100"
                     }`}
                 >
-                  <FaHeart
-                    className={inWishlist ? "text-red-500" : "text-gray-500"}
-                  />
+                  <FaHeart className={inWishlist ? "text-red-500" : "text-gray-500"} />
                   {inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
                 </button>
               </div>
@@ -264,8 +238,7 @@ export default function ProductDetailPage() {
         <div className="bg-gray-50 p-10 mt-12 rounded-lg">
           <h4 className="text-xl font-semibold mb-3">Details</h4>
           <p className="text-gray-700 leading-relaxed">
-            {singleProduct.details ||
-              "No additional details provided for this product."}
+            {singleProduct.details || "No additional details provided for this product."}
           </p>
         </div>
 
@@ -285,33 +258,13 @@ export default function ProductDetailPage() {
         <div className="bg-gray-50 p-10 mt-12 rounded-lg">
           <h4 className="text-xl font-semibold mb-5">Product Details</h4>
           <ul className="space-y-2 text-gray-700">
-            <li>
-              <span className="font-medium">Name:</span> {singleProduct.name}
-            </li>
-            <li>
-              <span className="font-medium">Category:</span>{" "}
-              {singleProduct.category || "N/A"}
-            </li>
-            {singleProduct.sku && (
-              <li>
-                <span className="font-medium">SKU:</span> {singleProduct.sku}
-              </li>
-            )}
-            {singleProduct.brand && (
-              <li>
-                <span className="font-medium">Brand:</span>{" "}
-                {singleProduct.brand}
-              </li>
-            )}
-            {singleProduct.stock !== undefined && (
-              <li>
-                <span className="font-medium">Stock:</span>{" "}
-                {singleProduct.stock > 0 ? "In Stock" : "Out of Stock"}
-              </li>
-            )}
+            <li><span className="font-medium">Name:</span> {singleProduct.name}</li>
+            <li><span className="font-medium">Category:</span> {singleProduct.category || "N/A"}</li>
+            {singleProduct.sku && <li><span className="font-medium">SKU:</span> {singleProduct.sku}</li>}
+            {singleProduct.brand && <li><span className="font-medium">Brand:</span> {singleProduct.brand}</li>}
+            {singleProduct.stock !== undefined && <li><span className="font-medium">Stock:</span> {singleProduct.stock > 0 ? "In Stock" : "Out of Stock"}</li>}
           </ul>
 
-          {/* Paragraph Description */}
           {singleProduct.description && (
             <div
               className="mt-6 text-gray-700 leading-relaxed"
@@ -331,9 +284,7 @@ export default function ProductDetailPage() {
                     <h5 className="font-medium">{rev.user}</h5>
                     <span className="text-yellow-500">
                       {"★".repeat(rev.rating)}
-                      <span className="text-gray-300">
-                        {"★".repeat(5 - rev.rating)}
-                      </span>
+                      <span className="text-gray-300">{"★".repeat(5 - rev.rating)}</span>
                     </span>
                   </div>
                   <p className="mt-1 font-semibold">{rev.subject}</p>
@@ -346,7 +297,6 @@ export default function ProductDetailPage() {
             <p className="text-gray-500">No reviews yet.</p>
           )}
 
-          {/* Review Form */}
           <ReviewModal pid={singleProduct.id} onSuccess={reloadProduct} />
         </div>
       </div>

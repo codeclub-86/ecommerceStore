@@ -29,7 +29,6 @@ const SocialIcon = ({
 const HeaderLinks = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Zustand store
   const { categories, fetchCategories, stores, fetchStores, loading } = useStore();
   const { isLoggedIn, initializeAuth } = useAuthStore();
 
@@ -42,9 +41,8 @@ const HeaderLinks = () => {
   return (
     <header className="w-full light-bg-css text-white shadow-md border-b border-yellow-400">
       <div className="px-6 lg:px-10 py-4 flex items-center justify-between container mx-auto">
-        {/* Left side */}
+
         <div className="flex items-center gap-4">
-          {/* Mobile Menu Button */}
           <button
             aria-label="Toggle Menu"
             className="lg:hidden p-2 border border-yellow-400 rounded-md text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
@@ -53,7 +51,6 @@ const HeaderLinks = () => {
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          {/* Categories */}
           <div className="hidden lg:block relative group border-r border-gray-700 pr-4">
             <span
               tabIndex={0}
@@ -79,7 +76,6 @@ const HeaderLinks = () => {
                     key={groupIdx}
                     className="relative group/category border-b border-gray-700 last:border-none"
                   >
-                    {/* Parent category */}
                     <span
                       className="flex justify-between items-center px-5 py-3 font-semibold text-yellow-400 hover:bg-yellow-400 hover:text-black transition cursor-pointer"
                     >
@@ -95,7 +91,6 @@ const HeaderLinks = () => {
                       </svg>
                     </span>
 
-                    {/* Child categories dropdown */}
                     {group.categories && group.categories.length > 0 && (
                       <ul
                         className="absolute left-full top-0 mt-0 ml-1 w-56 bg-black rounded-xl shadow-lg border border-yellow-400/40
@@ -121,7 +116,6 @@ const HeaderLinks = () => {
           </div>
         </div>
 
-        {/* Desktop Navbar */}
         <nav className="hidden lg:block">
           <ul className="flex gap-10 text-[16px] font-semibold">
             <li>
@@ -129,30 +123,24 @@ const HeaderLinks = () => {
                 Shop
               </Link>
             </li>
-
             <li>
               <Link href="/brands" className="hover:text-yellow-400 transition">
                 Brands
               </Link>
             </li>
-
-
-
             <li>
               <Link
                 href="/register"
-                className=" text-white px-5 py-2 rounded-full font-semibold hover:text-yellow-500 transition"
+                className="text-white px-5 py-2 rounded-full font-semibold hover:text-yellow-500 transition"
               >
                 Register Now
               </Link>
             </li>
-
             <li>
               <Link href="/contact" className="hover:text-yellow-400 transition">
                 Contact Us
               </Link>
             </li>
-
             {isLoggedIn && (
               <li>
                 <Link href="/orders" className="hover:text-yellow-400 transition">
@@ -163,7 +151,6 @@ const HeaderLinks = () => {
           </ul>
         </nav>
 
-        {/* Right side social icons */}
         <div className="flex justify-center gap-5 py-4">
           <a
             href="https://www.facebook.com/share/17DoTWFFao/"
@@ -197,42 +184,38 @@ const HeaderLinks = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-yellow-400 bg-black text-white shadow-md animate-fade-in">
           <ul className="flex flex-col p-4 gap-3 font-medium">
             <li>
-              <Link href="/" className="hover:text-yellow-400">
+              <Link href="/" className="hover:text-yellow-400" onClick={() => setMobileMenuOpen(false)}>
                 Home
               </Link>
             </li>
             <li>
-              <Link href="/productListing" className="hover:text-yellow-400">
+              <Link href="/productListing" className="hover:text-yellow-400" onClick={() => setMobileMenuOpen(false)}>
                 Shop
               </Link>
             </li>
             <li>
-              <Link href="/brands" className="hover:text-yellow-400">
+              <Link href="/brands" className="hover:text-yellow-400" onClick={() => setMobileMenuOpen(false)}>
                 Brands
               </Link>
             </li>
-
-
-
             <li>
-              <Link href="/register" className="text-yellow-400 font-semibold">
+              <Link href="/register" className="text-yellow-400 font-semibold" onClick={() => setMobileMenuOpen(false)}>
                 Register Now
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:text-yellow-400">
+              <Link href="/contact" className="hover:text-yellow-400" onClick={() => setMobileMenuOpen(false)}>
                 Contact Us
               </Link>
             </li>
 
             {isLoggedIn && (
               <li>
-                <Link href="/orders" className="hover:text-yellow-400">
+                <Link href="/orders" className="hover:text-yellow-400" onClick={() => setMobileMenuOpen(false)}>
                   My Orders
                 </Link>
               </li>

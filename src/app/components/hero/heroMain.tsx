@@ -12,12 +12,11 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-// Define the Product type
 interface Product {
   id: string;
   name: string;
   description: string;
-  price: number;
+  price: number | string;
   image: string;
 }
 
@@ -58,7 +57,8 @@ const HeroMain = () => {
             {featuredProducts.map((product, idx) => (
               <CarouselItem key={idx}>
                 <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 md:gap-12 p-6 md:p-10 bg-gradient-to-r from-black via-gray-900 to-black text-white rounded-xl">
-                  {/* Left: Product Details */}
+
+                  {/* Details */}
                   <div className="flex flex-col justify-center space-y-4">
                     <h2 className="text-3xl md:text-4xl font-bold">{product.name}</h2>
                     <div
@@ -66,7 +66,7 @@ const HeroMain = () => {
                       dangerouslySetInnerHTML={{ __html: product.description }}
                     />
                     <p className="text-yellow-400 text-2xl font-semibold">
-                      Rs {product.price}
+                      Rs {Number(product.price).toFixed(1)}
                     </p>
                     <Link
                       href={`/product-detail/${product.id}`}
@@ -76,7 +76,7 @@ const HeroMain = () => {
                     </Link>
                   </div>
 
-                  {/* Right: Product Image */}
+                  {/* Image */}
                   <div className="relative w-full h-[300px] md:h-[400px] lg:h-[450px]">
                     <Image
                       src={product.image}
@@ -91,7 +91,7 @@ const HeroMain = () => {
             ))}
           </CarouselContent>
 
-          {/* Navigation Arrows */}
+          {/* Arrows */}
           <CarouselPrevious className="absolute top-1/2 left-3 -translate-y-1/2 bg-yellow-400/90 text-black hover:bg-yellow-300 rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition" />
           <CarouselNext className="absolute top-1/2 right-3 -translate-y-1/2 bg-yellow-400/90 text-black hover:bg-yellow-300 rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition" />
         </Carousel>

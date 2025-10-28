@@ -9,26 +9,30 @@ import {
   FaApple,
   FaGooglePlay,
 } from "react-icons/fa";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@/app/store/apiStore";
-import logo4 from "../../../public/logo4.png";
 
 export default function Footer() {
   const { categories, fetchCategories } = useStore();
+  const [parentCategories, setParentCategories] = useState<string[]>([]);
 
+  // Fetch categories client-side and update state
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-  // Extract only parent category names
-  const parentCategories =
-    categories?.map((cat: any) => cat.parent) || [];
+  useEffect(() => {
+    if (categories) {
+      const parents = categories.map((cat: any) => cat.parent);
+      setParentCategories(parents);
+    }
+  }, [categories]);
 
   const footerData = {
     contact: {
-      phone: "+92 314 0078748",
+      phone: "+92 3141334484",
       hours: ["Mon–Fri: 2pm – 10pm"],
-      email: "info@codeclub.tech",
+      emails: ["support@haasl.store", "haasilpk@gmail.com"],
     },
     information: [
       { name: "Shop", href: "/productListing" },
@@ -72,57 +76,43 @@ export default function Footer() {
             <ul className="mt-6 space-y-3 text-sm">
               <li>📞 {footerData.contact.phone}</li>
               {footerData.contact.hours.map((line, idx) => (
-                <li key={idx}>{line}</li>
+                <li key={`hour-${idx}`}>{line}</li>
               ))}
-              <li>
-                ✉️{" "}
-                <a
-                  href={`mailto:${footerData.contact.email}`}
-                  className="hover:underline text-gray-300"
-                >
-                  {footerData.contact.email}
-                </a>
-              </li>
+              {footerData.contact.emails.map((email) => (
+                <li key={email}>
+                  ✉️{" "}
+                  <a
+                    href={`mailto:${email}`}
+                    className="hover:underline text-gray-300"
+                  >
+                    {email}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Information */}
-          <FooterColumn title="Information" links={footerData.information} />
+          <FooterColumn
+            title="Information"
+            links={footerData.information}
+            keyPrefix="info"
+          />
 
-          {/* Departments (only parent categories) */}
-          <FooterColumn title="Shop Departments" links={footerData.departments} />
+          {/* Departments */}
+          <FooterColumn
+            title="Shop Departments"
+            links={footerData.departments}
+            keyPrefix="dept"
+          />
 
           {/* Mobile App */}
           <div>
             <h2 className="text-lg font-semibold text-white">Our Mobile App</h2>
             <div className="w-12 h-0.5 bg-blue-600 mt-2"></div>
             <div className="mt-6 flex flex-col space-y-4">
-              <a
-                href="#"
-                aria-label="Download on the App Store"
-                className="flex items-center gap-3 border border-gray-600 rounded-lg px-4 py-3 hover:bg-gray-800 transition"
-              >
-                <FaApple className="text-2xl" />
-                <div>
-                  <p className="text-xs">Download on the</p>
-                  <p className="font-bold">App Store</p>
-                </div>
-                <p>Coming Soon</p>
-              </a>
-              <a
-                href="#"
-                aria-label="Get it on Google Play"
-                className="flex items-center gap-3 border border-gray-600 rounded-lg px-4 py-3 hover:bg-gray-800 transition"
-              >
-                <FaGooglePlay className="text-2xl" />
-                <div>
-                  <p className="text-xs">Get it on</p>
-                  <p className="font-bold">Google Play</p>
-                </div>
-                <p>Coming Soon</p>
-
-              </a>
-
+              <AppLink icon={<FaApple className="text-2xl" />} title="App Store" />
+              <AppLink icon={<FaGooglePlay className="text-2xl" />} title="Google Play" />
             </div>
           </div>
         </div>
@@ -149,9 +139,9 @@ export default function Footer() {
 
           <div className="flex items-center gap-4">
             <span>Follow us:</span>
-            {footerData.social.map(({ href, label, icon }, i) => (
+            {footerData.social.map(({ href, label, icon }) => (
               <Link
-                key={i}
+                key={label}
                 href={href}
                 aria-label={label}
                 className="text-gray-300 hover:text-blue-500 transition"
@@ -166,20 +156,21 @@ export default function Footer() {
   );
 }
 
-// Reusable Footer Column Component
 const FooterColumn = ({
   title,
   links,
+  keyPrefix = "col",
 }: {
   title: string;
   links: { name: string; href: string }[] | string[];
+  keyPrefix?: string;
 }) => (
   <div>
     <h2 className="text-lg font-semibold text-white">{title}</h2>
     <div className="w-12 h-0.5 bg-blue-600 mt-2"></div>
     <ul className="mt-6 space-y-3 text-sm">
       {links.map((link: any, idx) => (
-        <li key={idx}>
+        <li key={`${keyPrefix}-${typeof link === "string" ? link : link.href}`}>
           {typeof link === "string" ? (
             <span className="hover:underline hover:text-gray-100 transition cursor-pointer">
               {link}
@@ -196,4 +187,25 @@ const FooterColumn = ({
       ))}
     </ul>
   </div>
+);
+
+const AppLink = ({
+  icon,
+  title,
+}: {
+  icon: React.ReactNode;
+  title: string;
+}) => (
+  <a
+    href="#"
+    aria-label={`Get it on ${title}`}
+    className="flex items-center gap-3 border border-gray-600 rounded-lg px-4 py-3 hover:bg-gray-800 transition"
+  >
+    {icon}
+    <div>
+      <p className="text-xs">{title === "App Store" ? "Download on the" : "Get it on"}</p>
+      <p className="font-bold">{title}</p>
+    </div>
+    <p>Coming Soon</p>
+  </a>
 );

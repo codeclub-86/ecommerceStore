@@ -27,7 +27,7 @@ const ContactInfo: React.FC = () => {
                 </div>
                 <div className="ml-4">
                     <h4 className="text-xl font-semibold text-gray-800">Call us on</h4>
-                    <p className="mt-1 text-gray-600">+92 314 0078748 (Toll free)<br />+92 314 1334484</p>
+                    <p className="mt-1 text-gray-600">+92 314 0078748 (for call)<br />+92 314 1334484 (for whatsapp)</p>
                 </div>
             </div>
 

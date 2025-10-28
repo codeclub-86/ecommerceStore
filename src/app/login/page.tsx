@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/authStore";
+import { Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
   const router = useRouter();
@@ -17,6 +18,8 @@ const Register = () => {
   const [messageType, setMessageType] = useState<"success" | "error">("error");
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"email" | "verify" | "reset">("email");
+
+  const togglePasswordVisibility = () => setShow(prev => !prev);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +53,7 @@ const Register = () => {
         setPhone("");
       }
 
-      else if (state === "login") {
+      if (state === "login") {
         const res = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -64,7 +67,7 @@ const Register = () => {
         router.push("/");
       }
 
-      else if (state === "forgot") {
+      if (state === "forgot") {
         if (step === "email") {
           const res = await fetch("/api/auth/forgot-password", {
             method: "POST",
@@ -99,7 +102,7 @@ const Register = () => {
           if (!res.ok) throw new Error(data.message);
 
           setMessageType("success");
-          setMessage("Password reset successfully! You can now log in.");
+          setMessage("Password reset successfully!");
           setStep("email");
           setState("login");
           setEmail("");
@@ -116,16 +119,17 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex justify-center items-center px-4 bg-gray-50">
+    <div className="min-h-screen flex justify-center items-center px-4 bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 w-full max-w-sm text-gray-600 rounded-xl shadow-lg border border-gray-200 bg-white p-6 sm:p-8"
+        className="flex flex-col gap-5 w-full max-w-md rounded-lg shadow-lg border border-gray-200 bg-white p-6 sm:p-8"
       >
-        <p className="text-2xl font-semibold text-center">
+
+        <p className="text-center text-2xl font-bold text-gray-800">
           {state === "login"
-            ? "Login"
+            ? "Login as Customer"
             : state === "register"
-              ? "Sign Up"
+              ? "Register as Customer"
               : "Forgot Password"}
         </p>
 
@@ -135,7 +139,6 @@ const Register = () => {
               <input
                 onChange={(e) => setName(e.target.value)}
                 value={name}
-                placeholder="type here"
                 className="input"
                 required
               />
@@ -145,7 +148,6 @@ const Register = () => {
               <input
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
-                placeholder="type here"
                 className="input"
                 type="email"
                 required
@@ -156,7 +158,6 @@ const Register = () => {
               <input
                 onChange={(e) => setPhone(e.target.value)}
                 value={phone}
-                placeholder="e.g. 03123456789"
                 className="input"
                 type="tel"
                 maxLength={11}
@@ -171,9 +172,20 @@ const Register = () => {
             <input
               onChange={(e) => setEmail(e.target.value)}
               value={email}
-              placeholder="type here"
               className="input"
               type="email"
+              required
+            />
+          </Field>
+        )}
+
+        {(state === "login" || state === "register" || verified) && (
+          <Field label="Password" show={show} toggle={togglePasswordVisibility}>
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              className="input pr-10"
+              type={show ? "text" : "password"}
               required
             />
           </Field>
@@ -186,7 +198,6 @@ const Register = () => {
                 <input
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
-                  placeholder="Enter registered email"
                   className="input"
                   type="email"
                   required
@@ -199,7 +210,6 @@ const Register = () => {
                 <input
                   onChange={(e) => setCode(e.target.value)}
                   value={code}
-                  placeholder="Enter code"
                   className="input"
                   required
                 />
@@ -207,12 +217,11 @@ const Register = () => {
             )}
 
             {step === "reset" && (
-              <Field label="New Password">
+              <Field label="New Password" show={show} toggle={togglePasswordVisibility}>
                 <input
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
-                  placeholder="Enter new password"
-                  className="input"
+                  className="input pr-10"
                   type={show ? "text" : "password"}
                   required
                 />
@@ -221,29 +230,22 @@ const Register = () => {
           </>
         )}
 
-        {(state === "login" || state === "register" || verified) && (
-          <Field label="Password">
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              placeholder="type here"
-              className="input"
-              type={show ? "text" : "password"}
-              required
-            />
-          </Field>
-        )}
+        <SwitchLinks state={state} setState={setState} setVerified={setVerified} setMessage={setMessage} />
 
-        <SwitchLinks
-          state={state}
-          setState={setState}
-          setVerified={setVerified}
-          setMessage={setMessage}
-        />
+        {/* ✅ Vendor Links Row + Clean Spacing */}
+        <div className="flex justify-center gap-6 text-xs text-gray-600 pt-2">
+          <a href="https://codeclub.tech/haasil/admin/ecom-admin/public/register" target="_blank" rel="noopener noreferrer">
+            Vendor Register
+          </a>
+          <span>|</span>
+          <a href="https://codeclub.tech/haasil/admin/ecom-admin/public/login" target="_blank" rel="noopener noreferrer">
+            Vendor Login
+          </a>
+        </div>
 
         <button
           disabled={loading}
-          className="mt-2 bg-blue-600 hover:bg-blue-700 transition-all text-white w-full py-3 rounded-md text-sm font-medium disabled:opacity-50"
+          className="mt-2 bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-md text-sm font-medium disabled:opacity-50"
         >
           {loading
             ? "Please wait..."
@@ -259,22 +261,32 @@ const Register = () => {
         </button>
 
         {message && (
-          <p className={`text-center text-sm mt-1 ${messageType === "success" ? "text-green-600" : "text-red-500"}`}>
+          <p className={`text-center text-sm mt-1 ${messageType === "success" ? "text-green-600" : "text-red-600"}`}>
             {message}
           </p>
         )}
+
       </form>
     </div>
   );
 };
 
-// ✅ Reusable Components for cleaner code
-const Field = ({ label, children }: any) => (
-  <div className="w-full">
-    <p className="text-sm font-medium mb-1">{label}</p>
+// Reusable form field (with icons)
+const Field = ({ label, children, show, toggle }: any) => (
+  <div className="w-full relative">
+    <label className="text-sm font-medium mb-1 block text-gray-700">{label}</label>
     {children}
+    {toggle && (
+      <span
+        onClick={toggle}
+        className="absolute right-3 top-9 cursor-pointer text-gray-500"
+      >
+        {show ? <EyeOff size={18} /> : <Eye size={18} />}
+      </span>
+    )}
   </div>
 );
+
 
 const SwitchLinks = ({ state, setState, setVerified, setMessage }: any) => (
   <div className="text-sm text-center w-full">
@@ -286,7 +298,7 @@ const SwitchLinks = ({ state, setState, setVerified, setMessage }: any) => (
         </span>
       </p>
     ) : state === "login" ? (
-      <p>
+      <p className="space-y-1">
         Create an account?{" "}
         <span className="text-blue-600 cursor-pointer" onClick={() => setState("register")}>
           Sign up
@@ -297,7 +309,7 @@ const SwitchLinks = ({ state, setState, setVerified, setMessage }: any) => (
             setState("forgot");
             setMessage("");
           }}
-          className="text-blue-600 cursor-pointer block mt-1"
+          className="text-blue-600 cursor-pointer"
         >
           Forgot password?
         </span>

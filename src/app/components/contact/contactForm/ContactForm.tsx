@@ -28,7 +28,7 @@ Phone: ${formData.phone}%0A
 Message: ${formData.message}`;
 
         // WhatsApp link
-        const whatsappNumber = '923370372772'; // Pakistan country code +92 (no leading zero)
+        const whatsappNumber = '923141334484';
         const url = `https://wa.me/${whatsappNumber}?text=${text}`;
 
         // Open WhatsApp chat in new tab

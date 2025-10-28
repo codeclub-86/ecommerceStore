@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuthStore } from "@/app/store/authStore";
 
-export default function ReviewModal({ pid, onSuccess }: { pid: number; onSuccess?: () => void }) {
+export default function ReviewModal({
+  pid,
+  onSuccess,
+}: {
+  pid: number;
+  onSuccess?: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [subject, setSubject] = useState("");
   const [rating, setRating] = useState(5);
@@ -14,23 +20,29 @@ export default function ReviewModal({ pid, onSuccess }: { pid: number; onSuccess
   const { user } = useAuthStore();
   const userId = user?.id;
 
+  // Ref for the form to allow Enter submission
+  const formRef = useRef<HTMLFormElement>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setFeedback("");
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/submitReview`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject,
-          rating,
-          message,
-          user_id: userId,
-          product_id: pid,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/submitReview`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            subject,
+            rating,
+            message,
+            user_id: userId,
+            product_id: pid,
+          }),
+        }
+      );
 
       const data = await res.json();
 
@@ -41,7 +53,7 @@ export default function ReviewModal({ pid, onSuccess }: { pid: number; onSuccess
         setMessage("");
         setIsOpen(false);
 
-        if (onSuccess) onSuccess(); // 🔄 refresh product details
+        if (onSuccess) onSuccess(); // refresh product details
       } else {
         setFeedback(data.message || "❌ Failed to submit review.");
       }
@@ -49,6 +61,14 @@ export default function ReviewModal({ pid, onSuccess }: { pid: number; onSuccess
       setFeedback("⚠️ Network error, please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // handle Enter key inside Subject input
+  const handleSubjectKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // prevent newline
+      formRef.current?.requestSubmit(); // triggers the form submit naturally
     }
   };
 
@@ -66,26 +86,34 @@ export default function ReviewModal({ pid, onSuccess }: { pid: number; onSuccess
           <div className="bg-white w-full max-w-lg rounded-2xl shadow-lg">
             <div className="flex justify-between items-center border-b px-6 py-4">
               <h5 className="text-lg font-semibold">Leave a Review</h5>
-              <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form ref={formRef} onSubmit={handleSubmit}>
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Subject</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Subject
+                    </label>
                     <input
                       type="text"
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
+                      onKeyDown={handleSubjectKeyDown}
                       required
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-blue-200"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Rating</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Rating
+                    </label>
                     <select
                       value={rating}
                       onChange={(e) => setRating(Number(e.target.value))}
@@ -102,7 +130,9 @@ export default function ReviewModal({ pid, onSuccess }: { pid: number; onSuccess
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Review</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Review
+                  </label>
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -124,7 +154,11 @@ export default function ReviewModal({ pid, onSuccess }: { pid: number; onSuccess
               </div>
             </form>
 
-            {feedback && <div className="px-6 pb-4 text-sm text-center text-gray-600">{feedback}</div>}
+            {feedback && (
+              <div className="px-6 pb-4 text-sm text-center text-gray-600">
+                {feedback}
+              </div>
+            )}
           </div>
         </div>
       )}

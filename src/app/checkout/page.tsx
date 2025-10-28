@@ -172,7 +172,7 @@ export default function CheckoutPage() {
                 name="firstName"
                 type="text"
                 required
-                placeholder="John"
+                placeholder="Enter your first name"
                 value={formData.firstName}
                 onChange={handleChange}
                 className="border rounded-lg px-4 py-2 w-full"
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
                 name="lastName"
                 type="text"
                 required
-                placeholder="Doe"
+                placeholder="Enter your last name"
                 value={formData.lastName}
                 onChange={handleChange}
                 className="border rounded-lg px-4 py-2 w-full"
@@ -195,7 +195,7 @@ export default function CheckoutPage() {
                 type="email"
                 required
                 readOnly
-                placeholder="example@email.com"
+                placeholder="Your email address"
                 value={formData.email}
                 className="border rounded-lg px-4 py-2 w-full bg-gray-100 text-gray-700 cursor-not-allowed"
               />
@@ -203,7 +203,7 @@ export default function CheckoutPage() {
                 name="phone"
                 type="tel"
                 required
-                placeholder="+92 300 1234567"
+                placeholder="Enter your phone number"
                 value={formData.phone}
                 onChange={handleChange}
                 className="border rounded-lg px-4 py-2 w-full"
@@ -215,7 +215,7 @@ export default function CheckoutPage() {
               name="address"
               type="text"
               required
-              placeholder="123 Street Name"
+              placeholder="Street address (e.g., 123 Main St)"
               value={formData.address}
               onChange={handleChange}
               className="border rounded-lg px-4 py-2 w-full"
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
                 name="city"
                 type="text"
                 required
-                placeholder="Peshawar"
+                placeholder="City (e.g., Peshawar)"
                 value={formData.city}
                 onChange={handleChange}
                 className="border rounded-lg px-4 py-2 w-full"
@@ -236,7 +236,7 @@ export default function CheckoutPage() {
                 name="postalCode"
                 type="text"
                 required
-                placeholder="25000"
+                placeholder="Postal code (e.g., 25000)"
                 value={formData.postalCode}
                 onChange={handleChange}
                 className="border rounded-lg px-4 py-2 w-full"
@@ -249,7 +249,7 @@ export default function CheckoutPage() {
                 name="country"
                 type="text"
                 required
-                placeholder="Pakistan"
+                placeholder="Country (e.g., Pakistan)"
                 value={formData.country}
                 onChange={handleChange}
                 className="border rounded-lg px-4 py-2 w-full"
@@ -261,12 +261,13 @@ export default function CheckoutPage() {
                 onChange={handleChange}
                 className="border rounded-lg px-4 py-2 w-full"
               >
-                <option value="">Select</option>
+                <option value="">Select your state</option>
                 <option>KPK</option>
                 <option>Punjab</option>
                 <option>Sindh</option>
               </select>
             </div>
+
 
             <button
               type="submit"

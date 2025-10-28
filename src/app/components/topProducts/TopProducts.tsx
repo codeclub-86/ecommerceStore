@@ -21,9 +21,9 @@ const ProductList = () => {
     fetchTopProducts();
   }, [fetchTrendingProducts, fetchNewProducts, fetchTopProducts]);
 
-  const bestSellers = trendingProducts || [];
-  const newArrivals = newProducts || [];
-  const topRated = topProducts || [];
+  const bestSellers = (trendingProducts || []).slice(0, 4);
+  const newArrivals = (newProducts || []).slice(0, 4);
+  const topRated = (topProducts || []).slice(0, 4);
 
   const sections = {
     "Best Sellers": bestSellers,
@@ -38,36 +38,35 @@ const ProductList = () => {
       ) : error ? (
         <p className="text-red-400 text-center">Error: {error}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {Object.entries(sections).map(([section, items]: [string, any[]]) => (
-            <div key={section} className="space-y-6">
-              {/* Section Title */}
-              <div>
+            <div key={section} className="space-y-6 flex flex-col items-center">
+
+              <div className="text-center w-full">
                 <h2 className="text-lg font-bold text-yellow-400">{section}</h2>
                 <div className="relative w-full h-[1px] bg-gray-700 mt-2">
-                  <span className="absolute bottom-0 left-0 w-16 h-[2px] bg-yellow-500 rounded"></span>
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-[2px] bg-yellow-500 rounded"></span>
                 </div>
               </div>
 
-              {/* Products */}
-              <ul className="space-y-6">
-                {items && items.length > 0 ? (
+              {/* Reduced gap here */}
+              <ul className="md:space-y-4 flex md:flex-col justify-center items-center gap-4 overflow-x-auto md:overflow-visible no-scrollbar">
+                {items.length > 0 ? (
                   items.map((item, index) => (
                     <Link
                       key={index}
                       href={`/product-detail/${item._id || item.id || index}`}
-                      className="block hover:bg-[#2a2828] p-2 rounded-lg transition"
+                      className="block min-w-[200px] md:min-w-[220px] hover:bg-[#2a2828] p-3 rounded-lg transition text-center md:text-left"
                     >
                       <li className="flex items-center gap-4">
-                        <div className="flex-shrink-0">
-                          <Image
-                            src={item.image || item.img || "/assets/product-1.jpg"}
-                            alt={item.name}
-                            width={64}
-                            height={64}
-                            className="object-contain rounded-md border border-gray-700 shadow-sm"
-                          />
-                        </div>
+                        <Image
+                          src={item.image || item.img || "/assets/product-1.jpg"}
+                          alt={item.name}
+                          width={64}
+                          height={64}
+                          className="object-contain rounded-md border border-gray-700 shadow-sm"
+                        />
+
                         <div>
                           <p className="text-sm font-medium text-gray-200 hover:text-yellow-400 hover:underline transition-colors">
                             {item.name}
@@ -80,9 +79,7 @@ const ProductList = () => {
                     </Link>
                   ))
                 ) : (
-                  <p className="text-gray-500 text-sm">
-                    No products found in this section.
-                  </p>
+                  <p className="text-gray-500 text-sm">No products found.</p>
                 )}
               </ul>
             </div>

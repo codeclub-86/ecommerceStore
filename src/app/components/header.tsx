@@ -66,9 +66,8 @@ export default function ShopGridsHeader() {
 
   const router = useRouter();
   const { isLoggedIn, user, logout, initializeAuth } = useAuthStore();
-  const { clearCart, setUserId, loadUserCart } = useCartStore();
+  const { setUserId, loadUserCart } = useCartStore();
   const {
-    clearWishlist,
     setUserId: setWishlistUserId,
     loadUserWishlist,
   } = useWishlistStore();
@@ -86,10 +85,8 @@ export default function ShopGridsHeader() {
       const id = user.id.toString();
       setUserId(id);
       setWishlistUserId(id);
-      setTimeout(() => {
-        loadUserCart(id);
-        loadUserWishlist(id);
-      }, 100);
+      loadUserCart(id);
+      loadUserWishlist(id);
     }
   }, [
     isLoggedIn,
@@ -101,8 +98,6 @@ export default function ShopGridsHeader() {
   ]);
 
   const handleLogout = () => {
-    clearCart();
-    clearWishlist();
     logout();
     router.push("/login");
   };
@@ -124,7 +119,6 @@ export default function ShopGridsHeader() {
     <header className="w-full dark-bg-css shadow-md border-b border-gray-700">
       <div className="w-full px-4 sm:px-6 lg:px-8 py-4 container mx-auto">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 sm:gap-6">
-          {/* Logo */}
           <Link href="/" className="flex items-center group">
             <Image
               src="/logo6.png"
@@ -136,14 +130,11 @@ export default function ShopGridsHeader() {
             />
           </Link>
 
-          {/* Desktop Search */}
           <div className="hidden md:flex flex-1 max-w-md lg:max-w-xl">
             <SearchBar />
           </div>
 
-          {/* Right Icons */}
           <div className="flex items-center gap-3 sm:gap-5">
-            {/* Wishlist */}
             <div className="relative">
               <button
                 onClick={() => setWishlistOpen(!wishlistOpen)}
@@ -164,7 +155,6 @@ export default function ShopGridsHeader() {
                 )}
               </button>
 
-              {/* Wishlist Dropdown */}
               {wishlistOpen && wishlist.length > 0 && (
                 <div className="absolute right-0 mt-3 w-72 sm:w-80 bg-[#0c1a2b] border border-gray-700 rounded-2xl shadow-xl z-50 overflow-hidden animate-fade-in">
                   <div className="p-4 border-b border-gray-700 bg-[#13243b] flex justify-between text-sm text-yellow-400">
@@ -214,7 +204,6 @@ export default function ShopGridsHeader() {
               )}
             </div>
 
-            {/* Cart */}
             <Link
               href="/cart"
               className="relative p-2 h-10 w-10 rounded-full flex items-center justify-center border border-gray-600 hover:bg-yellow-400 hover:text-black transition-all group"
@@ -231,7 +220,6 @@ export default function ShopGridsHeader() {
               )}
             </Link>
 
-            {/* Profile / Auth */}
             {isLoggedIn ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -288,7 +276,6 @@ export default function ShopGridsHeader() {
           </div>
         </div>
 
-        {/* Mobile Search */}
         <div className="md:hidden mt-4">
           <SearchBar mobile />
         </div>

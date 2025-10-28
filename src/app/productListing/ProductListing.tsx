@@ -16,6 +16,8 @@ const ProductListing: React.FC = () => {
         loading,
         error,
         fetchProducts,
+        categories,
+        fetchCategories,
     } = useStore();
 
     const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
@@ -28,7 +30,10 @@ const ProductListing: React.FC = () => {
 
     const searchParams = useSearchParams();
 
-    // 🔹 Read ?category= or ?brand= from URL
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
+
     useEffect(() => {
         const categoryFromQuery = searchParams.get("category");
         const brandFromQuery = searchParams.get("brand");
@@ -36,38 +41,43 @@ const ProductListing: React.FC = () => {
         if (brandFromQuery) setSelectedBrand(brandFromQuery);
     }, [searchParams]);
 
-    // 🔹 Fetch all products only if not searching
     useEffect(() => {
         if (!searchQuery) {
             fetchProducts();
         }
     }, [fetchProducts, searchQuery]);
 
-    // 🔹 Decide which products to show
     const sourceProducts =
         searchQuery && searchResults.length > 0 ? searchResults : products;
 
-    // 🔹 Apply filters + sorting
     useEffect(() => {
         let result = [...sourceProducts];
 
-        if (selectedCategory) {
+        if (selectedCategory && categories.length > 0) {
             const normalize = (str: string) =>
-                str
-                    .toLowerCase()
-                    .replace(/['&]/g, "")
-                    .replace(/\s+/g, "");
-
+                str.toLowerCase().replace(/['&]/g, "").replace(/\s+/g, "");
             const target = normalize(selectedCategory);
 
-            result = result.filter((p) => {
-                const category = normalize(p.category || "");
-                const parent = normalize(p.parent_category || "");
-                return category.includes(target) || parent.includes(target);
-            });
+            // Check if selectedCategory is a parent
+            const parentCategory = categories.find(
+                (group: any) => normalize(group.parent) === target
+            );
+
+            if (parentCategory) {
+                const subcategoryNames = parentCategory.categories.map((c: any) =>
+                    normalize(c.category_name)
+                );
+
+                result = result.filter((p) => {
+                    const pCategory = normalize(p.category || "");
+                    const pParent = normalize(p.parent_category || "");
+                    return pParent === target || subcategoryNames.includes(pCategory);
+                });
+            } else {
+                result = result.filter((p) => normalize(p.category || "") === target);
+            }
+
         }
-
-
 
         if (selectedPrice) {
             result = result.filter((p) => {
@@ -98,22 +108,33 @@ const ProductListing: React.FC = () => {
 
         setFilteredProducts(result);
         setCurrentPage(1);
-    }, [sourceProducts, selectedCategory, selectedPrice, selectedBrand, sortOption]);
+    }, [
+        sourceProducts,
+        selectedCategory,
+        selectedPrice,
+        selectedBrand,
+        sortOption,
+        categories,
+    ]);
 
-    // 🔹 Pagination logic
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = filteredProducts.slice(
+        indexOfFirstProduct,
+        indexOfLastProduct
+    );
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
     const showingRange =
         filteredProducts.length > 0
-            ? `Showing: ${indexOfFirstProduct + 1} - ${Math.min(indexOfLastProduct, filteredProducts.length)} of ${filteredProducts.length} items`
+            ? `Showing: ${indexOfFirstProduct + 1} - ${Math.min(
+                indexOfLastProduct,
+                filteredProducts.length
+            )} of ${filteredProducts.length} items`
             : "No items to show";
 
     return (
         <div className="w-full p-6 bg-white rounded-lg shadow-sm min-h-screen py-10 px-4 md:px-10 lg:px-25">
-            {/* Breadcrumb */}
             <div className="mb-6">
                 <Breadcrumb
                     items={[
@@ -124,7 +145,6 @@ const ProductListing: React.FC = () => {
             </div>
 
             <div className="container mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Sidebar */}
                 <div className="lg:col-span-1">
                     <SearchFilter
                         onCategorySelect={setSelectedCategory}
@@ -133,7 +153,6 @@ const ProductListing: React.FC = () => {
                     />
                 </div>
 
-                {/* Product Grid */}
                 <div className="lg:col-span-3">
                     <ProductSort
                         sortOption={sortOption}
