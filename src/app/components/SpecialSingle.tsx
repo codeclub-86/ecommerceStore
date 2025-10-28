@@ -109,13 +109,13 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
             {/* Product Clickable Area */}
             <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
                 {/* Image */}
+                {/* Image */}
                 <div className="relative w-full h-64 overflow-hidden">
                     <Image
                         src={image}
                         alt={name}
-                        width={400}
-                        height={400}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                     />
 
                     {/* Add to Cart Button */}
@@ -128,6 +128,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
                         </button>
                     </div>
                 </div>
+
 
                 {/* Info */}
                 <div className="p-4 flex flex-col flex-grow dark-bg-css">

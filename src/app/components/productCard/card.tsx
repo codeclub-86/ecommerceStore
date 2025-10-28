@@ -114,7 +114,7 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
       {/* Product Card */}
       <Link href={`/product-detail/${id}`} className="flex flex-col h-full">
         {/* Product Image */}
-        <div className="relative w-full h-80 bg-white rounded-md overflow-hidden flex items-center justify-center">
+        {/* <div className="relative w-full h-80 bg-white rounded-md overflow-hidden flex items-center justify-center">
           <Image
             src={image || "/placeholder.png"}
             alt={name}
@@ -122,7 +122,18 @@ const TrendingSingle: React.FC<TrendingSingleProps> = ({
             height={400}
             className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
+        </div> */}
+
+        {/* Product Image */}
+        <div className="relative w-full h-64 bg-white rounded-md overflow-hidden flex items-center justify-center">
+          <Image
+            src={image || "/placeholder.png"}
+            alt={name}
+            fill
+            className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+          />
         </div>
+
 
 
 
