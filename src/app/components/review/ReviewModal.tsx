@@ -23,6 +23,13 @@ export default function ReviewModal({
   // Ref for the form to allow Enter submission
   const formRef = useRef<HTMLFormElement>(null);
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -82,7 +89,11 @@ export default function ReviewModal({
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onKeyDown={handleKeyDown}
+        >
+          {" "}
           <div className="bg-white w-full max-w-lg rounded-2xl shadow-lg">
             <div className="flex justify-between items-center border-b px-6 py-4">
               <h5 className="text-lg font-semibold">Leave a Review</h5>

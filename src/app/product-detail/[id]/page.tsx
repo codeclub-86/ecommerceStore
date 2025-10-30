@@ -13,7 +13,7 @@ import { toast } from "sonner";
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { singleProduct, fetchSingleProduct, loading, error } = useStore();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // stores
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
@@ -54,7 +54,8 @@ export default function ProductDetailPage() {
 
     const handleArrowKeys = (e: KeyboardEvent) => {
       const currentIndex =
-        singleProduct.images.findIndex((img: any) => img.path === mainImage) ?? 0;
+        singleProduct.images.findIndex((img: any) => img.path === mainImage) ??
+        0;
 
       if (e.key === "ArrowRight") {
         const nextIndex = (currentIndex + 1) % singleProduct.images.length;
@@ -148,7 +149,10 @@ export default function ProductDetailPage() {
             {/* Product Images */}
             <div className="lg:w-1/2 w-full">
               <div className="flex flex-col gap-4">
-                <div className="w-full border rounded-lg overflow-hidden">
+                <div
+                  className="w-full border rounded-lg overflow-hidden cursor-zoom-in"
+                  onClick={() => setIsModalOpen(true)}
+                >
                   <Image
                     src={mainImage || "/placeholder.png"}
                     alt={singleProduct.name}
@@ -163,8 +167,9 @@ export default function ProductDetailPage() {
                     {singleProduct.images.map((img: any, i: number) => (
                       <div
                         key={i}
-                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${mainImage === img.path ? "ring-2 ring-blue-500" : ""
-                          }`}
+                        className={`border rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 ${
+                          mainImage === img.path ? "ring-2 ring-blue-500" : ""
+                        }`}
                         onClick={() => setMainImage(img.path)}
                       >
                         <Image
@@ -195,7 +200,10 @@ export default function ProductDetailPage() {
               </p>
 
               <h3 className="text-3xl font-bold text-blue-600 mt-3">
-                Rs {Number(singleProduct.sale_price || singleProduct.price).toFixed(2)}
+                Rs{" "}
+                {Number(
+                  singleProduct.sale_price || singleProduct.price
+                ).toFixed(2)}
                 {singleProduct.sale_price && (
                   <span className="line-through text-gray-400 ml-2 text-lg">
                     Rs {Number(singleProduct.price).toFixed(2)}
@@ -232,7 +240,10 @@ export default function ProductDetailPage() {
                           className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
                           value={selectedVariations[variation.name] || ""}
                           onChange={(e) =>
-                            handleVariationChange(variation.name, e.target.value)
+                            handleVariationChange(
+                              variation.name,
+                              e.target.value
+                            )
                           }
                         >
                           <option value="">Select {variation.name}</option>
@@ -257,10 +268,11 @@ export default function ProductDetailPage() {
                 </button>
                 <button
                   onClick={toggleWishlist}
-                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${inWishlist
-                    ? "border-red-400 bg-red-50 text-red-500"
-                    : "border-gray-300 hover:bg-gray-100"
-                    }`}
+                  className={`w-full border py-3 rounded-lg flex items-center justify-center gap-2 transition ${
+                    inWishlist
+                      ? "border-red-400 bg-red-50 text-red-500"
+                      : "border-gray-300 hover:bg-gray-100"
+                  }`}
                 >
                   <FaHeart
                     className={inWishlist ? "text-red-500" : "text-gray-500"}
@@ -276,7 +288,8 @@ export default function ProductDetailPage() {
         <div className="bg-gray-50 p-10 mt-12 rounded-lg">
           <h4 className="text-xl font-semibold mb-3">Details</h4>
           <p className="text-gray-700 leading-relaxed">
-            {singleProduct.details || "No additional details provided for this product."}
+            {singleProduct.details ||
+              "No additional details provided for this product."}
           </p>
         </div>
 
@@ -300,7 +313,8 @@ export default function ProductDetailPage() {
               <span className="font-medium">Name:</span> {singleProduct.name}
             </li>
             <li>
-              <span className="font-medium">Category:</span> {singleProduct.category || "N/A"}
+              <span className="font-medium">Category:</span>{" "}
+              {singleProduct.category || "N/A"}
             </li>
             {singleProduct.sku && (
               <li>
@@ -309,7 +323,8 @@ export default function ProductDetailPage() {
             )}
             {singleProduct.brand && (
               <li>
-                <span className="font-medium">Brand:</span> {singleProduct.brand}
+                <span className="font-medium">Brand:</span>{" "}
+                {singleProduct.brand}
               </li>
             )}
             {singleProduct.stock !== undefined && (
@@ -339,7 +354,9 @@ export default function ProductDetailPage() {
                     <h5 className="font-medium">{rev.user}</h5>
                     <span className="text-yellow-500">
                       {"★".repeat(rev.rating)}
-                      <span className="text-gray-300">{"★".repeat(5 - rev.rating)}</span>
+                      <span className="text-gray-300">
+                        {"★".repeat(5 - rev.rating)}
+                      </span>
                     </span>
                   </div>
                   <p className="mt-1 font-semibold">{rev.subject}</p>
@@ -355,6 +372,25 @@ export default function ProductDetailPage() {
           <ReviewModal pid={singleProduct.id} onSuccess={reloadProduct} />
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="relative max-w-3xl w-full">
+            <button
+              className="absolute top-2 right-2 z-50 bg-white text-black px-3 py-1 rounded"
+              onClick={() => setIsModalOpen(false)}
+            >
+              ✕
+            </button>
+
+            <img
+              src={mainImage || "/placeholder.png"}
+              alt="Zoomed Image"
+              className="w-full h-auto max-h-screen object-contain rounded-lg"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
