@@ -23,7 +23,7 @@ export default function ReviewModal({
   // Ref for the form to allow Enter submission
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       formRef.current?.requestSubmit();
