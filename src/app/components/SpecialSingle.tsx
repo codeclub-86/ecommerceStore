@@ -134,6 +134,7 @@ const SpecialSingle: React.FC<SpecialSingleProps> = ({
                 <div className="p-4 flex flex-col flex-grow dark-bg-css">
                     <span className="block text-sm text-white">{category}</span>
                     <h4 className="font-semibold text-white text-lg mt-1 line-clamp-2 flex-grow">
+
                         <span className="hover:text-yellow-500 transition">{name}</span>
                     </h4>
 
